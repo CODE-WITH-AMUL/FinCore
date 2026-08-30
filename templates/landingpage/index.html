@@ -1,0 +1,430 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        {% block title %}FinCore — Take Control of Your Company's Finances{% endblock title %}
+
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+
+
+  <body class="loading">
+    <div id="preloader">
+      <div class="pl-mark"><span class="dot"></span>FinCore</div>
+      <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+    </div>
+
+
+    {% comment %} its the navabar section {% endcomment %}
+
+    {% block NavBar %}
+    <nav>
+      <div class="wrap">
+        <div class="brand"><span class="dot"></span>FinCore</div>
+        <ul id="navlinks">
+          <li><a href="#problem" data-nav="problem">Problem</a></li>
+          <li><a href="#platform" data-nav="platform">Platform</a></li>
+          <li>
+            <a href="#capabilities" data-nav="capabilities">Capabilities</a>
+          </li>
+          <li><a href="#insights" data-nav="insights">Insights</a></li>
+          <li><a href="#trust" data-nav="trust">Security</a></li>
+        </ul>
+        <a href="#cta" class="nav-cta">Get Started</a>
+      </div>
+    </nav>
+{% endblock NavBar %}
+
+    {% comment %} its the hero section {% endcomment %}
+    {% block Hero %}
+    <section class="hero">
+      <div class="hero-grid-lines" aria-hidden="true"></div>
+      <div class="wrap grid12">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="num">01</span> Financial Management, Centralized
+          </div>
+          <h1>
+            Take control of your<br />company's
+            <span class="accent">finances</span>.
+          </h1>
+          <p class="lede">
+            FinCore brings revenue, expenses, invoices, tax, and cash flow into
+            one system — so your numbers stay organized, current, and easy to
+            act on.
+          </p>
+          <div class="cta-row">
+            <a href="#cta" class="btn-primary">Get started</a>
+            <a href="#cta" class="btn-outline">Book a demo</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="num mono">1</div>
+              <div class="label">System of record</div>
+            </div>
+            <div class="stat">
+              <div class="num mono">Live</div>
+              <div class="label">Cash &amp; P&amp;L visibility</div>
+            </div>
+            <div class="stat">
+              <div class="num mono">120+</div>
+              <div class="label">Currencies supported</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="chart-card">
+            <div class="cc-head">
+              <div class="cc-title">Net Revenue — Rolling 12mo</div>
+              <div class="cc-value mono">$4.86M</div>
+            </div>
+            <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2563EB" stop-opacity="0.22" />
+                  <stop offset="100%" stop-color="#2563EB" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <g stroke="#DEDBD3" stroke-width="1">
+                <line x1="0" y1="30" x2="400" y2="30" />
+                <line x1="0" y1="75" x2="400" y2="75" />
+                <line x1="0" y1="120" x2="400" y2="120" />
+                <line x1="0" y1="165" x2="400" y2="165" />
+              </g>
+              <path
+                class="chart-fill"
+                d="M0,140 C50,130 80,150 120,120 C160,90 190,110 230,85 C270,60 300,75 340,45 C365,28 385,35 400,20 L400,180 L0,180 Z"
+              />
+              <path
+                class="chart-line"
+                d="M0,140 C50,130 80,150 120,120 C160,90 190,110 230,85 C270,60 300,75 340,45 C365,28 385,35 400,20"
+              />
+            </svg>
+            <div class="cc-tags">
+              <span>Revenue</span>
+              <span class="g">Net Margin +6.4%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endblock Hero%}
+
+    <section id="problem">
+      <div class="wrap grid12">
+        <div class="section-head">
+          <div class="eyebrow"><span class="num">02</span> The Problem</div>
+          <h2>Modern finance runs on fragments.</h2>
+        </div>
+        <div class="section-body problem-list">
+          <div class="problem-item">
+            <div class="pi-num mono">01</div>
+            <div>
+              <h4>Data scattered across systems → One connected ledger</h4>
+              <p>
+                Invoicing, banking, and tax tools each keep their own numbers.
+                FinCore reconciles them into a single chart of accounts,
+                continuously.
+              </p>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="pi-num mono">02</div>
+            <div>
+              <h4>Reports arrive too late → Live financial visibility</h4>
+              <p>
+                A manually built P&amp;L describes a quarter that's already
+                over. FinCore updates revenue, expenses, and margin as
+                transactions post.
+              </p>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="pi-num mono">03</div>
+            <div>
+              <h4>Tax exposure found too late → Tax modeled in advance</h4>
+              <p>
+                VAT and multi-jurisdiction obligations are usually discovered
+                after the fact. FinCore estimates liability continuously, not at
+                year-end.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="cta-repeat"
+      style="
+        padding: 70px 0;
+        border-bottom: 1px solid var(--line);
+        text-align: center;
+      "
+    >
+      <div class="wrap">
+        <a href="#cta" class="btn-primary">See FinCore in action</a>
+      </div>
+    </section>
+
+    <section id="platform">
+      <div class="wrap grid12">
+        <div class="section-head">
+          <div class="eyebrow"><span class="num">03</span> The Platform</div>
+          <h2>One ledger. One source of truth.</h2>
+        </div>
+        <div class="section-body">
+          <p
+            style="color: var(--ink-soft); font-size: 1.02rem; max-width: 50ch"
+          >
+            FinCore connects to your banks, invoicing, and payroll systems, then
+            reconciles every transaction against one structured chart of
+            accounts — updated continuously, not at month-end.
+          </p>
+        </div>
+        <div class="dash-mock">
+          <div class="dash-topbar"><span></span><span></span><span></span></div>
+          <div class="dash-body">
+            <div class="dash-side">
+              <div class="active">Overview</div>
+              <div>Revenue</div>
+              <div>Expenses</div>
+              <div>Invoicing</div>
+              <div>Tax &amp; VAT</div>
+              <div>Investments</div>
+              <div>Reports</div>
+            </div>
+            <div class="dash-main">
+              <div class="metric-card">
+                <div class="m-label">Cash Position</div>
+                <div class="m-value">$1.92M</div>
+                <div class="m-delta up">▲ 3.1% vs last month</div>
+              </div>
+              <div class="metric-card">
+                <div class="m-label">Outstanding Invoices</div>
+                <div class="m-value up">$284K</div>
+                <div class="m-delta">18 open, 4 overdue</div>
+              </div>
+              <div class="metric-card">
+                <div class="m-label">Est. Tax Liability</div>
+                <div class="m-value">$96.4K</div>
+                <div class="m-delta down">▼ 2.4% after credits</div>
+              </div>
+              <div class="metric-card wide">
+                <div class="m-label">Operating Expenses — Last 8 Weeks</div>
+                <div class="bars" aria-hidden="true">
+                  <div class="bar" style="height: 40%"></div>
+                  <div class="bar" style="height: 55%"></div>
+                  <div class="bar" style="height: 48%"></div>
+                  <div class="bar" style="height: 70%"></div>
+                  <div class="bar" style="height: 62%"></div>
+                  <div class="bar" style="height: 80%"></div>
+                  <div class="bar" style="height: 74%"></div>
+                  <div class="bar" style="height: 90%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="capabilities">
+      <div class="wrap grid12">
+        <div class="section-head">
+          <div class="eyebrow">
+            <span class="num">04</span> Core Capabilities
+          </div>
+          <h2>Built for the full financial cycle.</h2>
+        </div>
+        <div class="section-body">
+          <p
+            style="color: var(--ink-soft); font-size: 1.02rem; max-width: 50ch"
+          >
+            From the first invoice to the final tax filing, every stage of
+            business finance is handled within the same structured system.
+          </p>
+        </div>
+        <div class="cap-grid">
+          <div class="cap">
+            <div class="cap-icon">◧</div>
+            <h4>Revenue &amp; Expense Tracking</h4>
+            <p>
+              Every transaction categorized automatically, reconciled daily
+              against bank feeds.
+            </p>
+          </div>
+          <div class="cap">
+            <div class="cap-icon">▤</div>
+            <h4>Invoicing &amp; Receivables</h4>
+            <p>
+              Generate, send, and track invoices with automatic aging and
+              follow-up sequencing.
+            </p>
+          </div>
+          <div class="cap">
+            <div class="cap-icon">%</div>
+            <h4>Tax &amp; VAT Management</h4>
+            <p>
+              Multi-jurisdiction tax modeling with continuous liability
+              estimates, not year-end surprises.
+            </p>
+          </div>
+          <div class="cap">
+            <div class="cap-icon">◍</div>
+            <h4>Investment Oversight</h4>
+            <p>
+              Track portfolio positions and returns alongside operating cash in
+              a single view.
+            </p>
+          </div>
+          <div class="cap">
+            <div class="cap-icon">▥</div>
+            <h4>Profit &amp; Loss</h4>
+            <p>
+              Live P&amp;L statements that update as transactions post, not once
+              a quarter.
+            </p>
+          </div>
+          <div class="cap">
+            <div class="cap-icon">≋</div>
+            <h4>Cash Flow Forecasting</h4>
+            <p>
+              Model upcoming obligations against expected receivables, weeks in
+              advance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="insights">
+      <div class="wrap grid12">
+        <div class="section-head">
+          <div class="eyebrow">
+            <span class="num">05</span> Analytics &amp; Insight
+          </div>
+          <h2>Numbers that suggest the next move.</h2>
+        </div>
+        <div class="section-body">
+          <p
+            style="color: var(--ink-soft); font-size: 1.02rem; max-width: 50ch"
+          >
+            FinCore surfaces patterns finance teams would otherwise find
+            manually — margin drift, vendor concentration, seasonal cash gaps —
+            before they become urgent.
+          </p>
+        </div>
+        <div class="insight-cards">
+          <div class="insight-card">
+            <span class="ic-tag blue">Margin</span>
+            <h4>Gross margin trending +2.1pp</h4>
+            <p>
+              Driven by a shift toward higher-margin service contracts signed
+              this quarter.
+            </p>
+          </div>
+          <div class="insight-card">
+            <span class="ic-tag green">Cash Flow</span>
+            <h4>6-week runway buffer maintained</h4>
+            <p>
+              Forecasted receivables comfortably cover the next two payroll
+              cycles.
+            </p>
+          </div>
+          <div class="insight-card">
+            <span class="ic-tag blue">Concentration</span>
+            <h4>Top 3 vendors: 41% of spend</h4>
+            <p>
+              A concentration worth renegotiating terms on before the next
+              renewal window.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="trust">
+      <div class="wrap grid12">
+        <div class="section-head">
+          <div class="eyebrow">
+            <span class="num">06</span> Built to be Trusted
+          </div>
+          <h2>Bank-grade security, built in.</h2>
+        </div>
+        <div class="section-body">
+          <p
+            style="color: var(--ink-soft); font-size: 1.02rem; max-width: 50ch"
+          >
+            Every connection is encrypted end-to-end, access is role-based, and
+            a full audit trail is kept for every entry — so finance stays in
+            control of what's shared and by whom.
+          </p>
+        </div>
+        <div class="cap-grid">
+          <div class="cap">
+            <div class="cap-icon">🔒</div>
+            <h4>Encrypted end-to-end</h4>
+            <p>
+              Data is encrypted in transit and at rest across every connected
+              system.
+            </p>
+          </div>
+          <div class="cap">
+            <div class="cap-icon">◫</div>
+            <h4>Role-based access</h4>
+            <p>
+              Control exactly who can view, edit, or approve each part of the
+              ledger.
+            </p>
+          </div>
+          <div class="cap">
+            <div class="cap-icon">▦</div>
+            <h4>Full audit trail</h4>
+            <p>
+              Every change is logged, timestamped, and attributable to a single
+              user.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section" id="cta">
+      <div class="wrap">
+        <div class="eyebrow">Get Started</div>
+        <h2>Take control of your finances today.</h2>
+        <p>
+          See FinCore configured around your own chart of accounts — no
+          spreadsheets, no guesswork, just one clear view of the business.
+        </p>
+        <div class="cta-row-final">
+          <a href="#" class="btn-primary">Get started</a>
+          <a href="#" class="btn-outline">Book a demo</a>
+        </div>
+      </div>
+    </section>
+
+    {% comment %} its the footoer section {% endcomment %}
+    <footer>
+      <div class="wrap">
+        <div class="brand"><span class="dot"></span>FinCore</div>
+        <div>© 2026 FinCore. All financial data shown is illustrative.</div>
+      </div>
+    </footer>
+
+{% comment %} js code urls  {% endcomment %}
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

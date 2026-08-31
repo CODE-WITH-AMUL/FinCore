@@ -1,0 +1,195 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In — FinCore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              body: ['"Inter"', 'sans-serif'],
+              mono: ['"IBM Plex Mono"', 'monospace'],
+            },
+            colors: {
+              brand: {
+        --paper: #fafaf8;
+        --paper-deep: #f1efe9;
+        --ink: #14181c;
+        --ink-soft: #5b5f63;
+        --line: #dedbd3;
+        --blue: #2563eb;
+        --blue-soft: #eff4fe;
+        --green: #16a34a;
+        --green-soft: #eafaf0;
+        --warm: #cf5a2a;
+        --radius: 2px;
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+
+  <body
+    class="bg-gray-50 text-gray-900 font-body antialiased min-h-screen flex flex-col"
+  >
+    <!-- Preloader (Matches your base template) -->
+    <div
+      id="preloader"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-white transition-opacity duration-500"
+    >
+      <div class="text-center">
+        <div class="text-2xl font-bold font-sans mb-4">
+          <span
+            class="inline-block w-2 h-2 rounded-full bg-brand-600 mr-1"
+          ></span
+          >FinCore
+        </div>
+        <div class="w-48 h-1 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            class="h-full bg-brand-600 rounded-full animate-pulse w-2/3"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav
+      class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"
+      >
+        <a
+          href="/"
+          class="flex items-center gap-2 text-xl font-bold font-sans text-gray-900"
+        >
+          <span
+            class="inline-block w-2.5 h-2.5 rounded-full bg-brand-600"
+          ></span
+          >FinCore
+        </a>
+        <div
+          class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600"
+        >
+          <a href="/" class="hover:text-brand-600 transition-colors">Home</a>
+          <a href="/#platform" class="hover:text-brand-600 transition-colors"
+            >Platform</a
+          >
+          <a href="/#trust" class="hover:text-brand-600 transition-colors"
+            >Security</a
+          >
+        </div>
+        <div class="flex items-center gap-4">
+          <a
+            href="{% url 'signup' %}"
+            class="text-sm font-semibold text-gray-600 hover:text-brand-600 transition-colors"
+            >Create account</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main
+      class="flex-grow flex items-center justify-center px-4 py-12 relative overflow-hidden"
+    >
+      <!-- Subtle background grid -->
+      <div
+        class="absolute inset-0 opacity-[0.03]"
+        style="
+          background-image: radial-gradient(#2563eb 1px, transparent 1px);
+          background-size: 24px 24px;
+        "
+      ></div>
+
+      <div
+        class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-8 relative z-10"
+      >
+        <div class="text-center mb-8">
+                          <h2>Create an account</h2>
+                <p class="subtitle">Start centralizing your company's finances today.</p>
+
+                <form method="POST" action="{% url 'signup' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Jane Doe" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Work Email</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="you@company.com" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Min. 8 characters" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-input" placeholder="••••••••" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" name="terms" required />
+                            <span>I agree to the <a href="#" style="color: var(--blue); text-decoration: underline;">Terms of Service</a> and <a href="#" style="color: var(--blue); text-decoration: underline;">Privacy Policy</a>.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full">Create Account</button>
+                </form>
+
+                <p class="auth-switch">
+                    Already have an account? <a href="{% url 'signin' %}">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-8">
+      <div
+        class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4"
+      >
+        <div
+          class="flex items-center gap-2 text-lg font-bold font-sans text-gray-900"
+        >
+          <span class="inline-block w-2 h-2 rounded-full bg-brand-600"></span
+          >FinCore
+        </div>
+        <div class="text-sm text-gray-500">
+          © 2026 FinCore. All financial data shown is illustrative.
+        </div>
+      </div>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+      // Simple preloader removal
+      window.addEventListener("load", () => {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          setTimeout(() => (preloader.style.display = "none"), 500);
+        }
+      });
+    </script>
+  </body>
+</html>

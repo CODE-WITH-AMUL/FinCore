@@ -31,7 +31,7 @@
     {% block NavBar %}
     <nav>
       <div class="wrap">
-        <div class="brand"><span class="dot"></span>FinCore</div>
+             <div class="brand"><span class="dot"></span>     <a href="{% url 'index' %}" data-nav="index"> FinCore</a></div>
         <ul id="navlinks">
           <li><a href="#problem" data-nav="problem">Problem</a></li>
           <li><a href="#platform" data-nav="platform">Platform</a></li>
@@ -41,7 +41,7 @@
           <li><a href="#insights" data-nav="insights">Insights</a></li>
           <li><a href="#trust" data-nav="trust">Security</a></li>
         </ul>
-        <a href="#cta" class="nav-cta">Get Started</a>
+        <a href="{% url 'signin' %}" class="nav-cta">Get Started</a>
       </div>
     </nav>
 {% endblock NavBar %}

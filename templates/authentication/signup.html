@@ -1,0 +1,141 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account — FinCore</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
+</head>
+<body class="loading">
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="pl-mark"><span class="dot"></span>
+
+        <a href="{% url 'index' %}" data-nav="index"> FinCore</a>
+        </div>
+        <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav>
+      <div class="wrap">
+        <div class="brand"><span class="dot"></span>     <a href="{% url 'index' %}" data-nav="index"> FinCore</a></div>
+        <ul id="navlinks">
+          <li><a href="#problem" data-nav="problem">Problem</a></li>
+          <li><a href="#platform" data-nav="platform">Platform</a></li>
+          <li>
+            <a href="#capabilities" data-nav="capabilities">Capabilities</a>
+          </li>
+          <li><a href="#insights" data-nav="insights">Insights</a></li>
+          <li><a href="#trust" data-nav="trust">Security</a></li>
+        </ul>
+        <a href="{% url 'signin' %}" class="nav-cta">Get Started</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="auth-section">
+        <div class="auth-grid-lines" aria-hidden="true"></div>
+        <div class="wrap grid12">
+            
+            <!-- Left Column: Value Proposition -->
+            <div class="auth-left">
+                <div class="eyebrow">
+                    <span class="num">01</span> FinCore
+                </div>
+                <h1>Take control of your company's finances.</h1>
+                <p class="lede">Join modern finance teams using FinCore to centralize revenue, automate tax modeling, and maintain live cash flow visibility.</p>
+                
+                <ul class="auth-features">
+                    <li>
+                        <span class="check-icon">✓</span> 
+                        One connected ledger for all bank feeds
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span> 
+                        Live P&L that updates as transactions post
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span> 
+                        Bank-grade end-to-end encryption
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right Column: Registration Form -->
+            <div class="auth-right">
+                <div class="auth-card">
+                    <h2>Create your account</h2>
+                    <p class="subtitle">Start centralizing your financial data today.</p>
+
+                    <form method="POST" action="{% url 'signup' %}">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" id="first_name" name="first_name" class="form-input" placeholder="First Name" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" class="form-input" placeholder="Last Name" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Work Email</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="you@company.com" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" name="password" class="form-input" placeholder="Min. 8 characters" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-input" placeholder="••••••••" required />
+                        </div>
+
+                        <div class="form-group" style="margin-top: 24px;">
+                            <label class="form-checkbox">
+                                <input type="checkbox" name="terms" required />
+                                <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span>
+                            </label>
+                        </div>
+
+                        <!-- Uses your existing .btn-primary from style.css -->
+                        <button type="submit" class="btn-primary" style="width: 100%; text-align: center; display: block; margin-top: 28px; padding: 16px;">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <p class="auth-footer-link">
+                        Need help? <a href="#">Contact support</a>
+                    </p>
+                    <p class = "auth-footer-link"> 
+                        Already have an account? <a href="{% url 'signin' %}">Sign in</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="wrap">
+            <div class="brand"><span class="dot"></span>FinCore</div>
+            <div>© 2026 FinCore. All financial data shown is illustrative.</div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+/* Register page css and styling */
+        /* Auth Page Specific Styles (Integrates perfectly with your style.css) */
+        .auth-section {
+            padding-top: 140px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                to right,
+                var(--line) 0 1px,
+                transparent 1px calc(100% / 12)
+            );
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .auth-left {
+            grid-column: 1 / span 6;
+            padding-right: 40px;
+        }
+        .auth-right {
+            grid-column: 7 / span 6;
+        }
+        
+        .auth-left h1 {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            line-height: 1.1;
+            margin-top: 20px;
+            margin-bottom: 24px;
+        }
+        .auth-left p.lede {
+            font-size: 1.05rem;
+            color: var(--ink-soft);
+            max-width: 42ch;
+            margin-bottom: 40px;
+        }
+        
+        .auth-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .auth-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            font-size: 0.95rem;
+            color: var(--ink);
+            border-top: 1px solid var(--line);
+        }
+        .auth-features li:last-child {
+            border-bottom: 1px solid var(--line);
+        }
+        .auth-features .check-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .auth-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(20, 24, 28, 0.03);
+        }
+        .auth-card h2 {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .auth-card .subtitle {
+            color: var(--ink-soft);
+            font-size: 0.92rem;
+            margin-bottom: 32px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--paper);
+            color: var(--ink);
+            font-family: "Inter", sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px var(--blue-soft);
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            line-height: 1.4;
+            cursor: pointer;
+        }
+        .form-checkbox input {
+            margin-top: 2px;
+            accent-color: var(--blue);
+            width: 16px;
+            height: 16px;
+        }
+        .form-checkbox a {
+            color: var(--blue);
+            text-decoration: underline;
+        }
+
+        .auth-footer-link {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+        }
+        .auth-footer-link a { 
+            color: var(--blue); 
+            font-weight: 600; 
+        }
+        .auth-footer-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Navbar Auth Adjustments */
+        .nav-auth-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+        }
+
+        @media (max-width: 900px) {
+            .auth-left, .auth-right { 
+                grid-column: 1 / -1; 
+            }
+            .auth-left { padding-right: 0; margin-bottom: 50px; }
+        }

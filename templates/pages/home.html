@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinCore — Financial Overview</title>
+<style>
+  :root {
+    /* Modern, crisp fintech palette */
+    --bg-body: #F8F9FA;
+    --bg-surface: #FFFFFF;
+    --bg-subtle: #F3F4F6;
+    
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    
+    --accent-primary: #4F46E5;
+    --accent-primary-light: #EEF2FF;
+    --accent-success: #10B981;
+    --accent-success-light: #D1FAE5;
+    --accent-warning: #F59E0B;
+    --accent-warning-light: #FEF3C7;
+    --accent-danger: #EF4444;
+    --accent-danger-light: #FEE2E2;
+    
+    --border: #E5E7EB;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-body);
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    padding: 2rem 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dashboard {
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 2rem;
+  }
+
+  .header-info h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .biz-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent-primary);
+    background: var(--accent-primary-light);
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  select#currencySelect {
+    height: 40px;
+    padding: 0 32px 0 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+  }
+
+  select#currencySelect:hover {
+    border-color: var(--accent-primary);
+  }
+
+  select#currencySelect:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  /* Metrics Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  .metric-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #D1D5DB;
+  }
+
+  .metric-card .label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .metric-card .value {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+  }
+
+  .metric-card .value.success { color: var(--accent-success); }
+  .metric-card .value.danger { color: var(--accent-danger); }
+
+  /* Main Row */
+  .main-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .main-row { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 240px;
+  }
+
+  /* Ring Panel */
+  .ring-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .ring-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 1rem auto;
+  }
+
+  .ring-wrap svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .ring-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.025em;
+  }
+
+  .ring-value span {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .ring-caption {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* Sub Grid */
+  .sub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .sub-grid { grid-template-columns: 1fr; }
+  }
+
+  .sub-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .sub-card:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-md);
+  }
+
+  .sub-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sub-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.025em;
+  }
+
+  .sub-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-warning { background: var(--accent-warning-light); color: #92400E; }
+  .badge-danger { background: var(--accent-danger-light); color: #991B1B; }
+
+  /* Transactions */
+  .tx-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tx-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .tx-row:last-child { border-bottom: none; }
+  .tx-row:hover { background: var(--bg-subtle); margin: 0 -1.5rem; padding: 12px 1.5rem; border-radius: var(--radius-md); border-bottom-color: transparent; }
+
+  .tx-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tx-icon-wrap svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .tx-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tx-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tx-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .tx-amount {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .tx-amount.positive { color: var(--accent-success); }
+  .tx-amount.negative { color: var(--text-primary); }
+  .tx-amount.warning { color: var(--accent-warning); }
+
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+
+  <div class="header">
+    <div class="header-info">
+      <span class="biz-name">Acme Studio</span>
+      <h1>Financial Overview</h1>
+    </div>
+    <select id="currencySelect" aria-label="Select currency">
+      <option value="INR">₹ INR</option>
+      <option value="NPR">Rs NPR</option>
+      <option value="USD">$ USD</option>
+      <option value="EUR">€ EUR</option>
+    </select>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <p class="label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Cash on hand
+      </p>
+      <p class="value" id="v-cash">₹0</p>
+    </div>
+    <div class="metric-card">
+      <p class="label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Revenue, this month
+      </p>
+      <p class="value success" id="v-rev">₹0</p>
+    </div>
+    <div class="metric-card">
+      <p class="label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+        Expenses, this month
+      </p>
+      <p class="value danger" id="v-exp">₹0</p>
+    </div>
+    <div class="metric-card">
+      <p class="label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Profit, this month
+      </p>
+      <p class="value success" id="v-profit">₹0</p>
+    </div>
+  </div>
+
+  <div class="main-row">
+    <div class="panel">
+      <div class="chart-header">
+        <p class="panel-title" style="margin:0;">Revenue vs Expenses</p>
+        <div class="legend">
+          <span><span class="legend-dot" style="background:#4F46E5;"></span>Revenue</span>
+          <span><span class="legend-dot" style="background:#EF4444;"></span>Expenses</span>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="trendChart" role="img" aria-label="Line chart of monthly revenue and expenses"></canvas>
+      </div>
+    </div>
+
+    <div class="panel ring-panel">
+      <p class="panel-title">Audit Readiness</p>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#F3F4F6" stroke-width="10"/>
+          <circle id="readyRing" cx="60" cy="60" r="52" fill="none" stroke="url(#gradient)" stroke-width="10"
+                  stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#10B981" />
+              <stop offset="100%" stop-color="#34D399" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="ring-value">
+          <span id="v-ready">0%</span>
+          <span>Score</span>
+        </div>
+      </div>
+      <p class="ring-caption">Ready for CA review</p>
+    </div>
+  </div>
+
+  <div class="sub-grid">
+    <div class="sub-card">
+      <p class="sub-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        Owed to you
+      </p>
+      <p class="sub-value" id="v-ar">₹0</p>
+      <p class="sub-note">
+        3 invoices outstanding
+        <span class="badge badge-warning">1 overdue</span>
+      </p>
+    </div>
+    <div class="sub-card">
+      <p class="sub-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        You owe
+      </p>
+      <p class="sub-value" id="v-ap">₹0</p>
+      <p class="sub-note">
+        2 supplier bills due
+        <span class="badge badge-danger">This week</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <p class="panel-title">Recent Activity</p>
+    <div class="tx-list" id="txList"></div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+  // ---- Currency setup ----
+  const symbols = { INR: '₹', NPR: 'Rs ', USD: '$', EUR: '€' };
+  const rates   = { INR: 1, NPR: 1.6, USD: 0.012, EUR: 0.011 };
+
+  // ---- Base data (stored in INR) ----
+  const baseCash = 842000;
+  const baseRev  = 612000;
+  const baseExp  = 308000;
+  const baseAR   = 156000;
+  const baseAP   = 74000;
+
+  const months        = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+  const baseRevenueSeries  = [380000, 410000, 455000, 498000, 560000, 612000];
+  const baseExpensesSeries = [255000, 268000, 272000, 290000, 301000, 308000];
+
+  const txBase = [
+    { name: 'Customer ABC', desc: 'Invoice payment received', amount: 100000, sign: 1, color: '#10B981', bg: '#D1FAE5',
+      icon: '<path d="M12 19V5M5 12l7-7 7 7"/>' },
+    { name: 'AWS', desc: 'Cloud hosting expense', amount: 15000, sign: -1, color: '#EF4444', bg: '#FEE2E2',
+      icon: '<path d="M12 5v14M5 12l7 7 7-7"/>' },
+    { name: 'Customer XYZ', desc: 'Invoice overdue, 12 days', amount: 42000, sign: 0, color: '#F59E0B', bg: '#FEF3C7', suffix: ' due',
+      icon: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>' },
+    { name: 'Sharma Office Supplies', desc: 'Bill due in 3 days', amount: 8500, sign: -1, color: '#EF4444', bg: '#FEE2E2',
+      icon: '<path d="M12 5v14M5 12l7 7 7-7"/>' }
+  ];
+
+  function fmt(val, cur) {
+    const converted = val * rates[cur];
+    const decimals = (cur === 'USD' || cur === 'EUR') ? 2 : 0;
+    return symbols[cur] + converted.toLocaleString('en-IN', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+
+  // ---- Chart ----
+  let chart;
+  function renderChart(cur) {
+    const revData = baseRevenueSeries.map(v => Math.round(v * rates[cur] * 100) / 100);
+    const expData = baseExpensesSeries.map(v => Math.round(v * rates[cur] * 100) / 100);
+    
+    if (chart) chart.destroy();
+    
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    
+    // Create gradients
+    const gradientRev = ctx.createLinearGradient(0, 0, 0, 240);
+    gradientRev.addColorStop(0, 'rgba(79, 70, 229, 0.15)');
+    gradientRev.addColorStop(1, 'rgba(79, 70, 229, 0)');
+
+    const gradientExp = ctx.createLinearGradient(0, 0, 0, 240);
+    gradientExp.addColorStop(0, 'rgba(239, 68, 68, 0.1)');
+    gradientExp.addColorStop(1, 'rgba(239, 68, 68, 0)');
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [
+          { 
+            label: 'Revenue', 
+            data: revData, 
+            borderColor: '#4F46E5', 
+            backgroundColor: gradientRev,
+            fill: true, 
+            tension: 0.4, 
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            pointBackgroundColor: '#FFFFFF',
+            pointBorderColor: '#4F46E5',
+            pointBorderWidth: 2,
+            borderWidth: 3 
+          },
+          { 
+            label: 'Expenses', 
+            data: expData, 
+            borderColor: '#EF4444', 
+            backgroundColor: gradientExp,
+            fill: true, 
+            tension: 0.4, 
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            pointBackgroundColor: '#FFFFFF',
+            pointBorderColor: '#EF4444',
+            pointBorderWidth: 2,
+            borderWidth: 3 
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 800, easing: 'easeOutQuart' },
+        plugins: { 
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111827',
+            titleColor: '#F9FAFB',
+            bodyColor: '#F9FAFB',
+            padding: 12,
+            cornerRadius: 8,
+            displayColors: true,
+            callbacks: {
+              label: function(context) {
+                return ' ' + context.dataset.label + ': ' + symbols[cur] + context.parsed.y.toLocaleString('en-IN');
+              }
+            }
+          }
+        },
+        scales: {
+          y: { 
+            grid: { color: '#F3F4F6', borderDash: [4, 4] }, 
+            ticks: { 
+              color: '#9CA3AF', 
+              font: { size: 11, weight: '500' },
+              callback: v => symbols[cur] + (v / 1000).toFixed(0) + 'k' 
+            },
+            border: { display: false }
+          },
+          x: { 
+            grid: { display: false }, 
+            ticks: { 
+              color: '#6B7280', 
+              font: { size: 12, weight: '500' } 
+            },
+            border: { display: false }
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        }
+      }
+    });
+  }
+
+  // ---- Recent activity ----
+  function renderTx(cur) {
+    const list = document.getElementById('txList');
+    list.innerHTML = '';
+    txBase.forEach(t => {
+      const row = document.createElement('div');
+      row.className = 'tx-row';
+      const prefix = t.sign > 0 ? '+' : t.sign < 0 ? '-' : '';
+      const amountClass = t.sign > 0 ? 'positive' : t.sign < 0 ? 'negative' : 'warning';
+      const amountText = prefix + fmt(t.amount, cur) + (t.suffix || '');
+      
+      row.innerHTML = `
+        <div class="tx-icon-wrap" style="background: ${t.bg}; color: ${t.color};">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg>
+        </div>
+        <div class="tx-body">
+          <p class="tx-name">${t.name}</p>
+          <p class="tx-desc">${t.desc}</p>
+        </div>
+        <span class="tx-amount ${amountClass}">${amountText}</span>`;
+      list.appendChild(row);
+    });
+  }
+
+  // ---- Count-up animation ----
+  function countUp(id, targetVal, cur, duration) {
+    const el = document.getElementById(id);
+    const start = performance.now();
+    function tick(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      el.textContent = fmt(targetVal * eased, cur);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function renderAll(cur, animate) {
+    const dur = animate ? 800 : 1;
+    countUp('v-cash', baseCash, cur, dur);
+    countUp('v-rev', baseRev, cur, dur);
+    countUp('v-exp', baseExp, cur, dur);
+    countUp('v-profit', baseRev - baseExp, cur, dur);
+    countUp('v-ar', baseAR, cur, dur);
+    countUp('v-ap', baseAP, cur, dur);
+    renderChart(cur);
+    renderTx(cur);
+  }
+
+  document.getElementById('currencySelect').addEventListener('change', e => {
+    renderAll(e.target.value, true);
+  });
+
+  renderAll('INR', true);
+
+  // ---- Audit readiness ring animation ----
+  const ring = document.getElementById('readyRing');
+  const readyEl = document.getElementById('v-ready');
+  const target = 91;
+  const circumference = 326.7;
+  const ringStart = performance.now();
+  
+  function ringTick(now) {
+    const p = Math.min((now - ringStart) / 1000, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const pct = Math.round(target * eased);
+    readyEl.textContent = pct + '%';
+    ring.setAttribute('stroke-dashoffset', circumference - (circumference * pct / 100));
+    if (p < 1) requestAnimationFrame(ringTick);
+  }
+  requestAnimationFrame(ringTick);
+</script>
+
+</body>
+</html>

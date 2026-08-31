@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 
 EXTRA_APPS = [
     'configurepage',
+    "accounts",
 ]
 INSTALLED_APPS += EXTRA_APPS
 
@@ -53,18 +54,44 @@ ROOT_URLCONF = 'FinBinance.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.static",
             ],
         },
     },
 ]
+
+
+
+'''
+Email server usig SMTP protocol
+
+'''
+# Email configuration - Brevo SMTP
+
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": env("EMAIL_HOST"),
+            "port": env.int("EMAIL_PORT"),
+            "username": env("EMAIL_HOST_USER"),
+            "password": env("EMAIL_HOST_PASSWORD"),
+            "use_tls": True,
+        },
+    },
+}
+
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+
+
 
 WSGI_APPLICATION = 'FinBinance.wsgi.application'
 
@@ -114,8 +141,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

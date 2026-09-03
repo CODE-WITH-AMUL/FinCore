@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 
 # Read .env file
-environ.Env.read_env(BASE_DIR / ".env")
+env.read_env(str(BASE_DIR / ".env"))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -88,6 +88,11 @@ MAILERS = {
         },
     },
 }
+
+AUTHENTICATION_BACKENDS = [
+    "accounts.backends.EmailBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 

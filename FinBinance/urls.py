@@ -7,3 +7,4 @@ urlpatterns = [
     path('', include('configurepage.urls')),
     path('user/accounts/', include('accounts.urls')),
 ]
+

@@ -1,1133 +1,505 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinCore — Financial Overview</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FinCore — Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy: { 950:'#0b1220', 900:'#0f1b30', 800:'#152340', 700:'#1e2f52', 600:'#2a4170' },
+          paper: '#f6f5f1',
+          ink: '#12151c',
+          sub: '#5b6272',
+          line: '#e4e2da',
+          gold: '#a9832f',
+          teal: '#1f7a63',
+          rust: '#a3492e',
+        },
+        fontFamily: {
+          serif: ['"Source Serif 4"','serif'],
+          sans: ['Inter','sans-serif'],
+          mono: ['"IBM Plex Mono"','monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { background: #f6f5f1; }
+  .tick { font-family:'IBM Plex Mono',monospace; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb { background:#d9d6cb; border-radius:4px; }
+  .ring { transition: stroke-dashoffset 1s cubic-bezier(.16,1,.3,1); }
 
-        :root {
-            /* cream base palette */
-            --cream-50: #fdfcf9;
-            --cream-100: #faf7f0;
-            --cream-200: #f4efe6;
-            --cream-300: #ece6d8;
-            --cream-400: #e0d9c8;
-            --cream-500: #d3cab5;
-            --ink: #1e1b16;
-            --ink-soft: #5c564a;
-            --ink-muted: #8a8375;
-            --line: #e0d9c8;
-            --line-strong: #c9c0aa;
-            --blue: #2563eb;
-            --blue-soft: #eaf0fd;
-            --green: #1e9e5a;
-            --green-soft: #e2f4e9;
-            --warm: #c2512b;
-            --warm-soft: #fcede5;
-            --red: #c0392b;
-            --red-soft: #f9e5e2;
-            --radius: 2px;
-            --radius-md: 3px;
-            --radius-lg: 4px;
-            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --font-head: 'Plus Jakarta Sans', var(--font-body);
-            --font-mono: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
-            --shadow-xs: 0 1px 2px rgba(30, 27, 22, 0.04);
-            --shadow-sm: 0 2px 8px rgba(30, 27, 22, 0.06);
-            --shadow-md: 0 4px 16px rgba(30, 27, 22, 0.08);
-            --sidebar-width: 252px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: var(--cream-100);
-            color: var(--ink);
-            font-family: var(--font-body);
-            font-weight: 400;
-            line-height: 1.55;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            min-height: 100vh;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        .font-head {
-            font-family: var(--font-head);
-            font-weight: 600;
-            letter-spacing: -0.01em;
-        }
-
-        .mono {
-            font-family: var(--font-mono);
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-        button {
-            font-family: var(--font-body);
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-size: inherit;
-            color: inherit;
-        }
-
-        /* ============ LAYOUT ============ */
-        .app-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* ============ SIDEBAR (now cream) ============ */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--cream-200);
-            color: var(--ink);
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            border-right: 1px solid var(--line-strong);
-        }
-
-        .sidebar-header {
-            padding: 22px 20px 18px;
-            border-bottom: 1px solid var(--line-strong);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: var(--font-head);
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: var(--ink);
-        }
-
-        .logo-mark {
-            width: 28px;
-            height: 28px;
-            background: var(--ink);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--cream-100);
-            flex-shrink: 0;
-        }
-
-        .logo-mark svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .nav-section {
-            padding: 18px 12px 16px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .nav-label {
-            font-family: var(--font-mono);
-            font-size: 0.64rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            color: var(--ink-muted);
-            margin-bottom: 8px;
-            padding-left: 10px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 8px 10px;
-            border-radius: var(--radius);
-            color: var(--ink-soft);
-            font-size: 0.84rem;
-            font-weight: 500;
-            margin-bottom: 2px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .nav-item:hover {
-            background: var(--cream-300);
-            color: var(--ink);
-        }
-
-        .nav-item.active {
-            background: var(--cream-300);
-            color: var(--ink);
-            font-weight: 600;
-        }
-
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: -12px;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--blue);
-            border-radius: 0 2px 2px 0;
-        }
-
-        .nav-item svg {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-            opacity: 0.7;
-        }
-
-        .nav-item .chev {
-            margin-left: auto;
-            width: 13px;
-            height: 13px;
-            opacity: 0.4;
-            transition: transform 0.25s;
-        }
-
-        .nav-item:hover .chev {
-            opacity: 0.6;
-        }
-
-        .sidebar-footer {
-            padding: 14px 12px 20px;
-            border-top: 1px solid var(--line-strong);
-        }
-
-        .invite-btn {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--ink);
-            color: var(--cream-100);
-            border-radius: var(--radius);
-            font-family: var(--font-body);
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.25s;
-            letter-spacing: 0.01em;
-        }
-
-        .invite-btn:hover {
-            background: #000000;
-            box-shadow: var(--shadow-sm);
-            transform: translateY(-1px);
-        }
-
-        .invite-btn svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 10px;
-            margin-top: 10px;
-            background: var(--cream-300);
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .user-profile:hover {
-            background: var(--cream-400);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background: var(--ink);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-            color: var(--cream-100);
-        }
-
-        .user-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .user-name {
-            font-size: 0.8rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--ink);
-        }
-        .user-email {
-            font-size: 0.7rem;
-            color: var(--ink-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .user-menu-icon {
-            color: var(--ink-muted);
-            flex-shrink: 0;
-        }
-
-        /* Mobile toggle & overlay */
-        .menu-toggle {
-            display: none;
-            position: fixed;
-            top: 14px;
-            left: 14px;
-            z-index: 110;
-            width: 42px;
-            height: 42px;
-            background: var(--ink);
-            color: var(--cream-100);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-md);
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .menu-toggle:hover {
-            transform: scale(1.04);
-        }
-        .menu-toggle svg {
-            width: 20px;
-            height: 20px;
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(30, 27, 22, 0.55);
-            z-index: 90;
-            backdrop-filter: blur(2px);
-        }
-
-        /* ============ MAIN CONTENT ============ */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            min-height: 100vh;
-            transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-        }
-
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.open {
-                transform: translateX(0);
-                box-shadow: 20px 0 60px rgba(30, 27, 22, 0.2);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .menu-toggle {
-                display: flex;
-            }
-            .overlay.show {
-                display: block;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .main-content {
-                padding-bottom: 60px;
-            }
-        }
-
-        /* ============ DASHBOARD ============ */
-        .dashboard {
-            max-width: 1080px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 36px 40px 48px;
-            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                padding: 20px 16px 32px;
-            }
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 18px;
-            margin-bottom: 28px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .header-info .biz-tag {
-            display: inline-block;
-            font-family: var(--font-mono);
-            font-size: 0.68rem;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--blue);
-            background: var(--blue-soft);
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-bottom: 6px;
-        }
-        .header-info h1 {
-            font-size: clamp(1.6rem, 3vw, 2.1rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: var(--ink);
-        }
-        .header-info .period {
-            font-size: 0.82rem;
-            color: var(--ink-soft);
-            margin-top: 2px;
-            font-weight: 400;
-        }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .currency-select {
-            height: 38px;
-            padding: 0 34px 0 14px;
-            border-radius: var(--radius);
-            border: 1px solid var(--line-strong);
-            background: var(--cream-50);
-            color: var(--ink);
-            font-family: var(--font-mono);
-            font-size: 0.78rem;
-            font-weight: 500;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%235c564a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 10px center;
-            background-repeat: no-repeat;
-            background-size: 14px;
-            transition: all 0.2s;
-            letter-spacing: 0.02em;
-        }
-        .currency-select:hover {
-            border-color: var(--ink-soft);
-        }
-        .currency-select:focus {
-            outline: none;
-            border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        /* Metrics Grid */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 900px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 480px) { .metrics-grid { grid-template-columns: 1fr; } }
-
-        .metric-card {
-            background: var(--cream-50);
-            border: 1px solid var(--line);
-            border-radius: var(--radius-md);
-            padding: 16px 18px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .metric-card:hover {
-            border-color: var(--line-strong);
-            box-shadow: var(--shadow-sm);
-            transform: translateY(-1px);
-        }
-        .metric-card .m-label {
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--ink-soft);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .metric-card .m-label svg {
-            width: 13px;
-            height: 13px;
-            opacity: 0.7;
-        }
-        .metric-card .m-value {
-            font-family: var(--font-mono);
-            font-size: clamp(1.3rem, 2vw, 1.7rem);
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--ink);
-            line-height: 1.2;
-        }
-        .metric-card .m-value.up { color: var(--green); }
-        .metric-card .m-value.down { color: var(--red); }
-        .metric-card .m-delta {
-            font-family: var(--font-mono);
-            font-size: 0.68rem;
-            color: var(--ink-muted);
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .metric-card .m-delta .arrow { font-weight: 600; }
-        .metric-card .m-delta.positive .arrow { color: var(--green); }
-        .metric-card .m-delta.negative .arrow { color: var(--red); }
-
-        /* Main Row */
-        .main-row {
-            display: grid;
-            grid-template-columns: 1.9fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        @media (max-width: 860px) { .main-row { grid-template-columns: 1fr; } }
-
-        .panel {
-            background: var(--cream-50);
-            border: 1px solid var(--line);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            box-shadow: var(--shadow-xs);
-        }
-
-        .panel-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .panel-title {
-            font-family: var(--font-head);
-            font-size: 0.92rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            color: var(--ink);
-        }
-        .panel-title .count {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--ink-soft);
-            margin-left: 6px;
-            font-weight: 400;
-        }
-
-        .legend {
-            display: flex;
-            gap: 16px;
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--ink-soft);
-        }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .legend-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .chart-wrap { position: relative; height: 220px; }
-        .chart-wrap canvas { max-width: 100%; max-height: 100%; }
-
-        /* Ring panel */
-        .ring-panel {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .ring-wrap {
-            position: relative;
-            width: 130px;
-            height: 130px;
-            margin: 10px auto 12px;
-        }
-        .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-        .ring-value {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-mono);
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--ink);
-            letter-spacing: -0.02em;
-        }
-        .ring-value span {
-            font-family: var(--font-body);
-            font-size: 0.65rem;
-            font-weight: 500;
-            color: var(--ink-soft);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-top: 2px;
-        }
-        .ring-caption {
-            font-size: 0.78rem;
-            color: var(--ink-soft);
-            font-weight: 500;
-            margin-top: 4px;
-        }
-        .ring-caption strong { color: var(--green); font-weight: 600; }
-
-        /* Sub Grid */
-        .sub-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        @media (max-width: 640px) { .sub-grid { grid-template-columns: 1fr; } }
-
-        .sub-card {
-            background: var(--cream-50);
-            border: 1px solid var(--line);
-            border-radius: var(--radius-md);
-            padding: 18px 20px;
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .sub-card:hover {
-            border-color: var(--line-strong);
-            box-shadow: var(--shadow-sm);
-        }
-        .sub-card::after {
-            content: '→';
-            position: absolute;
-            top: 50%;
-            right: 16px;
-            transform: translateY(-50%);
-            font-size: 1.1rem;
-            color: var(--ink-muted);
-            opacity: 0;
-            transition: all 0.3s;
-        }
-        .sub-card:hover::after { opacity: 1; right: 12px; }
-        .sub-label {
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--ink-soft);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .sub-label svg { width: 13px; height: 13px; opacity: 0.7; }
-        .sub-value {
-            font-family: var(--font-mono);
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--ink);
-        }
-        .sub-note {
-            font-size: 0.74rem;
-            color: var(--ink-muted);
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            font-family: var(--font-mono);
-        }
-        .badge-warm { background: var(--warm-soft); color: var(--warm); }
-        .badge-red { background: var(--red-soft); color: var(--red); }
-        .badge-green { background: var(--green-soft); color: var(--green); }
-
-        /* Transactions */
-        .tx-panel { margin-bottom: 24px; }
-        .tx-list { display: flex; flex-direction: column; }
-        .tx-row {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-            padding: 13px 4px;
-            border-bottom: 1px solid var(--line);
-            transition: all 0.2s;
-            border-radius: var(--radius-sm, 2px);
-        }
-        .tx-row:last-child { border-bottom: none; }
-        .tx-row:hover {
-            background: var(--cream-200);
-            margin: 0 -12px;
-            padding: 13px 16px;
-            border-bottom-color: transparent;
-            border-radius: var(--radius-md);
-        }
-        .tx-icon-wrap {
-            width: 34px;
-            height: 34px;
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            border: 1px solid var(--line);
-        }
-        .tx-icon-wrap svg { width: 16px; height: 16px; }
-        .tx-body { flex: 1; min-width: 0; }
-        .tx-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--ink);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            letter-spacing: -0.005em;
-        }
-        .tx-desc {
-            font-size: 0.74rem;
-            color: var(--ink-muted);
-            margin-top: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .tx-amount {
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            font-weight: 500;
-            white-space: nowrap;
-            text-align: right;
-            letter-spacing: -0.01em;
-        }
-        .tx-amount.positive { color: var(--green); }
-        .tx-amount.negative { color: var(--ink); }
-        .tx-amount.warning { color: var(--warm); }
-
-        /* Footer */
-        .dash-footer {
-            text-align: center;
-            padding: 20px 0 0;
-            font-size: 0.7rem;
-            color: var(--ink-muted);
-            border-top: 1px solid var(--line);
-            margin-top: 8px;
-            letter-spacing: 0.02em;
-        }
-        .dash-footer .mono { font-size: 0.68rem; }
-
-        /* Responsive */
-        @media (max-width: 768px) { .header { padding-top: 50px; } .dashboard { padding-top: 10px; } }
-        @media (max-width: 480px) {
-            .metrics-grid { grid-template-columns: 1fr; }
-            .main-row { grid-template-columns: 1fr; }
-            .sub-grid { grid-template-columns: 1fr; }
-            .ring-wrap { width: 110px; height: 110px; }
-            .ring-value { font-size: 1.4rem; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
-        }
-    </style>
+  #sidebar {
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  @media (max-width: 1023px) {
+    #sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      transform: translateX(-100%);
+      z-index: 50;
+      display: flex !important;
+    }
+    #sidebar.open { transform: translateX(0); box-shadow: 20px 0 50px rgba(0,0,0,.25); }
+    #menuToggle { display: flex !important; }
+    #overlay.show { display: block !important; }
+  }
+</style>
 </head>
-<body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <div class="logo-mark">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
-                        </svg>
-                    </div>
-                    <span>FinCore</span>
-                </div>
-            </div>
-            <nav class="nav-section">
-                <div class="nav-label">Main</div>
-                <a href="#" class="nav-item active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                    <span>Sales</span>
-                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                    <span>Purchases</span>
-                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                    <span>Accounting</span>
-                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                    <span>Banking</span>
-                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                </a>
-                <div class="nav-label" style="margin-top:18px;">Reports &amp; Tools</div>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                    <span>Reports</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    <span>AI Assistant</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    <span>Settings</span>
-                </a>
-            </nav>
-            <div class="sidebar-footer">
-                <button class="invite-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-                    Invite Friends
-                </button>
-                <div class="user-profile">
-                    <div class="user-avatar">A</div>
-                    <div class="user-info">
-                        <div class="user-name">Amul</div>
-                        <div class="user-email">amul@fincore.com</div>
-                    </div>
-                    <svg class="user-menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg>
-                </div>
-            </div>
-        </aside>
+<body class="text-ink font-sans">
 
-        <!-- Overlay & toggle -->
-        <div class="overlay" id="overlay"></div>
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
+<div id="overlay" class="hidden fixed inset-0 bg-black/50 z-40 lg:hidden"></div>
+<button id="menuToggle" class="hidden fixed top-3 left-3 z-[60] w-10 h-10 rounded-md bg-navy-950 text-white items-center justify-center shadow-lg lg:hidden" aria-label="Toggle menu">
+  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="dashboard">
-                <!-- Header -->
-                <div class="header">
-                    <div class="header-info">
-                        <span class="biz-tag">Acme Studio</span>
-                        <h1>Financial Overview</h1>
-                        <p class="period">Current period: <span class="mono">Apr 2025</span> · Updated just now</p>
-                    </div>
-                    <div class="header-controls">
-                        <select id="currencySelect" class="currency-select" aria-label="Select currency">
-                            <option value="INR">₹ INR</option>
-                            <option value="NPR">Rs NPR</option>
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Metrics Grid -->
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <p class="m-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Cash on hand</p>
-                        <p class="m-value" id="v-cash">₹0</p>
-                        <p class="m-delta positive"><span class="arrow">↑</span> 4.2% vs last month</p>
-                    </div>
-                    <div class="metric-card">
-                        <p class="m-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Revenue, this month</p>
-                        <p class="m-value up" id="v-rev">₹0</p>
-                        <p class="m-delta positive"><span class="arrow">↑</span> 9.3% vs last month</p>
-                    </div>
-                    <div class="metric-card">
-                        <p class="m-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>Expenses, this month</p>
-                        <p class="m-value down" id="v-exp">₹0</p>
-                        <p class="m-delta negative"><span class="arrow">↑</span> 2.3% vs last month</p>
-                    </div>
-                    <div class="metric-card">
-                        <p class="m-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Profit, this month</p>
-                        <p class="m-value up" id="v-profit">₹0</p>
-                        <p class="m-delta positive"><span class="arrow">↑</span> 17.8% vs last month</p>
-                    </div>
-                </div>
-
-                <!-- Main Row -->
-                <div class="main-row">
-                    <div class="panel">
-                        <div class="panel-head">
-                            <p class="panel-title">Revenue vs Expenses <span class="count">6 months</span></p>
-                            <div class="legend">
-                                <span class="legend-item"><span class="legend-dot" style="background:var(--blue);"></span>Revenue</span>
-                                <span class="legend-item"><span class="legend-dot" style="background:var(--warm);"></span>Expenses</span>
-                            </div>
-                        </div>
-                        <div class="chart-wrap"><canvas id="trendChart" role="img" aria-label="Line chart of monthly revenue and expenses"></canvas></div>
-                    </div>
-                    <div class="panel ring-panel">
-                        <p class="panel-title" style="margin-bottom:4px;">Audit Readiness</p>
-                        <div class="ring-wrap">
-                            <svg viewBox="0 0 120 120">
-                                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--cream-300)" stroke-width="9"/>
-                                <circle id="readyRing" cx="60" cy="60" r="52" fill="none" stroke="var(--green)" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
-                            </svg>
-                            <div class="ring-value"><span id="v-ready">0%</span><span>Score</span></div>
-                        </div>
-                        <p class="ring-caption">Ready for <strong>CA review</strong></p>
-                    </div>
-                </div>
-
-                <!-- Sub Grid -->
-                <div class="sub-grid">
-                    <div class="sub-card">
-                        <p class="sub-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Owed to you</p>
-                        <p class="sub-value" id="v-ar">₹0</p>
-                        <p class="sub-note">3 invoices outstanding <span class="badge badge-warm">1 overdue</span></p>
-                    </div>
-                    <div class="sub-card">
-                        <p class="sub-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12l7 7 7-7"/></svg>You owe</p>
-                        <p class="sub-value" id="v-ap">₹0</p>
-                        <p class="sub-note">2 supplier bills due <span class="badge badge-red">This week</span></p>
-                    </div>
-                </div>
-
-                <!-- Transactions -->
-                <div class="panel tx-panel">
-                    <div class="panel-head"><p class="panel-title">Recent Activity <span class="count">4 items</span></p></div>
-                    <div class="tx-list" id="txList"></div>
-                </div>
-
-                <div class="dash-footer">
-                    <p>FinCore <span class="mono">v1.0</span> · Simple for the business owner. Rigorous underneath.</p>
-                </div>
-            </div>
-        </main>
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="hidden lg:flex w-60 shrink-0 flex-col bg-navy-950 text-white/90">
+    <div class="px-6 pt-7 pb-5 border-b border-white/10">
+      <div class="flex items-center gap-2.5">
+        <span class="font-serif text-lg text-white" size="4rem">FinCore</span>
+      </div>
+      <div class="mt-4 w-full flex items-center justify-between group">
+        <span class="min-w-0 flex-1">
+          <a href="{% url 'userprofile' %}" title="Click to rename your company" class="block">
+            <span class="block text-sm font-medium text-white">{{ company_name }}</span>
+          </a>
+          <span class="block text-xs text-white/40">Startup workspace</span>
+        </span>
+        <svg class="w-3.5 h-3.5 text-white/40 group-hover:text-white/70 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-    <script>
-        (function() {
-            // Mobile menu
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            function toggleMenu() {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('show');
-                const isOpen = sidebar.classList.contains('open');
-                menuToggle.setAttribute('aria-expanded', isOpen);
+    <nav class="flex-1 overflow-y-auto px-3 py-4 text-sm">
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-white/10 text-white font-medium">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+
+      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Money in</p>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+        Sales
+      </a>
+
+      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Money out</p>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Expenses
+      </a>
+
+      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Banking</p>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Banking
+      </a>
+
+      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Accounting</p>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>
+        Accounting
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.2 15.9A10 10 0 118 2.8"/><path d="M22 12A10 10 0 0012 2v10z"/></svg>
+        Tax
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        Documents
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+        Reports
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6z"/></svg>
+        Audit &amp; CA
+      </a>
+
+      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">More</p>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        FinCore AI
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21V12h6v9"/></svg>
+        Tools
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.65 1.65 0 00-1.8-.3 1.65 1.65 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.65 1.65 0 00-1-1.5 1.65 1.65 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.65 1.65 0 00.3-1.8 1.65 1.65 0 00-1.5-1H3a2 2 0 110-4h.1a1.65 1.65 0 001.5-1 1.65 1.65 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.65 1.65 0 001.8.3H9a1.65 1.65 0 001-1.5V3a2 2 0 114 0v.1a1.65 1.65 0 001 1.5 1.65 1.65 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.65 1.65 0 00-.3 1.8V9a1.65 1.65 0 001.5 1H21a2 2 0 110 4h-.1a1.65 1.65 0 00-1.5 1z"/></svg>
+        Settings
+      </a>
+
+    </nav>
+
+<a href="{% url 'userprofile' %}" class="px-4 py-4 border-t border-white/10 block hover:bg-white/5 transition-colors">
+  <div class="flex items-center gap-2.5">
+    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm font-medium">A</div>
+    <div class="min-w-0 flex-1">
+      <p class="text-sm font-medium text-white truncate">{{user.username}}</p>
+      <p class="text-xs text-white/40 truncate">Profile</p>
+    </div>
+    <svg class="w-4 h-4 text-white/40 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </div>
+</a>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 min-w-0">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-8">
+
+      <!-- Header -->
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 class="font-serif text-3xl text-ink">Good morning, {{user.username}}</h1>
+          <p class="text-sub mt-1">Here's where Acme Studio stands this September.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Currency Selector -->
+          <select id="currencySelect" class="tick text-xs h-9 px-3 rounded-md border border-line bg-white text-ink">
+            <option value="NPR">NPR (₨)</option>
+            <option value="USD">USD ($)</option>
+          </select>
+          <select class="tick text-xs h-9 px-3 rounded-md border border-line bg-white text-ink">
+            <option>This month</option>
+            <option>Last month</option>
+            <option>This quarter</option>
+            <option>This year</option>
+          </select>
+          <div class="relative group">
+            <button class="h-9 px-4 rounded-md bg-navy-950 text-white text-sm font-medium hover:bg-navy-900 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create
+            </button>
+            <div class="hidden group-hover:block absolute right-0 mt-1 w-48 bg-white border border-line rounded-md shadow-lg py-1 text-sm z-10">
+              <a href="#" class="block px-3 py-2 hover:bg-paper">New invoice</a>
+              <a href="#" class="block px-3 py-2 hover:bg-paper">Add expense</a>
+              <a href="#" class="block px-3 py-2 hover:bg-paper">Record payment</a>
+              <a href="#" class="block px-3 py-2 hover:bg-paper">Add bill</a>
+              <a href="#" class="block px-3 py-2 hover:bg-paper">Transfer money</a>
+              <a href="#" class="block px-3 py-2 hover:bg-paper">Upload document</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI row -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+        <div class="bg-white rounded-md border border-line p-4">
+          <p class="text-xs text-sub">Cash balance</p>
+          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="845000">₨8,45,000</p>
+          <p class="text-xs text-teal mt-1.5">↑ 8.2% vs last month</p>
+        </div>
+        <div class="bg-white rounded-md border border-line p-4">
+          <p class="text-xs text-sub">Revenue</p>
+          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="420000">₨4,20,000</p>
+          <p class="text-xs text-teal mt-1.5">↑ 12.4% vs last month</p>
+        </div>
+        <div class="bg-white rounded-md border border-line p-4">
+          <p class="text-xs text-sub">Expenses</p>
+          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="275000">₨2,75,000</p>
+          <p class="text-xs text-rust mt-1.5">↑ 4.8% vs last month</p>
+        </div>
+        <div class="bg-white rounded-md border border-line p-4">
+          <p class="text-xs text-sub">Net profit</p>
+          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="145000">₨1,45,000</p>
+          <p class="text-xs text-teal mt-1.5">↑ 18.6% vs last month</p>
+        </div>
+      </div>
+
+      <!-- Chart + Health -->
+      <div class="grid lg:grid-cols-3 gap-3 mb-4">
+        <div class="lg:col-span-2 bg-white rounded-md border border-line p-5">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-serif text-lg">Financial performance</p>
+            <div class="tick flex gap-1 text-xs">
+              <button class="px-2.5 py-1 rounded bg-navy-950 text-white">6M</button>
+              <button class="px-2.5 py-1 rounded text-sub hover:bg-paper">1Y</button>
+            </div>
+          </div>
+          <div class="h-56"><canvas id="perfChart"></canvas></div>
+        </div>
+
+        <div class="bg-white rounded-md border border-line p-5 flex flex-col items-center text-center">
+          <p class="font-serif text-lg self-start">Financial health</p>
+          <div class="relative w-32 h-32 my-3">
+            <svg viewBox="0 0 120 120" class="w-full h-full -rotate-90">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="#e4e2da" stroke-width="9"/>
+              <circle id="healthRing" class="ring" cx="60" cy="60" r="52" fill="none" stroke="#1f7a63" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="tick text-2xl font-medium">87</span>
+              <span class="text-[11px] text-sub">/ 100</span>
+            </div>
+          </div>
+          <ul class="text-sm text-left w-full space-y-1.5">
+            <li class="flex justify-between"><span class="text-sub">Books</span><span class="text-teal">✓</span></li>
+            <li class="flex justify-between"><span class="text-sub">Bank reconciliation</span><span class="text-teal">✓</span></li>
+            <li class="flex justify-between"><span class="text-sub">Receivables</span><span class="text-teal">✓</span></li>
+            <li class="flex justify-between"><span class="text-sub">Documents</span><span class="text-gold">⚠</span></li>
+            <li class="flex justify-between"><span class="text-sub">Transactions</span><span class="text-gold">⚠</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- AR / AP / Audit -->
+      <div class="grid md:grid-cols-3 gap-3 mb-4">
+        <a href="#" class="group bg-white rounded-md border border-line p-5 hover:border-navy-600 transition-colors">
+          <p class="text-xs text-sub">Money you're owed</p>
+          <p class="tick text-xl font-medium mt-1 currency-value" data-npr="125000">₨1,25,000</p>
+          <p class="text-xs text-sub mt-1">8 outstanding invoices</p>
+          <div class="mt-3 space-y-1 text-xs">
+            <div class="flex justify-between"><span class="text-sub">Overdue</span><span class="tick text-rust currency-value" data-npr="45000">₨45,000</span></div>
+            <div class="flex justify-between"><span class="text-sub">Due this week</span><span class="tick currency-value" data-npr="30000">₨30,000</span></div>
+            <div class="flex justify-between"><span class="text-sub">Upcoming</span><span class="tick currency-value" data-npr="50000">₨50,000</span></div>
+          </div>
+        </a>
+        <a href="#" class="group bg-white rounded-md border border-line p-5 hover:border-navy-600 transition-colors">
+          <p class="text-xs text-sub">Money you owe</p>
+          <p class="tick text-xl font-medium mt-1 currency-value" data-npr="82000">₨82,000</p>
+          <p class="text-xs text-sub mt-1">5 outstanding bills</p>
+          <div class="mt-3 space-y-1 text-xs">
+            <div class="flex justify-between"><span class="text-sub">Due this week</span><span class="tick text-rust currency-value" data-npr="35000">₨35,000</span></div>
+            <div class="flex justify-between"><span class="text-sub">Due next week</span><span class="tick currency-value" data-npr="27000">₨27,000</span></div>
+            <div class="flex justify-between"><span class="text-sub">Later</span><span class="tick currency-value" data-npr="20000">₨20,000</span></div>
+          </div>
+        </a>
+        <div class="bg-navy-950 text-white rounded-md p-5">
+          <p class="text-xs text-white/60">CA / audit readiness</p>
+          <p class="tick text-xl font-medium mt-1">91%</p>
+          <ul class="mt-3 space-y-1 text-xs text-white/80">
+            <li>✓ Transactions categorized</li>
+            <li>✓ Bank reconciled</li>
+            <li>⚠ 4 missing receipts</li>
+            <li>⚠ 2 unreconciled transactions</li>
+          </ul>
+          <button class="mt-3 w-full h-8 rounded bg-gold text-navy-950 text-xs font-semibold">Generate CA package</button>
+        </div>
+      </div>
+
+      <!-- Needs attention -->
+      <div class="bg-white rounded-md border border-line p-5 mb-4">
+        <p class="font-serif text-lg mb-3">Needs attention</p>
+        <div class="grid sm:grid-cols-2 gap-2">
+          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
+            <span class="text-sm">3 overdue invoices</span>
+            <span class="tick text-xs text-rust currency-value" data-npr="45000">₨45,000</span>
+          </a>
+          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
+            <span class="text-sm">7 transactions missing receipts</span>
+            <span class="text-gold text-xs">⚠</span>
+          </a>
+          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
+            <span class="text-sm">3 unreconciled bank transactions</span>
+            <span class="text-gold text-xs">⚠</span>
+          </a>
+          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
+            <span class="text-sm">2 bills due this week</span>
+            <span class="tick text-xs currency-value" data-npr="35000">₨35,000</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Startup metrics + transactions -->
+      <div class="grid lg:grid-cols-3 gap-3 mb-8">
+        <div class="bg-white rounded-md border border-line p-5">
+          <p class="font-serif text-lg mb-3">Startup metrics</p>
+          <div class="space-y-2.5 text-sm">
+            <div class="flex justify-between"><span class="text-sub">Cash available</span><span class="tick currency-value" data-npr="2460000">₨24.6L</span></div>
+            <div class="flex justify-between"><span class="text-sub">Monthly burn</span><span class="tick currency-value" data-npr="410000">₨4.1L</span></div>
+            <div class="flex justify-between"><span class="text-sub">Runway</span><span class="tick font-medium">6.0 months</span></div>
+            <div class="flex justify-between"><span class="text-sub">Revenue growth</span><span class="tick text-teal">+18%</span></div>
+            <div class="flex justify-between"><span class="text-sub">Expense growth</span><span class="tick text-rust">+8%</span></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-white rounded-md border border-line p-5">
+          <p class="font-serif text-lg mb-3">Recent activity</p>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-xs text-sub text-left border-b border-line">
+                <th class="pb-2 font-normal">Date</th>
+                <th class="pb-2 font-normal">Description</th>
+                <th class="pb-2 font-normal">Category</th>
+                <th class="pb-2 font-normal text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="tick text-[13px]">
+              <tr class="border-b border-line">
+                <td class="py-2.5 text-sub">Sep 03</td>
+                <td class="py-2.5 font-sans">ABC Payment</td>
+                <td class="py-2.5 text-sub">Revenue</td>
+                <td class="py-2.5 text-right text-teal currency-value" data-npr="85000">+₨85,000</td>
+              </tr>
+              <tr class="border-b border-line">
+                <td class="py-2.5 text-sub">Sep 03</td>
+                <td class="py-2.5 font-sans">AWS</td>
+                <td class="py-2.5 text-sub">Cloud</td>
+                <td class="py-2.5 text-right currency-value" data-npr="12500">-₨12,500</td>
+              </tr>
+              <tr class="border-b border-line">
+                <td class="py-2.5 text-sub">Sep 02</td>
+                <td class="py-2.5 font-sans">Meta Ads</td>
+                <td class="py-2.5 text-sub">Marketing</td>
+                <td class="py-2.5 text-right currency-value" data-npr="20000">-₨20,000</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 text-sub">Sep 02</td>
+                <td class="py-2.5 font-sans">XYZ Payment</td>
+                <td class="py-2.5 text-sub">Revenue</td>
+                <td class="py-2.5 text-right text-teal currency-value" data-npr="45000">+₨45,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="text-center text-xs text-sub pt-4 border-t border-line">FinCore · Simple for the business owner, rigorous underneath.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Currency conversion
+  const NPR_TO_USD_RATE = 133.5; // 1 USD = 133.5 NPR (update this rate as needed)
+  let currentCurrency = 'NPR';
+  const currencySelect = document.getElementById('currencySelect');
+  const chart = initChart();
+
+  function formatNPR(amount) {
+    return '₨' + amount.toLocaleString('en-IN');
+  }
+
+  function formatUSD(amount) {
+    return '$' + (amount / NPR_TO_USD_RATE).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  }
+
+  function formatCurrency(amount, currency) {
+    if (currency === 'USD') {
+      return formatUSD(amount);
+    }
+    return formatNPR(amount);
+  }
+
+  function updateCurrencyDisplay() {
+    currentCurrency = currencySelect.value;
+    document.querySelectorAll('.currency-value').forEach(el => {
+      const nprAmount = parseInt(el.dataset.npr);
+      if (nprAmount) {
+        el.textContent = formatCurrency(nprAmount, currentCurrency);
+        // Add +/- signs back for transaction amounts
+        if (el.dataset.npr && el.textContent.includes('₹')) {
+          // Keep as is
+        }
+      }
+    });
+    
+    // Update transaction signs
+    document.querySelectorAll('tbody .currency-value').forEach(el => {
+      const nprAmount = parseInt(el.dataset.npr);
+      if (nprAmount) {
+        const sign = el.classList.contains('text-teal') ? '+' : '-';
+        el.textContent = sign + formatCurrency(nprAmount, currentCurrency);
+      }
+    });
+    
+    // Update chart
+    updateChart();
+  }
+
+  function initChart() {
+    const ctx = document.getElementById('perfChart').getContext('2d');
+    const revGrad = ctx.createLinearGradient(0,0,0,220);
+    revGrad.addColorStop(0,'rgba(31,122,99,0.16)');
+    revGrad.addColorStop(1,'rgba(31,122,99,0)');
+    const expGrad = ctx.createLinearGradient(0,0,0,220);
+    expGrad.addColorStop(0,'rgba(163,73,46,0.12)');
+    expGrad.addColorStop(1,'rgba(163,73,46,0)');
+
+    return new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mar','Apr','May','Jun','Jul','Aug'],
+        datasets: [
+          { label:'Revenue', data:[3.8,4.1,4.55,4.98,5.6,6.12].map(v=>v*100000), borderColor:'#1f7a63', backgroundColor:revGrad, fill:true, tension:0.4, pointRadius:0, borderWidth:2.25 },
+          { label:'Expenses', data:[2.55,2.68,2.72,2.9,3.01,3.08].map(v=>v*100000), borderColor:'#a3492e', backgroundColor:expGrad, fill:true, tension:0.4, pointRadius:0, borderWidth:2.25 },
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:8, boxHeight:8, usePointStyle:true, font:{ family:'Inter', size:11 }, color:'#5b6272' } } },
+        scales:{
+          y:{ grid:{ color:'#e4e2da', borderDash:[3,3] }, border:{ display:false }, ticks:{ font:{ family:'IBM Plex Mono', size:10 }, color:'#5b6272', callback: function(v) {
+            if (currentCurrency === 'USD') {
+              return '$' + (v / NPR_TO_USD_RATE / 1000).toFixed(0) + 'K';
             }
-            menuToggle.addEventListener('click', toggleMenu);
-            overlay.addEventListener('click', toggleMenu);
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) toggleMenu();
-                });
-            });
+            return '₨' + (v/100000).toFixed(1) + 'L';
+          } } },
+          x:{ grid:{ display:false }, border:{ display:false }, ticks:{ font:{ family:'IBM Plex Mono', size:10 }, color:'#5b6272' } }
+        }
+      }
+    });
+  }
 
-            // Currency
-            const symbols = { INR: '₹', NPR: 'Rs ', USD: '$', EUR: '€' };
-            const rates = { INR: 1, NPR: 1.6, USD: 0.012, EUR: 0.011 };
+  function updateChart() {
+    // Update chart data based on currency
+    const datasets = chart.data.datasets;
+    datasets.forEach(dataset => {
+      if (currentCurrency === 'USD') {
+        dataset.data = dataset.data.map(value => value / NPR_TO_USD_RATE);
+      } else {
+        dataset.data = dataset.data.map(value => value * NPR_TO_USD_RATE);
+      }
+    });
+    chart.update();
+  }
 
-            // Base data (INR)
-            const baseCash = 842000;
-            const baseRev = 612000;
-            const baseExp = 308000;
-            const baseAR = 156000;
-            const baseAP = 74000;
-            const months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
-            const baseRevenueSeries = [380000, 410000, 455000, 498000, 560000, 612000];
-            const baseExpensesSeries = [255000, 268000, 272000, 290000, 301000, 308000];
+  // Listen for currency changes
+  currencySelect.addEventListener('change', updateCurrencyDisplay);
 
-            const txBase = [
-                { name: 'Customer ABC', desc: 'Invoice payment received', amount: 100000, sign: 1, color: 'var(--green)', bg: 'var(--green-soft)', icon: '<path d="M12 19V5M5 12l7-7 7 7"/>' },
-                { name: 'AWS', desc: 'Cloud hosting expense', amount: 15000, sign: -1, color: 'var(--warm)', bg: 'var(--warm-soft)', icon: '<path d="M12 5v14M5 12l7 7 7-7"/>' },
-                { name: 'Customer XYZ', desc: 'Invoice overdue · 12 days', amount: 42000, sign: 0, color: 'var(--warm)', bg: 'var(--warm-soft)', suffix: ' due', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' },
-                { name: 'Sharma Office Supplies', desc: 'Bill due in 3 days', amount: 8500, sign: -1, color: 'var(--red)', bg: 'var(--red-soft)', icon: '<path d="M12 5v14M5 12l7 7 7-7"/>' }
-            ];
+  // Initial currency display
+  updateCurrencyDisplay();
 
-            function fmt(val, cur) {
-                const converted = val * rates[cur];
-                const decimals = (cur === 'USD' || cur === 'EUR') ? 2 : 0;
-                return symbols[cur] + converted.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-            }
+  // Health ring animation
+  const ring = document.getElementById('healthRing');
+  const c = 326.7, target = 87;
+  const start = performance.now();
+  function tick(now){
+    const p = Math.min((now-start)/900,1);
+    const eased = 1-Math.pow(1-p,3);
+    ring.setAttribute('stroke-dashoffset', c - c*(target/100)*eased);
+    if(p<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 
-            let chart;
-            function renderChart(cur) {
-                const revData = baseRevenueSeries.map(v => Math.round(v * rates[cur] * 100) / 100);
-                const expData = baseExpensesSeries.map(v => Math.round(v * rates[cur] * 100) / 100);
-                if (chart) chart.destroy();
-                const ctx = document.getElementById('trendChart').getContext('2d');
-                const gradientRev = ctx.createLinearGradient(0, 0, 0, 220);
-                gradientRev.addColorStop(0, 'rgba(37, 99, 235, 0.14)');
-                gradientRev.addColorStop(1, 'rgba(37, 99, 235, 0)');
-                const gradientExp = ctx.createLinearGradient(0, 0, 0, 220);
-                gradientExp.addColorStop(0, 'rgba(194, 81, 43, 0.1)');
-                gradientExp.addColorStop(1, 'rgba(194, 81, 43, 0)');
-
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: months,
-                        datasets: [
-                            { label: 'Revenue', data: revData, borderColor: '#2563eb', backgroundColor: gradientRev, fill: true, tension: 0.42, pointRadius: 3, pointHoverRadius: 6, pointBackgroundColor: '#fdfcf9', pointBorderColor: '#2563eb', pointBorderWidth: 2, borderWidth: 2.5 },
-                            { label: 'Expenses', data: expData, borderColor: '#c2512b', backgroundColor: gradientExp, fill: true, tension: 0.42, pointRadius: 3, pointHoverRadius: 6, pointBackgroundColor: '#fdfcf9', pointBorderColor: '#c2512b', pointBorderWidth: 2, borderWidth: 2.5 }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: { duration: 700, easing: 'easeOutQuart' },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1e1b16', titleColor: '#fdfcf9', bodyColor: '#fdfcf9',
-                                padding: 12, cornerRadius: 2, displayColors: true,
-                                titleFont: { family: 'IBM Plex Mono', size: 11 },
-                                bodyFont: { family: 'Inter', size: 12 },
-                                callbacks: { label: ctx => ` ${ctx.dataset.label}: ${symbols[cur]}${ctx.parsed.y.toLocaleString('en-IN')}` }
-                            }
-                        },
-                        scales: {
-                            y: { grid: { color: '#e0d9c8', borderDash: [3,3] }, ticks: { color: '#5c564a', font: { family: 'IBM Plex Mono', size: 10 }, callback: v => symbols[cur] + (v/1000).toFixed(0) + 'k' }, border: { display: false }, grace: '5%' },
-                            x: { grid: { display: false }, ticks: { color: '#5c564a', font: { family: 'IBM Plex Mono', size: 11, weight: '500' } }, border: { display: false } }
-                        },
-                        interaction: { intersect: false, mode: 'index' }
-                    }
-                });
-            }
-
-            function renderTx(cur) {
-                const list = document.getElementById('txList');
-                list.innerHTML = '';
-                txBase.forEach(t => {
-                    const row = document.createElement('div');
-                    row.className = 'tx-row';
-                    const prefix = t.sign > 0 ? '+' : t.sign < 0 ? '-' : '';
-                    const amountClass = t.sign > 0 ? 'positive' : t.sign < 0 ? 'negative' : 'warning';
-                    const amountText = prefix + fmt(t.amount, cur) + (t.suffix || '');
-                    row.innerHTML = `
-                        <div class="tx-icon-wrap" style="background:${t.bg}; color:${t.color}; border-color:transparent;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg>
-                        </div>
-                        <div class="tx-body">
-                            <p class="tx-name">${t.name}</p>
-                            <p class="tx-desc">${t.desc}</p>
-                        </div>
-                        <span class="tx-amount ${amountClass}">${amountText}</span>`;
-                    list.appendChild(row);
-                });
-            }
-
-            function countUp(id, targetVal, cur, duration) {
-                const el = document.getElementById(id);
-                if (!el) return;
-                const start = performance.now();
-                function tick(now) {
-                    const p = Math.min((now - start) / duration, 1);
-                    const eased = 1 - Math.pow(1 - p, 3);
-                    el.textContent = fmt(targetVal * eased, cur);
-                    if (p < 1) requestAnimationFrame(tick);
-                }
-                requestAnimationFrame(tick);
-            }
-
-            function renderAll(cur, animate) {
-                const dur = animate ? 750 : 1;
-                countUp('v-cash', baseCash, cur, dur);
-                countUp('v-rev', baseRev, cur, dur);
-                countUp('v-exp', baseExp, cur, dur);
-                countUp('v-profit', baseRev - baseExp, cur, dur);
-                countUp('v-ar', baseAR, cur, dur);
-                countUp('v-ap', baseAP, cur, dur);
-                renderChart(cur);
-                renderTx(cur);
-            }
-
-            document.getElementById('currencySelect').addEventListener('change', e => renderAll(e.target.value, true));
-            renderAll('INR', true);
-
-            // Audit ring
-            const ring = document.getElementById('readyRing');
-            const readyEl = document.getElementById('v-ready');
-            const target = 91;
-            const circumference = 326.7;
-            const ringStart = performance.now();
-            function ringTick(now) {
-                const p = Math.min((now - ringStart) / 1000, 1);
-                const eased = 1 - Math.pow(1 - p, 3);
-                const pct = Math.round(target * eased);
-                readyEl.textContent = pct + '%';
-                ring.setAttribute('stroke-dashoffset', circumference - (circumference * pct / 100));
-                if (p < 1) requestAnimationFrame(ringTick);
-            }
-            requestAnimationFrame(ringTick);
-        })();
-    </script>
+  // Mobile sidebar toggle
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuToggle = document.getElementById('menuToggle');
+  function openMenu(){ sidebar.classList.add('open'); overlay.classList.remove('hidden'); overlay.classList.add('show'); }
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.add('hidden'); overlay.classList.remove('show'); }
+  menuToggle.addEventListener('click', () => sidebar.classList.contains('open') ? closeMenu() : openMenu());
+  overlay.addEventListener('click', closeMenu);
+  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { if (window.innerWidth < 1024) closeMenu(); }));
+</script>
 </body>
 </html>

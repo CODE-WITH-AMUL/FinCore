@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Profile · FinCore{% endblock %}
+
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy: { 950:'#0b1220', 900:'#0f1b30', 800:'#152340', 700:'#1e2f52', 600:'#2a4170' },
+          paper: '#f6f5f1',
+          ink: '#12151c',
+          sub: '#5b6272',
+          line: '#e4e2da',
+          gold: '#a9832f',
+          teal: '#1f7a63',
+          rust: '#a3492e',
+        },
+        fontFamily: {
+          serif: ['"Source Serif 4"','serif'],
+          sans: ['Inter','sans-serif'],
+          mono: ['"IBM Plex Mono"','monospace'],
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<div class="min-h-screen bg-paper font-sans text-ink">
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 py-10">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="font-serif text-3xl text-ink">My Profile</h1>
+      <p class="text-sub mt-1">Manage your personal details and company information.</p>
+    </div>
+
+    {% if messages %}
+      <div class="mb-6 space-y-2">
+        {% for message in messages %}
+          <div class="text-sm px-4 py-2.5 rounded-md border
+            {% if message.tags == 'success' %} bg-teal/10 border-teal/30 text-teal
+            {% elif message.tags == 'error' %} bg-rust/10 border-rust/30 text-rust
+            {% else %} bg-navy-950/5 border-line text-ink {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="grid lg:grid-cols-3 gap-4">
+      {% csrf_token %}
+
+      <!-- Left: avatar + summary card -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-md border border-line p-6 text-center">
+          <div class="relative w-24 h-24 mx-auto">
+            {% if user_profile.profile_picture %}
+              <img src="{{ user_profile.profile_picture.url }}" alt="Profile picture"
+                   class="w-24 h-24 rounded-full object-cover border border-line" />
+            {% else %}
+              <div class="w-24 h-24 rounded-full bg-navy-950 text-white flex items-center justify-center text-2xl font-serif">
+                {{ user_profile.name|default:request.user.username|first|upper }}
+              </div>
+            {% endif %}
+          </div>
+
+          <label class="mt-4 inline-block text-xs font-medium text-navy-950 cursor-pointer hover:underline">
+            Change photo
+            <input type="file" name="profile_picture" accept="image/*" class="hidden" onchange="this.form && this.closest('form').requestSubmit ? null : null">
+          </label>
+
+          <p class="font-serif text-lg mt-3">{{ user_profile.name|default:"Unnamed User" }}</p>
+          <p class="text-xs text-sub">{{ request.user.email|default:request.user.username }}</p>
+
+          {% if company_info %}
+            <div class="mt-5 pt-5 border-t border-line text-left">
+              <p class="text-[11px] tracking-wide text-sub uppercase mb-2">Company</p>
+              <div class="flex items-center gap-3">
+                {% if company_info.company_logo %}
+                  <img src="{{ company_info.company_logo.url }}" alt="{{ company_info.company_name }}"
+                       class="w-9 h-9 rounded-sm object-cover border border-line" />
+                {% else %}
+                  <div class="w-9 h-9 rounded-sm bg-gold/15 text-gold flex items-center justify-center font-serif font-semibold">
+                    {{ company_info.company_name|default:"?"|first|upper }}
+                  </div>
+                {% endif %}
+                <div class="min-w-0">
+                  <p class="text-sm font-medium truncate">{{ company_info.company_name|default:"Unnamed Company" }}</p>
+                  <p class="text-xs text-sub truncate">{{ company_info.company_office_type|default:"—" }}</p>
+                </div>
+              </div>
+              <a href="{% url 'accounts:company_profile' company_info.id %}"
+                 class="tick text-xs text-navy-950 mt-3 inline-block hover:underline">View company profile →</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right: editable fields -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-white rounded-md border border-line p-6">
+          <p class="font-serif text-lg mb-4">Personal details</p>
+
+          <div class="space-y-4">
+            <div>
+              <label for="name" class="block text-xs font-medium text-sub mb-1.5">Full name</label>
+              <input type="text" id="name" name="name" value="{{ user_profile.name|default:'' }}"
+                     placeholder="Your name"
+                     class="w-full h-10 px-3 rounded-md border border-line bg-paper focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-950/10 focus:border-navy-600 text-sm" />
+            </div>
+
+            <div>
+              <label for="bio" class="block text-xs font-medium text-sub mb-1.5">Bio</label>
+              <textarea id="bio" name="bio" rows="4" placeholder="A short note about yourself"
+                        class="w-full px-3 py-2.5 rounded-md border border-line bg-paper focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-950/10 focus:border-navy-600 text-sm resize-none">{{ user_profile.bio|default:'' }}</textarea>
+            </div>
+
+            <div>
+              <label for="profile_picture_input" class="block text-xs font-medium text-sub mb-1.5">Profile picture</label>
+              <input type="file" id="profile_picture_input" name="profile_picture" accept="image/*"
+                     class="w-full text-sm file:mr-3 file:h-9 file:px-3 file:rounded-md file:border-0 file:bg-navy-950 file:text-white file:text-xs file:font-medium hover:file:bg-navy-900 text-sub" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-md border border-line p-6">
+          <p class="font-serif text-lg mb-4">Company</p>
+
+          <div>
+            <label for="company" class="block text-xs font-medium text-sub mb-1.5">Associated company</label>
+            <select id="company" name="company"
+                    class="w-full h-10 px-3 rounded-md border border-line bg-paper focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-950/10 focus:border-navy-600 text-sm appearance-none tick">
+              <option value="">— No company —</option>
+              {% for company in companies %}
+                <option value="{{ company.id }}" {% if company_info and company.id == company_info.id %}selected{% endif %}>
+                  {{ company.company_name|default:"Unnamed Company" }}
+                </option>
+              {% endfor %}
+            </select>
+            <p class="text-xs text-sub mt-1.5">
+              Don't see your company? <a href="{% url 'accounts:company_create' %}" class="text-navy-950 hover:underline">Add a new company</a>.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2">
+          <a href="{% url 'accounts:userprofile' %}"
+             class="h-10 px-4 rounded-md border border-line text-sm font-medium text-sub hover:bg-white flex items-center">Cancel</a>
+          <button type="submit"
+                  class="h-10 px-5 rounded-md bg-navy-950 text-white text-sm font-medium hover:bg-navy-900">
+            Save changes
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

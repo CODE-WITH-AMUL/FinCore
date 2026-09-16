@@ -1,10 +1,10 @@
 /* ============================================================
-   FinCore — Landing page v2 interactions
+   FinCore — Homepage interactions
    ============================================================ */
 (function () {
   'use strict';
 
-  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var body = document.body;
 
   /* ---------- Preloader ---------- */
@@ -17,25 +17,23 @@
       if (preloader && preloader.parentNode) preloader.setAttribute('aria-hidden', 'true');
     }, 600);
   }
-  if (document.readyState === 'complete') setTimeout(hidePreloader, 300);
+  if (document.readyState === 'complete') setTimeout(hidePreloader, 280);
   else {
-    window.addEventListener('load', function () { setTimeout(hidePreloader, 300); });
+    window.addEventListener('load', function () { setTimeout(hidePreloader, 280); });
     setTimeout(hidePreloader, 2800);
   }
 
-  /* ---------- Nav: scrolled state ---------- */
+  /* ---------- Nav scrolled state ---------- */
   var nav = document.getElementById('site-nav');
-  var lastScroll = 0;
   function updateNav() {
     var y = window.scrollY || window.pageYOffset;
     if (y > 12) nav.classList.add('scrolled');
     else nav.classList.remove('scrolled');
-    lastScroll = y;
   }
   window.addEventListener('scroll', updateNav, { passive: true });
   updateNav();
 
-  /* ---------- Nav: mobile toggle ---------- */
+  /* ---------- Mobile nav ---------- */
   var navToggle = document.querySelector('.nav-toggle');
   var navLinks = document.getElementById('navlinks');
   if (navToggle && navLinks) {
@@ -68,14 +66,13 @@
 
   /* ---------- Scroll reveal ---------- */
   var revealTargets = document.querySelectorAll(
-    '.section-head, .problem-item, .problem-figure, .flow-diagram, ' +
-    '.feature, .demo-shell, .solutions-grid, .solution-detail, ' +
-    '.numbers-grid, .steps, .trust-grid, .billing-toggle, .pricing-grid, ' +
-    '.faq-list, .num-card, .trust-item, .solution, .step, .price-card'
+    '.section-head, .problem-item, .ecosystem, .demo-shell, .flow, ' +
+    '.feature, .solutions-grid, .solution-detail, .numbers-grid, ' +
+    '.steps, .trust-grid, .pricing-controls, .pricing-grid, .faq-list'
   );
   revealTargets.forEach(function (el) { el.classList.add('reveal'); });
 
-  if ('IntersectionObserver' in window && !prefersReducedMotion) {
+  if ('IntersectionObserver' in window && !reduce) {
     var revealObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -93,12 +90,10 @@
   var navAnchors = Array.prototype.slice.call(
     document.querySelectorAll('nav ul li a[data-nav]')
   );
-  var sections = navAnchors
-    .map(function (a) {
-      var href = a.getAttribute('href');
-      return href && href.charAt(0) === '#' ? document.querySelector(href) : null;
-    })
-    .filter(Boolean);
+  var sections = navAnchors.map(function (a) {
+    var href = a.getAttribute('href');
+    return href && href.charAt(0) === '#' ? document.querySelector(href) : null;
+  }).filter(Boolean);
 
   function updateActiveNav() {
     var y = window.scrollY || window.pageYOffset;
@@ -115,9 +110,7 @@
     var ticking = false;
     window.addEventListener('scroll', function () {
       if (!ticking) {
-        window.requestAnimationFrame(function () {
-          updateActiveNav(); ticking = false;
-        });
+        window.requestAnimationFrame(function () { updateActiveNav(); ticking = false; });
         ticking = true;
       }
     }, { passive: true });
@@ -133,45 +126,35 @@
       if (!target) return;
       e.preventDefault();
       var top = target.getBoundingClientRect().top + window.pageYOffset - 76;
-      window.scrollTo({ top: top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
       if (history.pushState) history.pushState(null, '', href);
     });
   });
 
   /* ---------- Number counters ---------- */
   function formatNPR(n) {
-    // Indian/Nepali grouping: last 3, then groups of 2
     var s = String(Math.round(n));
     if (s.length <= 3) return s;
     var last3 = s.slice(-3);
-    var rest = s.slice(0, -3);
-    rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+    var rest = s.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ',');
     return rest + ',' + last3;
-  }
-  function formatUSD(n) {
-    return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
   function animateCounter(el) {
     var target = parseFloat(el.getAttribute('data-counter'));
     if (isNaN(target)) return;
-    var fmt = el.getAttribute('data-format') || 'npr';
     var duration = 1400;
     var start = performance.now();
     function frame(now) {
       var t = Math.min((now - start) / duration, 1);
       var eased = 1 - Math.pow(1 - t, 3);
-      var current = target * eased;
-      var formatted = fmt === 'npr' ? formatNPR(current) : formatUSD(current);
-      el.textContent = 'Rs. ' + formatted;
+      el.textContent = 'Rs. ' + formatNPR(target * eased);
       if (t < 1) requestAnimationFrame(frame);
-      else {
-        el.textContent = 'Rs. ' + (fmt === 'npr' ? formatNPR(target) : formatUSD(target));
-      }
+      else el.textContent = 'Rs. ' + formatNPR(target);
     }
     requestAnimationFrame(frame);
   }
   var counters = document.querySelectorAll('[data-counter]');
-  if ('IntersectionObserver' in window && !prefersReducedMotion) {
+  if ('IntersectionObserver' in window && !reduce) {
     var counterObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -197,7 +180,6 @@
       demoPanels.forEach(function (p) {
         if (p.getAttribute('data-panel') === target) {
           p.hidden = false;
-          // re-trigger panel animation
           p.style.animation = 'none';
           void p.offsetWidth;
           p.style.animation = '';
@@ -212,12 +194,12 @@
   var solutionData = {
     startups: {
       title: 'Startups',
-      body: 'Pre-seed to Series A, FinCore keeps your burn, runway, and revenue visible in one place. Track investor funding, categorize spend, and see how long your current cash lasts — without a finance hire.',
+      body: 'From pre-seed to Series A, FinCore keeps your burn, runway, and revenue visible in one place. Track investor funding, categorize spend, and see how long your current cash lasts — without a finance hire.',
       points: ['Funding and grant tracking', 'Burn rate and runway visibility', 'Expense categorization by team', 'Revenue and MRR overview']
     },
     smb: {
       title: 'Small businesses',
-      body: 'Run your day-to-day without a dedicated accountant. FinCore handles sales, purchases, customers, suppliers, and the accounting that ties them together.',
+      body: 'Run your day-to-day without a dedicated accountant. FinCore handles sales, purchases, inventory, customers, and the accounting that ties them together.',
       points: ['Sales and purchase tracking', 'Customer and supplier records', 'Product and inventory overview', 'Monthly P&L and balance sheet']
     },
     agency: {
@@ -254,7 +236,7 @@
     });
   });
 
-  /* ---------- Billing toggle (pricing) ---------- */
+  /* ---------- Billing toggle ---------- */
   var billingOpts = document.querySelectorAll('.bt-opt');
   var priceEls = document.querySelectorAll('[data-price-monthly]');
   var perEls = document.querySelectorAll('.pc-per');
@@ -267,8 +249,7 @@
         o.setAttribute('aria-pressed', String(isActive));
       });
       priceEls.forEach(function (el) {
-        var val = el.getAttribute(billing === 'monthly' ? 'data-price-monthly' : 'data-price-yearly');
-        el.textContent = val;
+        el.textContent = el.getAttribute(billing === 'monthly' ? 'data-price-monthly' : 'data-price-yearly');
       });
       perEls.forEach(function (el) {
         el.textContent = billing === 'monthly' ? '/ month' : '/ year';
@@ -276,7 +257,7 @@
     });
   });
 
-  /* ---------- FAQ: close others ---------- */
+  /* ---------- FAQ: close others on open ---------- */
   var faqs = document.querySelectorAll('details.faq');
   faqs.forEach(function (faq) {
     faq.addEventListener('toggle', function () {
@@ -288,157 +269,4 @@
     });
   });
 
-  /* ---------- Range buttons (hero app) ---------- */
-  document.querySelectorAll('.range-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      btn.parentNode.querySelectorAll('.range-btn').forEach(function (b) {
-        b.classList.remove('active');
-      });
-      btn.classList.add('active');
-    });
-  });
-
-})();
-/* ============================================================
-   PERSONALIZED PRICING
-   ============================================================ */
-(function () {
-  var regionPicker = document.getElementById('region-picker');
-  var regionDetected = document.getElementById('region-detected');
-  var pricingContext = document.getElementById('pricing-context');
-  var priceEls = document.querySelectorAll('[data-price-np-monthly]');
-  var perEls = document.querySelectorAll('.pc-per');
-  var priceCards = document.querySelectorAll('.price-card');
-  if (!regionPicker || !priceEls.length) return;
-
-  /* ---- 1. Detect region from timezone + locale ---- */
-  function detectRegion() {
-    var tz = '';
-    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
-    var locale = (navigator.language || '').toLowerCase();
-
-    // timezone-based (most reliable for our 5 regions)
-    if (tz.indexOf('Kathmandu') !== -1) return 'NP';
-    if (tz.indexOf('Calcutta') !== -1 || tz.indexOf('Kolkata') !== -1) return 'IN';
-    if (tz.indexOf('London') !== -1) return 'GB';
-    if (tz.indexOf('Dubai') !== -1) return 'AE';
-    if (tz.indexOf('America/') === 0) return 'US';
-
-    // locale fallback
-    if (locale.indexOf('ne') === 0) return 'NP';
-    if (locale.indexOf('en-in') === 0 || locale.indexOf('hi') === 0) return 'IN';
-    if (locale.indexOf('en-gb') === 0) return 'GB';
-    if (locale.indexOf('ar-ae') === 0) return 'AE';
-    if (locale.indexOf('en-us') === 0) return 'US';
-
-    return 'NP'; // sensible default for FinCore's launch market
-  }
-
-  var userChoseRegion = false;
-  var currentRegion = detectRegion();
-  var detectedRegion = currentRegion;
-
-  if (regionDetected && currentRegion) {
-    var names = { NP: 'Nepal', IN: 'India', US: 'United States', GB: 'United Kingdom', AE: 'UAE' };
-    regionDetected.textContent = 'Auto-detected: ' + names[currentRegion];
-  }
-  regionPicker.value = currentRegion;
-
-  /* ---- 2. Business stage from Solutions clicks ---- */
-  // map solution keys → which plan to highlight
-  var stageToPlan = {
-    startups: 'free',      // early stage → Free
-    smb: 'pro',            // small business → Pro
-    agency: 'pro',         // agency → Pro
-    growing: 'business'    // growing → Business
-  };
-  var stageLabels = {
-    startups: 'early-stage businesses',
-    smb: 'small businesses',
-    agency: 'agencies and freelancers',
-    growing: 'growing companies'
-  };
-
-  var currentStage = 'startups';  // default if they never click
-  var userChoseStage = false;
-
-  // Hook into existing solution buttons
-  document.querySelectorAll('.solution').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      currentStage = btn.getAttribute('data-solution');
-      userChoseStage = true;
-      applyStage();
-    });
-  });
-
-  function applyStage() {
-    var plan = stageToPlan[currentStage];
-    priceCards.forEach(function (card) {
-      var tier = (card.querySelector('.pc-tier') || {}).textContent || '';
-      var isMatch = tier.trim().toLowerCase() === plan;
-      card.classList.toggle('personalized', isMatch);
-    });
-    if (pricingContext) {
-      var label = stageLabels[currentStage] || 'growing businesses';
-      pricingContext.innerHTML =
-        'Plans for <strong>' + label + '</strong> — ' +
-        '<a href="#solutions">change</a>';
-    }
-  }
-
-  /* ---- 3. Apply pricing for region + billing ---- */
-  var currentBilling = 'monthly';
-
-  function applyPricing() {
-    var r = currentRegion.toLowerCase();
-    priceEls.forEach(function (el) {
-      var val = el.getAttribute('data-price-' + r + '-' + currentBilling);
-      if (val) el.textContent = val;
-    });
-    perEls.forEach(function (el) {
-      el.textContent = currentBilling === 'monthly' ? '/ month' : '/ year';
-    });
-  }
-
-  regionPicker.addEventListener('change', function () {
-    userChoseRegion = true;
-    currentRegion = regionPicker.value;
-    if (regionDetected) {
-      regionDetected.textContent =
-        currentRegion === detectedRegion
-          ? 'Auto-detected'
-          : 'Manually selected';
-    }
-    applyPricing();
-  });
-
-  // Hook into existing billing toggle — replace its handler behaviour
-  document.querySelectorAll('.bt-opt').forEach(function (opt) {
-    opt.addEventListener('click', function () {
-      currentBilling = opt.getAttribute('data-billing');
-      applyPricing();
-    });
-  });
-
-  /* ---- 4. Initial paint ---- */
-  applyPricing();
-  applyStage();
-  // If user already clicked a solution earlier, stage is set; otherwise default
-
-  /* ---- 5. When they scroll into pricing, if they haven't chosen a stage,
-         gently default to the Free plan highlight (honest, not presumptuous) ---- */
-  var pricingSection = document.getElementById('pricing');
-  if ('IntersectionObserver' in window && pricingSection) {
-    var seen = false;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting && !seen) {
-          seen = true;
-          if (!userChoseStage) applyStage(); // highlights Free by default
-          io.disconnect();
-        }
-      });
-    }, { threshold: 0.3 });
-    io.observe(pricingSection);
-  }
 })();

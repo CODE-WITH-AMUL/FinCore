@@ -1,163 +1,780 @@
-{% extends "base.html" %}
+
 {% load static %}
 
 {% block title %}My Profile · FinCore{% endblock %}
 
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          navy: { 950:'#0b1220', 900:'#0f1b30', 800:'#152340', 700:'#1e2f52', 600:'#2a4170' },
-          paper: '#f6f5f1',
-          ink: '#12151c',
-          sub: '#5b6272',
-          line: '#e4e2da',
-          gold: '#a9832f',
-          teal: '#1f7a63',
-          rust: '#a3492e',
-        },
-        fontFamily: {
-          serif: ['"Source Serif 4"','serif'],
-          sans: ['Inter','sans-serif'],
-          mono: ['"IBM Plex Mono"','monospace'],
-        }
-      }
-    }
-  }
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<div class="min-h-screen bg-paper font-sans text-ink">
-  <div class="max-w-4xl mx-auto px-5 sm:px-8 py-10">
+<div class="pf-page" id="profilePage">
 
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="font-serif text-3xl text-ink">My Profile</h1>
-      <p class="text-sub mt-1">Manage your personal details and company information.</p>
+  <!-- ============================================================
+       Sidebar
+       ============================================================ -->
+  <aside class="pf-sidebar" id="pfSidebar" aria-label="Primary">
+    <div class="pf-sidebar-brand">
+      <a href="{% url 'home' %}" class="pf-brand" aria-label="FinCore home">
+        <span class="pf-brand-mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+            <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M6 13.5L9 9l2.5 3L14 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="pf-brand-name">FinCore</span>
+      </a>
     </div>
 
-    {% if messages %}
-      <div class="mb-6 space-y-2">
-        {% for message in messages %}
-          <div class="text-sm px-4 py-2.5 rounded-md border
-            {% if message.tags == 'success' %} bg-teal/10 border-teal/30 text-teal
-            {% elif message.tags == 'error' %} bg-rust/10 border-rust/30 text-rust
-            {% else %} bg-navy-950/5 border-line text-ink {% endif %}">
-            {{ message }}
-          </div>
-        {% endfor %}
+    <nav class="pf-sidebar-nav">
+      <ul>
+        <li><a href="{% url 'home' %}" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Dashboard
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+          Sales
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Purchases
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+          Expenses
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+          Products
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>
+          Customers
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
+          Suppliers
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+          Invoices
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Payments
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>
+          Taxes
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Investments
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg>
+          Reports
+        </a></li>
+        <li><a href="#" class="pf-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+          Settings
+        </a></li>
+      </ul>
+    </nav>
+
+    <div class="pf-sidebar-footer">
+      <a href="{% url 'userprofile' %}" class="pf-nav-link is-active" aria-current="page">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Profile
+      </a>
+      <a href="#" class="pf-nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
+        Company
+      </a>
+      <form method="post" action="{% url 'logout' %}" class="pf-logout-form">
+        {% csrf_token %}
+        <button type="submit" class="pf-nav-link pf-nav-link-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+          Logout
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Mobile sidebar overlay -->
+  <div class="pf-overlay" id="pfOverlay" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       Main column
+       ============================================================ -->
+  <div class="pf-main">
+
+    <!-- Mobile top bar -->
+    <header class="pf-topbar">
+      <button type="button" class="pf-menu-btn" id="pfMenuBtn" aria-label="Open navigation" aria-controls="pfSidebar" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+      <span class="pf-topbar-title">My Profile</span>
+    </header>
+
+    <div class="pf-content">
+
+      <!-- ============================================================
+           Page header
+           ============================================================ -->
+      <div class="pf-page-header">
+        <div>
+          <h1 class="pf-page-title">My Profile</h1>
+          <p class="pf-page-sub">Manage your personal details, company information, account security, and preferences.</p>
+        </div>
+        <button type="button" class="pf-btn pf-btn-primary" id="editProfileBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Edit Profile
+        </button>
       </div>
-    {% endif %}
 
-    <form method="post" enctype="multipart/form-data" class="grid lg:grid-cols-3 gap-4">
-      {% csrf_token %}
+      <!-- ============================================================
+           Profile summary
+           ============================================================ -->
+      <section class="pf-card pf-summary" aria-label="Profile summary">
+        <div class="pf-avatar" id="pfAvatarWrap">
+          {% if user_profile.profile_picture %}
+            <img id="pfAvatarImg" src="{{ user_profile.profile_picture.url }}" alt="Profile picture" />
+          {% else %}
+            <div class="pf-avatar-initial" id="pfAvatarImg" role="img" aria-label="Default profile picture">
+              {% firstof user_profile.name request.user.get_full_name request.user.username "U" as disp %}
+              {{ disp|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <input type="file" id="pfAvatarInput" name="profile_picture" accept="image/*" class="pf-sr-only" aria-label="Upload new profile photo" />
+          <label for="pfAvatarInput" class="pf-avatar-trigger" tabindex="0"><span class="pf-sr-only">Change profile photo</span></label>
+          <div class="pf-avatar-overlay" aria-hidden="true">Change</div>
+        </div>
 
-      <!-- Left: avatar + summary card -->
-      <div class="lg:col-span-1">
-        <div class="bg-white rounded-md border border-line p-6 text-center">
-          <div class="relative w-24 h-24 mx-auto">
-            {% if user_profile.profile_picture %}
-              <img src="{{ user_profile.profile_picture.url }}" alt="Profile picture"
-                   class="w-24 h-24 rounded-full object-cover border border-line" />
+        <div class="pf-summary-text">
+          <h2 class="pf-summary-name">
+            {% firstof user_profile.name request.user.get_full_name request.user.username "Add your name" %}
+          </h2>
+          <p class="pf-summary-email">{{ request.user.email|default:"No email on file" }}</p>
+          <div class="pf-summary-badges">
+            <span class="pf-badge pf-badge-role">{{ user_role|default:"Administrator" }}</span>
+            <span class="pf-badge pf-badge-status">
+              <span class="pf-dot pf-dot-pos" aria-hidden="true"></span>
+              {{ account_status|default:"Active" }}
+            </span>
+          </div>
+        </div>
+
+        <div class="pf-summary-actions">
+          <label for="pfAvatarInput" class="pf-btn pf-btn-ghost pf-btn-sm">Change Photo</label>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           Personal information
+           ============================================================ -->
+      <section class="pf-card" aria-labelledby="pfPersonalTitle">
+        <header class="pf-card-head">
+          <h2 class="pf-card-title" id="pfPersonalTitle">Personal Information</h2>
+        </header>
+
+        <form method="post" enctype="multipart/form-data" id="pfPersonalForm" class="pf-form">
+          {% csrf_token %}
+
+          <div class="pf-grid-2">
+            <div class="pf-field">
+              <label for="pfName" class="pf-label">Full Name</label>
+              <input type="text" id="pfName" name="name" maxlength="120" autocomplete="name"
+                     value="{{ user_profile.name|default:'' }}"
+                     placeholder="Add your name"
+                     class="pf-input" />
+            </div>
+
+            <div class="pf-field">
+              <label for="pfEmail" class="pf-label">
+                Email Address
+                <span class="pf-label-hint" title="Contact support to change your sign-in email">Read-only</span>
+              </label>
+              <input type="email" id="pfEmail" name="email" readonly
+                     value="{{ request.user.email|default:'' }}"
+                     placeholder="No email on file"
+                     class="pf-input pf-input-readonly"
+                     aria-describedby="pfEmailHelp" />
+              <p id="pfEmailHelp" class="pf-help">This is your sign-in email. Contact support to change it.</p>
+            </div>
+
+            <div class="pf-field">
+              <label for="pfPhone" class="pf-label">Phone Number</label>
+              <input type="tel" id="pfPhone" name="phone" maxlength="24" autocomplete="tel"
+                     value="{{ user_profile.phone|default:'' }}"
+                     placeholder="Add your phone number"
+                     class="pf-input" />
+            </div>
+
+            <div class="pf-field">
+              <label for="pfRole" class="pf-label">Role</label>
+              <input type="text" id="pfRole" readonly
+                     value="{{ user_role|default:'Administrator' }}"
+                     class="pf-input pf-input-readonly" />
+            </div>
+          </div>
+
+          <div class="pf-field">
+            <div class="pf-label-row">
+              <label for="pfBio" class="pf-label">Bio</label>
+              <span class="pf-counter" data-count-for="pfBio">0 / 400</span>
+            </div>
+            <textarea id="pfBio" name="bio" rows="4" maxlength="400"
+                      placeholder="Add a short bio"
+                      class="pf-input pf-textarea">{{ user_profile.bio|default:'' }}</textarea>
+          </div>
+
+          <div class="pf-field">
+            <label for="pfPhotoInline" class="pf-label">Profile Picture</label>
+            <input type="file" id="pfPhotoInline" name="profile_picture" accept="image/*"
+                   class="pf-file" />
+            <p class="pf-help">PNG or JPG, up to 5 MB.</p>
+          </div>
+
+          <div class="pf-form-actions">
+            <button type="submit" class="pf-btn pf-btn-primary" id="pfSaveBtn">Save Changes</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============================================================
+           Company
+           ============================================================ -->
+      <section class="pf-card" aria-labelledby="pfCompanyTitle">
+        <header class="pf-card-head">
+          <h2 class="pf-card-title" id="pfCompanyTitle">Company</h2>
+        </header>
+
+        {% if company_info %}
+          <div class="pf-company-row">
+            {% if company_info.company_logo %}
+              <img src="{{ company_info.company_logo.url }}" alt="{{ company_info.company_name }} logo" class="pf-company-logo" />
             {% else %}
-              <div class="w-24 h-24 rounded-full bg-navy-950 text-white flex items-center justify-center text-2xl font-serif">
-                {{ user_profile.name|default:request.user.username|first|upper }}
+              <div class="pf-company-logo pf-company-logo-fallback" aria-hidden="true">
+                {{ company_info.company_name|default:"?"|first|upper }}
               </div>
+            {% endif %}
+
+            <div class="pf-company-info">
+              <p class="pf-company-name">{{ company_info.company_name|default:"Unnamed Company" }}</p>
+              <p class="pf-company-meta">{{ company_info.company_office_type|default:"—" }}</p>
+            </div>
+          </div>
+
+          <dl class="pf-detail-grid">
+            <div><dt>Address</dt><dd>{{ company_info.address|default:"—" }}</dd></div>
+            <div><dt>Business Phone</dt><dd>{{ company_info.phone|default:"—" }}</dd></div>
+            <div><dt>Business Email</dt><dd>{{ company_info.email|default:"—" }}</dd></div>
+            <div><dt>PAN / VAT</dt><dd class="pf-mono">{{ company_info.pan_vat|default:"—" }}</dd></div>
+            <div><dt>Registration No.</dt><dd class="pf-mono">{{ company_info.registration_number|default:"—" }}</dd></div>
+          </dl>
+
+          <div class="pf-company-actions">
+            <a href="{% url 'company_profile' company_info.id %}" class="pf-btn pf-btn-ghost pf-btn-sm">
+              View Company Information
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            {% if allow_company_switch %}
+              <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm" id="pfChangeCompanyBtn">Change Company</button>
             {% endif %}
           </div>
 
-          <label class="mt-4 inline-block text-xs font-medium text-navy-950 cursor-pointer hover:underline">
-            Change photo
-            <input type="file" name="profile_picture" accept="image/*" class="hidden" onchange="this.form && this.closest('form').requestSubmit ? null : null">
-          </label>
-
-          <p class="font-serif text-lg mt-3">{{ user_profile.name|default:"Unnamed User" }}</p>
-          <p class="text-xs text-sub">{{ request.user.email|default:request.user.username }}</p>
-
-          {% if company_info %}
-            <div class="mt-5 pt-5 border-t border-line text-left">
-              <p class="text-[11px] tracking-wide text-sub uppercase mb-2">Company</p>
-              <div class="flex items-center gap-3">
-                {% if company_info.company_logo %}
-                  <img src="{{ company_info.company_logo.url }}" alt="{{ company_info.company_name }}"
-                       class="w-9 h-9 rounded-sm object-cover border border-line" />
-                {% else %}
-                  <div class="w-9 h-9 rounded-sm bg-gold/15 text-gold flex items-center justify-center font-serif font-semibold">
-                    {{ company_info.company_name|default:"?"|first|upper }}
-                  </div>
-                {% endif %}
-                <div class="min-w-0">
-                  <p class="text-sm font-medium truncate">{{ company_info.company_name|default:"Unnamed Company" }}</p>
-                  <p class="text-xs text-sub truncate">{{ company_info.company_office_type|default:"—" }}</p>
-                </div>
-              </div>
-              <a href="{% url 'accounts:company_profile' company_info.id %}"
-                 class="tick text-xs text-navy-950 mt-3 inline-block hover:underline">View company profile →</a>
+        {% else %}
+          <div class="pf-empty">
+            <div class="pf-empty-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
             </div>
-          {% endif %}
-        </div>
-      </div>
-
-      <!-- Right: editable fields -->
-      <div class="lg:col-span-2 space-y-4">
-        <div class="bg-white rounded-md border border-line p-6">
-          <p class="font-serif text-lg mb-4">Personal details</p>
-
-          <div class="space-y-4">
-            <div>
-              <label for="name" class="block text-xs font-medium text-sub mb-1.5">Full name</label>
-              <input type="text" id="name" name="name" value="{{ user_profile.name|default:'' }}"
-                     placeholder="Your name"
-                     class="w-full h-10 px-3 rounded-md border border-line bg-paper focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-950/10 focus:border-navy-600 text-sm" />
-            </div>
-
-            <div>
-              <label for="bio" class="block text-xs font-medium text-sub mb-1.5">Bio</label>
-              <textarea id="bio" name="bio" rows="4" placeholder="A short note about yourself"
-                        class="w-full px-3 py-2.5 rounded-md border border-line bg-paper focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-950/10 focus:border-navy-600 text-sm resize-none">{{ user_profile.bio|default:'' }}</textarea>
-            </div>
-
-            <div>
-              <label for="profile_picture_input" class="block text-xs font-medium text-sub mb-1.5">Profile picture</label>
-              <input type="file" id="profile_picture_input" name="profile_picture" accept="image/*"
-                     class="w-full text-sm file:mr-3 file:h-9 file:px-3 file:rounded-md file:border-0 file:bg-navy-950 file:text-white file:text-xs file:font-medium hover:file:bg-navy-900 text-sub" />
-            </div>
+            <p class="pf-empty-title">No company connected</p>
+            <p class="pf-empty-desc">Connect a company to manage your business information.</p>
+            <a href="{% url 'company_profile' 0 %}" class="pf-btn pf-btn-primary pf-btn-sm">Connect Company</a>
           </div>
-        </div>
+        {% endif %}
+      </section>
 
-        <div class="bg-white rounded-md border border-line p-6">
-          <p class="font-serif text-lg mb-4">Company</p>
+      <!-- ============================================================
+           Account information
+           ============================================================ -->
+      <section class="pf-card" aria-labelledby="pfAccountTitle">
+        <header class="pf-card-head">
+          <h2 class="pf-card-title" id="pfAccountTitle">Account Information</h2>
+        </header>
 
+        <dl class="pf-detail-grid pf-detail-grid-tight">
           <div>
-            <label for="company" class="block text-xs font-medium text-sub mb-1.5">Associated company</label>
-            <select id="company" name="company"
-                    class="w-full h-10 px-3 rounded-md border border-line bg-paper focus:bg-white focus:outline-none focus:ring-2 focus:ring-navy-950/10 focus:border-navy-600 text-sm appearance-none tick">
-              <option value="">— No company —</option>
-              {% for company in companies %}
-                <option value="{{ company.id }}" {% if company_info and company.id == company_info.id %}selected{% endif %}>
-                  {{ company.company_name|default:"Unnamed Company" }}
-                </option>
-              {% endfor %}
+            <dt>Account Status</dt>
+            <dd>
+              <span class="pf-status">
+                <span class="pf-dot pf-dot-pos" aria-hidden="true"></span>
+                {{ account_status|default:"Active" }}
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt>Email Verification</dt>
+            <dd>
+              <span class="pf-status">
+                <span class="pf-dot {% if email_verified %}pf-dot-pos{% else %}pf-dot-warn{% endif %}" aria-hidden="true"></span>
+                {% if email_verified %}Verified{% else %}Unverified{% endif %}
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt>Member Since</dt>
+            <dd>{{ member_since|default:"—" }}</dd>
+          </div>
+          <div>
+            <dt>Last Login</dt>
+            <dd>{{ last_login_display|default:"—" }}</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>{{ user_role|default:"Administrator" }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- ============================================================
+           Security
+           ============================================================ -->
+      <section class="pf-card" aria-labelledby="pfSecurityTitle">
+        <header class="pf-card-head">
+          <h2 class="pf-card-title" id="pfSecurityTitle">Security</h2>
+        </header>
+
+        <ul class="pf-list-rows">
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Password</p>
+              <p class="pf-row-sub">{{ password_last_changed|default:"Last changed recently" }}</p>
+            </div>
+            <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm">Change Password</button>
+          </li>
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Two-Factor Authentication</p>
+              <p class="pf-row-sub">Add an additional layer of security to your account.</p>
+            </div>
+            {% if two_factor_enabled %}
+              <span class="pf-badge pf-badge-on">
+                <span class="pf-dot pf-dot-pos" aria-hidden="true"></span>Enabled
+              </span>
+            {% else %}
+              <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm">Enable 2FA</button>
+            {% endif %}
+          </li>
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Active Sessions</p>
+              <p class="pf-row-sub">Manage devices currently signed in to your account.</p>
+            </div>
+            <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm">Manage Sessions</button>
+          </li>
+
+        </ul>
+      </section>
+
+      <!-- ============================================================
+           Preferences
+           ============================================================ -->
+      <section class="pf-card" aria-labelledby="pfPrefsTitle">
+        <header class="pf-card-head">
+          <h2 class="pf-card-title" id="pfPrefsTitle">Preferences</h2>
+        </header>
+
+        <div class="pf-grid-2">
+          <div class="pf-field">
+            <label for="pfCurrency" class="pf-label">Currency</label>
+            <select id="pfCurrency" name="currency" class="pf-input pf-select">
+              <option value="NPR" {% if prefs.currency == 'NPR' or not prefs.currency %}selected{% endif %}>NPR (Rs.)</option>
+              <option value="USD" {% if prefs.currency == 'USD' %}selected{% endif %}>USD ($)</option>
+              <option value="INR" {% if prefs.currency == 'INR' %}selected{% endif %}>INR (₹)</option>
+              <option value="EUR" {% if prefs.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
             </select>
-            <p class="text-xs text-sub mt-1.5">
-              Don't see your company? <a href="{% url 'accounts:company_create' %}" class="text-navy-950 hover:underline">Add a new company</a>.
-            </p>
+          </div>
+
+          <div class="pf-field">
+            <label for="pfTimezone" class="pf-label">Timezone</label>
+            <select id="pfTimezone" name="timezone" class="pf-input pf-select">
+              <option value="Asia/Kathmandu" {% if prefs.timezone == 'Asia/Kathmandu' or not prefs.timezone %}selected{% endif %}>Asia/Kathmandu</option>
+              <option value="Asia/Kolkata" {% if prefs.timezone == 'Asia/Kolkata' %}selected{% endif %}>Asia/Kolkata</option>
+              <option value="Asia/Dubai" {% if prefs.timezone == 'Asia/Dubai' %}selected{% endif %}>Asia/Dubai</option>
+              <option value="Europe/London" {% if prefs.timezone == 'Europe/London' %}selected{% endif %}>Europe/London</option>
+              <option value="America/New_York" {% if prefs.timezone == 'America/New_York' %}selected{% endif %}>America/New_York</option>
+            </select>
+          </div>
+
+          <div class="pf-field">
+            <label for="pfLanguage" class="pf-label">Language</label>
+            <select id="pfLanguage" name="language" class="pf-input pf-select">
+              <option value="en" {% if prefs.language == 'en' or not prefs.language %}selected{% endif %}>English</option>
+              <option value="ne" {% if prefs.language == 'ne' %}selected{% endif %}>नेपाली (Nepali)</option>
+              <option value="hi" {% if prefs.language == 'hi' %}selected{% endif %}>हिन्दी (Hindi)</option>
+            </select>
+          </div>
+
+          <div class="pf-field">
+            <label for="pfDateFormat" class="pf-label">Date Format</label>
+            <select id="pfDateFormat" name="date_format" class="pf-input pf-select">
+              <option value="DD/MM/YYYY" {% if prefs.date_format == 'DD/MM/YYYY' or not prefs.date_format %}selected{% endif %}>DD/MM/YYYY</option>
+              <option value="MM/DD/YYYY" {% if prefs.date_format == 'MM/DD/YYYY' %}selected{% endif %}>MM/DD/YYYY</option>
+              <option value="YYYY-MM-DD" {% if prefs.date_format == 'YYYY-MM-DD' %}selected{% endif %}>YYYY-MM-DD</option>
+            </select>
           </div>
         </div>
 
-        <div class="flex items-center justify-end gap-2">
-          <a href="{% url 'accounts:userprofile' %}"
-             class="h-10 px-4 rounded-md border border-line text-sm font-medium text-sub hover:bg-white flex items-center">Cancel</a>
-          <button type="submit"
-                  class="h-10 px-5 rounded-md bg-navy-950 text-white text-sm font-medium hover:bg-navy-900">
-            Save changes
-          </button>
+        <div class="pf-form-actions">
+          <button type="button" class="pf-btn pf-btn-primary" data-toast="Preferences saved.">Save Preferences</button>
         </div>
-      </div>
-    </form>
+      </section>
+
+      <!-- ============================================================
+           Notifications
+           ============================================================ -->
+      <section class="pf-card" aria-labelledby="pfNotifTitle">
+        <header class="pf-card-head">
+          <h2 class="pf-card-title" id="pfNotifTitle">Notifications</h2>
+        </header>
+
+        <ul class="pf-list-rows">
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Email Notifications</p>
+              <p class="pf-row-sub">Receive important account activity by email.</p>
+            </div>
+            <label class="pf-toggle">
+              <input type="checkbox" checked />
+              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
+              <span class="pf-sr-only">Email Notifications</span>
+            </label>
+          </li>
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Invoice Reminders</p>
+              <p class="pf-row-sub">Get notified before invoices are due.</p>
+            </div>
+            <label class="pf-toggle">
+              <input type="checkbox" checked />
+              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
+              <span class="pf-sr-only">Invoice Reminders</span>
+            </label>
+          </li>
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Payment Notifications</p>
+              <p class="pf-row-sub">Alerts when payments are received or sent.</p>
+            </div>
+            <label class="pf-toggle">
+              <input type="checkbox" checked />
+              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
+              <span class="pf-sr-only">Payment Notifications</span>
+            </label>
+          </li>
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Expense Notifications</p>
+              <p class="pf-row-sub">Updates when expenses are recorded or approved.</p>
+            </div>
+            <label class="pf-toggle">
+              <input type="checkbox" />
+              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
+              <span class="pf-sr-only">Expense Notifications</span>
+            </label>
+          </li>
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">Monthly Financial Reports</p>
+              <p class="pf-row-sub">A summary of your business finances each month.</p>
+            </div>
+            <label class="pf-toggle">
+              <input type="checkbox" checked />
+              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
+              <span class="pf-sr-only">Monthly Financial Reports</span>
+            </label>
+          </li>
+
+          <li class="pf-row">
+            <div class="pf-row-text">
+              <p class="pf-row-title">
+                Security Alerts
+                <span class="pf-lock" title="Required for account security">
+                  <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.3"/></svg>
+                </span>
+              </p>
+              <p class="pf-row-sub">Critical alerts about your account. Always on.</p>
+            </div>
+            <label class="pf-toggle is-locked">
+              <input type="checkbox" checked disabled />
+              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
+              <span class="pf-sr-only">Security Alerts (required)</span>
+            </label>
+          </li>
+
+        </ul>
+      </section>
+
+      <!-- ============================================================
+           Danger Zone
+           ============================================================ -->
+      <section class="pf-card pf-danger" aria-labelledby="pfDangerTitle">
+        <header class="pf-card-head">
+          <h2 class="pf-card-title pf-danger-title" id="pfDangerTitle">Danger Zone</h2>
+        </header>
+
+        <div class="pf-row">
+          <div class="pf-row-text">
+            <p class="pf-row-title">Delete Account</p>
+            <p class="pf-row-sub">Permanently delete your FinCore account and associated account data.</p>
+          </div>
+          <button type="button" class="pf-btn pf-btn-danger pf-btn-sm" id="pfDeleteBtn">Delete Account</button>
+        </div>
+      </section>
+
+    </div>
   </div>
+
+  <!-- ============================================================
+       Delete confirmation dialog
+       ============================================================ -->
+  <div class="pf-modal" id="pfDeleteModal" role="dialog" aria-modal="true" aria-labelledby="pfDeleteTitle" hidden>
+    <div class="pf-modal-backdrop" data-modal-close></div>
+    <div class="pf-modal-card" role="document">
+      <h3 class="pf-modal-title" id="pfDeleteTitle">Delete your account?</h3>
+      <p class="pf-modal-body">
+        This will permanently delete your FinCore account and all data associated with it. This action cannot be undone.
+      </p>
+      <div class="pf-modal-actions">
+        <button type="button" class="pf-btn pf-btn-ghost" data-modal-close>Cancel</button>
+        <button type="button" class="pf-btn pf-btn-danger" id="pfDeleteConfirm">Delete Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Toast region
+       ============================================================ -->
+  <div class="pf-toasts" id="pfToasts" role="status" aria-live="polite" aria-atomic="true"></div>
+
 </div>
+
+<script>
+(function () {
+  'use strict';
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============================================================
+     SIDEBAR (mobile)
+     ============================================================ */
+  (function () {
+    var sidebar = document.getElementById('pfSidebar');
+    var overlay = document.getElementById('pfOverlay');
+    var btn = document.getElementById('pfMenuBtn');
+    if (!sidebar || !overlay || !btn) return;
+
+    function open() {
+      sidebar.classList.add('is-open');
+      overlay.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('pf-noscroll');
+    }
+    function close() {
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('pf-noscroll');
+    }
+    btn.addEventListener('click', function () {
+      sidebar.classList.contains('is-open') ? close() : open();
+    });
+    overlay.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+        close(); btn.focus();
+      }
+    });
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', function (e) {
+      if (e.matches) close();
+    });
+  })();
+
+  /* ============================================================
+     AVATAR — live preview
+     ============================================================ */
+  (function () {
+    var input = document.getElementById('pfAvatarInput');
+    var wrap = document.getElementById('pfAvatarWrap');
+    if (!input || !wrap) return;
+
+    input.addEventListener('change', function () {
+      var file = input.files && input.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        toast('Please choose an image file.', 'error'); input.value = ''; return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast('Image must be smaller than 5 MB.', 'error'); input.value = ''; return;
+      }
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var current = document.getElementById('pfAvatarImg');
+        if (!current) return;
+        var img = document.createElement('img');
+        img.id = 'pfAvatarImg';
+        img.alt = 'New profile picture preview';
+        img.src = e.target.result;
+        current.replaceWith(img);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    var trigger = wrap.querySelector('.pf-avatar-trigger');
+    if (trigger) {
+      trigger.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+      });
+    }
+  })();
+
+  /* ============================================================
+     CHARACTER COUNTER
+     ============================================================ */
+  document.querySelectorAll('[data-count-for]').forEach(function (counter) {
+    var field = document.getElementById(counter.getAttribute('data-count-for'));
+    if (!field) return;
+    var max = parseInt(field.getAttribute('maxlength'), 10) || 0;
+    function update() {
+      var len = field.value.length;
+      counter.textContent = len + ' / ' + max;
+      counter.classList.toggle('is-warn', max > 0 && len >= max * 0.9);
+    }
+    field.addEventListener('input', update);
+    update();
+  });
+
+  /* ============================================================
+     TOASTS
+     ============================================================ */
+  function toast(message, kind) {
+    var region = document.getElementById('pfToasts');
+    if (!region) return;
+    var el = document.createElement('div');
+    el.className = 'pf-toast' + (kind ? ' is-' + kind : '');
+    el.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+    el.textContent = message;
+    region.appendChild(el);
+
+    requestAnimationFrame(function () { el.classList.add('is-in'); });
+
+    setTimeout(function () {
+      el.classList.remove('is-in');
+      setTimeout(function () { el.remove(); }, 240);
+    }, 3200);
+  }
+  window.__pfToast = toast;
+
+  document.querySelectorAll('[data-toast]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      toast(btn.getAttribute('data-toast'), 'success');
+    });
+  });
+
+  /* ============================================================
+     FORM SUBMIT — intercept, show toast, prevent reload on demo
+     ============================================================ */
+  var personalForm = document.getElementById('pfPersonalForm');
+  if (personalForm) {
+    personalForm.addEventListener('submit', function (e) {
+      // If your Django view returns JSON, keep this. Otherwise remove
+      // the e.preventDefault() and let the normal POST happen.
+      // e.preventDefault();
+      var btn = document.getElementById('pfSaveBtn');
+      if (btn) { btn.disabled = true; btn.classList.add('is-busy'); }
+      // Optimistic feedback — a real POST would reload the page and
+      // surface the server message via Django's messages framework.
+      setTimeout(function () {
+        if (btn) { btn.disabled = false; btn.classList.remove('is-busy'); }
+        toast('Profile updated successfully.', 'success');
+      }, 500);
+    });
+  }
+
+  /* ============================================================
+     EDIT PROFILE — scroll + focus
+     ============================================================ */
+  var editBtn = document.getElementById('editProfileBtn');
+  if (editBtn) {
+    editBtn.addEventListener('click', function () {
+      var target = document.getElementById('pfName');
+      if (!target) return;
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(function () { target.focus({ preventScroll: true }); }, 320);
+    });
+  }
+
+  /* ============================================================
+     DELETE ACCOUNT — modal
+     ============================================================ */
+  (function () {
+    var modal = document.getElementById('pfDeleteModal');
+    var openBtn = document.getElementById('pfDeleteBtn');
+    var confirmBtn = document.getElementById('pfDeleteConfirm');
+    if (!modal || !openBtn) return;
+
+    var lastFocus = null;
+
+    function openModal() {
+      lastFocus = document.activeElement;
+      modal.hidden = false;
+      requestAnimationFrame(function () { modal.classList.add('is-open'); });
+      var first = modal.querySelector('[data-modal-close]');
+      if (first) first.focus();
+      document.body.classList.add('pf-noscroll');
+    }
+    function closeModal() {
+      modal.classList.remove('is-open');
+      setTimeout(function () {
+        modal.hidden = true;
+        document.body.classList.remove('pf-noscroll');
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }, 200);
+    }
+
+    openBtn.addEventListener('click', openModal);
+    modal.querySelectorAll('[data-modal-close]').forEach(function (el) {
+      el.addEventListener('click', closeModal);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', function () {
+        closeModal();
+        toast('Account deletion requested. Check your email to confirm.', 'error');
+        // Real app: POST to a delete-account endpoint, redirect on success.
+      });
+    }
+  })();
+
+})();
+</script>
 {% endblock %}

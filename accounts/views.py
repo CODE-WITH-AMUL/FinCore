@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import redirect
-from accounts.models import UserLoginPrefernce
+from accounts.models import UserLoginPrefernce, UserProfileData
 from django.db import transaction
 import logging
 from django.contrib.auth.decorators import login_required
@@ -92,6 +92,7 @@ def signup(request):
                 )
                 
                 UserLoginPrefernce.objects.create(user=user, email=email)
+                UserProfileData.objects.create(user=user, name=f'{first_name} {last_name}'.strip())
                 messages.success(request, 'Account created successfully. Please login.')
                 return redirect('signin')
         except Exception as e:

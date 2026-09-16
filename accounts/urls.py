@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', logout, name='logout'),
     
     # Profile section
-    path('company/profile/', company_profile, name='company_profile'),
+    path('company/profile/<int:company_id>/', company_profile, name='company_profile'),
     path('profile/', userprofile, name='userprofile'),
+    
 ]

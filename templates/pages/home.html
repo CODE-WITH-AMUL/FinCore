@@ -1,505 +1,1066 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FinCore — Dashboard</title>
+<title>Dashboard — FinCore</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          navy: { 950:'#0b1220', 900:'#0f1b30', 800:'#152340', 700:'#1e2f52', 600:'#2a4170' },
-          paper: '#f6f5f1',
-          ink: '#12151c',
-          sub: '#5b6272',
-          line: '#e4e2da',
-          gold: '#a9832f',
-          teal: '#1f7a63',
-          rust: '#a3492e',
-        },
-        fontFamily: {
-          serif: ['"Source Serif 4"','serif'],
-          sans: ['Inter','sans-serif'],
-          mono: ['"IBM Plex Mono"','monospace'],
-        }
-      }
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink:    '#0f1218',
+        sub:    '#6b7280',
+        mute:   '#9ca3af',
+        line:   '#e5e7eb',
+        line2:  '#f0f1f3',
+        bg:     '#fafafa',
+        card:   '#ffffff',
+        pos:    '#047857',
+        posSoft:'#ecfdf5',
+        neg:    '#b91c1c',
+        negSoft:'#fef2f2',
+        warn:   '#b45309',
+        warnSoft:'#fffbeb',
+        accent: '#111827',
+      },
+      fontFamily: {
+        sans: ['Inter','system-ui','sans-serif'],
+        mono: ['"IBM Plex Mono"','ui-monospace','monospace'],
+      },
+      borderRadius: { 'md': '6px', 'lg': '8px' },
     }
   }
+}
 </script>
 <style>
-  body { background: #f6f5f1; }
-  .tick { font-family:'IBM Plex Mono',monospace; }
-  ::-webkit-scrollbar { width:8px; height:8px; }
-  ::-webkit-scrollbar-thumb { background:#d9d6cb; border-radius:4px; }
-  .ring { transition: stroke-dashoffset 1s cubic-bezier(.16,1,.3,1); }
+  html, body { background: #fafafa; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-feature-settings: "tnum"; }
 
-  #sidebar {
-    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-    position: sticky;
-    top: 0;
-    height: 100vh;
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d6d8dc; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #b8bcc2; }
+
+  /* Focus rings — single, consistent */
+  :focus-visible {
+    outline: 2px solid #111827;
+    outline-offset: 2px;
+    border-radius: 4px;
   }
+
+  /* Sidebar — fixed on desktop, drawer on mobile */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 15.5rem;
+    z-index: 40;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+  }
+  #mainWrap { margin-left: 15.5rem; transition: margin-left 0.28s cubic-bezier(.4,0,.2,1); }
   @media (max-width: 1023px) {
-    #sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      transform: translateX(-100%);
-      z-index: 50;
-      display: flex !important;
+    #sidebar { transform: translateX(-100%); z-index: 60; }
+    #sidebar.open { transform: translateX(0); box-shadow: 24px 0 60px rgba(0,0,0,.28); }
+    #mainWrap { margin-left: 0; }
+  }
+
+  /* Sidebar link active state — quiet but unmistakable */
+  .side-link {
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    transition: background 0.15s ease, color 0.15s ease;
+    position: relative;
+  }
+  .side-link:hover { background: rgba(255,255,255,.05); color: #e5e7eb; }
+  .side-link.active {
+    background: rgba(255,255,255,.09);
+    color: #ffffff;
+  }
+  .side-link.active::before {
+    content: "";
+    position: absolute;
+    left: -0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 18px;
+    background: #ffffff;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .side-section {
+    font-size: 0.65rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.32);
+    padding: 0 0.75rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.35rem;
+  }
+  .side-section:first-child { margin-top: 0; }
+
+  /* Cards */
+  .card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  /* Subtle hover lift on interactive cards */
+  @media (hover: hover) and (pointer: fine) {
+    .card-hover {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
-    #sidebar.open { transform: translateX(0); box-shadow: 20px 0 50px rgba(0,0,0,.25); }
-    #menuToggle { display: flex !important; }
-    #overlay.show { display: block !important; }
+    .card-hover:hover {
+      border-color: #d1d5db;
+      box-shadow: 0 6px 24px -18px rgba(15,18,24,.25);
+    }
+  }
+
+  /* Table row hover */
+  .row-hover { transition: background-color 0.15s ease; }
+  .row-hover:hover { background-color: #fafafa; }
+
+  /* Skeleton shimmer for loading state */
+  .skeleton {
+    background: linear-gradient(90deg, #f1f2f4 0%, #e9eaee 50%, #f1f2f4 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+    border-radius: 4px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Dropdown */
+  .dd {
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+  }
+  .dd.open {
+    opacity: 1; visibility: visible; transform: translateY(0);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s;
+  }
+
+  /* Chart period pill group */
+  .period-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.28rem 0.6rem;
+    border-radius: 4px;
+    color: #6b7280;
+    transition: background 0.15s ease, color 0.15s ease;
+    border: none; cursor: pointer; background: transparent;
+  }
+  .period-btn:hover { background: #f3f4f6; color: #111827; }
+  .period-btn.active { background: #111827; color: #ffffff; }
+
+  /* Number flash on change */
+  .flash { animation: flashIn 0.45s cubic-bezier(.16,1,.3,1); }
+  @keyframes flashIn {
+    0% { background: rgba(17,24,39,.07); }
+    100% { background: transparent; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
-<body class="text-ink font-sans">
 
-<div id="overlay" class="hidden fixed inset-0 bg-black/50 z-40 lg:hidden"></div>
-<button id="menuToggle" class="hidden fixed top-3 left-3 z-[60] w-10 h-10 rounded-md bg-navy-950 text-white items-center justify-center shadow-lg lg:hidden" aria-label="Toggle menu">
-  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
+<body class="text-ink font-sans antialiased">
 
-<div class="flex min-h-screen">
-  <!-- Sidebar -->
-  <aside id="sidebar" class="hidden lg:flex w-60 shrink-0 flex-col bg-navy-950 text-white/90">
-    <div class="px-6 pt-7 pb-5 border-b border-white/10">
-      <div class="flex items-center gap-2.5">
-        <span class="font-serif text-lg text-white" size="4rem">FinCore</span>
-      </div>
-      <div class="mt-4 w-full flex items-center justify-between group">
-        <span class="min-w-0 flex-1">
-          <a href="{% url 'userprofile' %}" title="Click to rename your company" class="block">
-            <span class="block text-sm font-medium text-white">{{ company_name }}</span>
-          </a>
-          <span class="block text-xs text-white/40">Startup workspace</span>
-        </span>
-        <svg class="w-3.5 h-3.5 text-white/40 group-hover:text-white/70 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M6 9l6 6 6-6"/>
+<!-- Mobile overlay -->
+<div id="overlay" class="hidden fixed inset-0 bg-black/50 z-50 lg:hidden" aria-hidden="true"></div>
+
+<!-- ============================================================
+     SIDEBAR
+     ============================================================ -->
+<aside id="sidebar" class="flex flex-col bg-ink text-white/90" aria-label="Primary">
+
+  <!-- Brand -->
+  <div class="px-5 pt-5 pb-4 border-b border-white/8">
+    <a href="/" class="flex items-center gap-2.5" aria-label="FinCore home">
+      <span class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6 13.5L9 9l2.5 3L14 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-      </div>
-    </div>
-
-    <nav class="flex-1 overflow-y-auto px-3 py-4 text-sm">
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-white/10 text-white font-medium">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Dashboard
-      </a>
-
-      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Money in</p>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
-        Sales
-      </a>
-
-      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Money out</p>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        Expenses
-      </a>
-
-      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Banking</p>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-        Banking
-      </a>
-
-      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">Accounting</p>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>
-        Accounting
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.2 15.9A10 10 0 118 2.8"/><path d="M22 12A10 10 0 0012 2v10z"/></svg>
-        Tax
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-        Documents
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
-        Reports
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6z"/></svg>
-        Audit &amp; CA
-      </a>
-
-      <p class="mt-5 mb-1.5 px-3 text-[11px] tracking-wide text-white/35">More</p>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        FinCore AI
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21V12h6v9"/></svg>
-        Tools
-      </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-white/70 hover:bg-white/5 hover:text-white">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.65 1.65 0 00-1.8-.3 1.65 1.65 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.65 1.65 0 00-1-1.5 1.65 1.65 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.65 1.65 0 00.3-1.8 1.65 1.65 0 00-1.5-1H3a2 2 0 110-4h.1a1.65 1.65 0 001.5-1 1.65 1.65 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.65 1.65 0 001.8.3H9a1.65 1.65 0 001-1.5V3a2 2 0 114 0v.1a1.65 1.65 0 001 1.5 1.65 1.65 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.65 1.65 0 00-.3 1.8V9a1.65 1.65 0 001.5 1H21a2 2 0 110 4h-.1a1.65 1.65 0 00-1.5 1z"/></svg>
-        Settings
-      </a>
-
-    </nav>
-
-<a href="{% url 'userprofile' %}" class="px-4 py-4 border-t border-white/10 block hover:bg-white/5 transition-colors">
-  <div class="flex items-center gap-2.5">
-    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm font-medium">A</div>
-    <div class="min-w-0 flex-1">
-      <p class="text-sm font-medium text-white truncate">{{user.username}}</p>
-      <p class="text-xs text-white/40 truncate">Profile</p>
-    </div>
-    <svg class="w-4 h-4 text-white/40 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M9 18l6-6-6-6"/>
-    </svg>
+      </span>
+      <span class="font-semibold text-[0.98rem] tracking-tight text-white">FinCore</span>
+    </a>
   </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 overflow-y-auto px-3 py-4">
+    <ul class="space-y-0.5">
+      <li>
+        <a href="#" class="side-link active" aria-current="page">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+          Sales
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Purchases
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+          Expenses
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+          Products
+        </a>
+      </li>
+
+      <li><p class="side-section">Contacts</p></li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>
+          Customers
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
+          Suppliers
+        </a>
+      </li>
+
+      <li><p class="side-section">Money</p></li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+          Invoices
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Payments
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>
+          Taxes
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Investments
+        </a>
+      </li>
+
+      <li><p class="side-section">Analysis</p></li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg>
+          Reports
+        </a>
+      </li>
+      <li>
+        <a href="#" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+          Settings
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- User / company footer -->
+<div class="border-t border-white/10">
+  <div class="px-3 py-3">
+
+    <!-- User identity — whole block links to profile -->
+    <a href="{% url 'userprofile' %}"
+       class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group"
+       title="{{ user.get_full_name|default:user.username|default:'Your Name' }} — View profile">
+
+      <!-- Avatar: initials of the best available name -->
+<span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[0.72rem] font-semibold text-white shrink-0"
+      aria-hidden="true">
+  {% if user.first_name and user.last_name %}
+    {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+  {% else %}
+    {% firstof user.get_full_name user.username "U" as display_name %}
+    {{ display_name|slice:":1"|upper }}
+  {% endif %}
+</span>
+      <!-- Name + company -->
+      <span class="min-w-0 flex-1">
+        <span class="block text-[0.82rem] font-medium text-white/90 group-hover:text-white truncate"
+              title="{{ user.get_full_name|default:user.username|default:'Your Name' }}">
+          {{ user.get_full_name|default:user.username|default:"Your Name" }}
+        </span>
+        <span class="block text-[0.7rem] text-white/45 truncate"
+              title="{{ company_name|default:'Your Company' }}">
+          {{ company_name|default:"Your Company" }}
+        </span>
+      </span>
+
+      <!-- Chevron hint (appears on hover) -->
+      <svg class="w-3.5 h-3.5 text-white/30 group-hover:text-white/60 shrink-0 transition-colors"
+           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </a>
+
+    <!-- Account / Log out -->
+<div class="mt-1 flex justify-center gap-1">
+  <a href="{% url 'logout' %}"
+     class="text-center text-[0.72rem] text-white/55 hover:text-white py-1.5 px-3 rounded-md hover:bg-white/5 transition-colors">
+    Log out
+  </a>
+</div>
+    </div>
+  </div>
+</div>
+</aside>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<div id="mainWrap" class="min-h-screen flex flex-col">
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+    <div class="px-5 sm:px-8 h-14 flex items-center gap-3">
+
+      <!-- Mobile menu -->
+      <button id="menuToggle" type="button" class="lg:hidden w-9 h-9 -ml-1 rounded-md flex items-center justify-center text-sub hover:bg-bg" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+
+      <!-- Page title -->
+      <h1 class="font-semibold text-[0.98rem] tracking-tight">Dashboard</h1>
+
+      <!-- Company selector -->
+      <button type="button" id="companyBtn" class="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 h-8 rounded-md text-[0.82rem] text-sub hover:bg-bg hover:text-ink transition-colors" aria-haspopup="true" aria-expanded="false">
+        <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
+        <span>{{ company_name|default:"Your Company" }}</span>
+        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      <div class="flex-1"></div>
+
+      <!-- Search -->
+      <div class="hidden md:block relative">
+        <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" placeholder="Search" class="h-8 w-56 pl-8 pr-3 rounded-md border border-line bg-bg text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors" aria-label="Search" />
+      </div>
+
+      <!-- Notifications -->
+      <button type="button" class="relative w-9 h-9 rounded-md flex items-center justify-center text-sub hover:bg-bg hover:text-ink transition-colors" aria-label="Notifications">
+        <svg class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-neg" aria-label="Unread notifications"></span>
+      </button>
+
+      <!-- User avatar -->
+<a href="{% url 'userprofile' %}" 
+   class="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center text-[0.72rem] font-semibold" 
+   aria-label="User profile">
+  {% if user.first_name and user.last_name %}
+    {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+  {% else %}
+    {% firstof user.get_full_name user.username "U" as display_name %}
+    {{ display_name|slice:":1"|upper }}
+  {% endif %}
 </a>
-  </aside>
+    </div>
+  </header>
 
-  <!-- Main -->
-  <main class="flex-1 min-w-0">
-    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-8">
+  <!-- Page content -->
+  <main class="flex-1 px-5 sm:px-8 py-6">
 
-      <!-- Header -->
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
-        <div>
-          <h1 class="font-serif text-3xl text-ink">Good morning, {{user.username}}</h1>
-          <p class="text-sub mt-1">Here's where Acme Studio stands this September.</p>
+    <!-- ============================================================
+         Welcome
+         ============================================================ -->
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+      <div>
+        <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">
+          Good morning, {{ user.get_full_name|default:"there" }}
+        </h2>
+        <p class="text-sub text-[0.9rem] mt-1">
+          Here's what's happening with your business today.
+        </p>
+        <p class="text-mute text-[0.78rem] mt-2 mono" id="todayDate">—</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" id="demoToggle" class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-pos" id="demoDot" aria-hidden="true"></span>
+          <span id="demoLabel">Demo data: on</span>
+        </button>
+        <button type="button" class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors hidden sm:flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          Generate Report
+        </button>
+        <button type="button" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Transaction
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         KPI cards
+         ============================================================ -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3" aria-label="Financial overview">
+      <div class="card card-hover p-4">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Total Revenue</p>
+          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
         </div>
-        <div class="flex items-center gap-2">
-          <!-- Currency Selector -->
-          <select id="currencySelect" class="tick text-xs h-9 px-3 rounded-md border border-line bg-white text-ink">
-            <option value="NPR">NPR (₨)</option>
-            <option value="USD">USD ($)</option>
-          </select>
-          <select class="tick text-xs h-9 px-3 rounded-md border border-line bg-white text-ink">
-            <option>This month</option>
-            <option>Last month</option>
-            <option>This quarter</option>
-            <option>This year</option>
-          </select>
-          <div class="relative group">
-            <button class="h-9 px-4 rounded-md bg-navy-950 text-white text-sm font-medium hover:bg-navy-900 flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Create
-            </button>
-            <div class="hidden group-hover:block absolute right-0 mt-1 w-48 bg-white border border-line rounded-md shadow-lg py-1 text-sm z-10">
-              <a href="#" class="block px-3 py-2 hover:bg-paper">New invoice</a>
-              <a href="#" class="block px-3 py-2 hover:bg-paper">Add expense</a>
-              <a href="#" class="block px-3 py-2 hover:bg-paper">Record payment</a>
-              <a href="#" class="block px-3 py-2 hover:bg-paper">Add bill</a>
-              <a href="#" class="block px-3 py-2 hover:bg-paper">Transfer money</a>
-              <a href="#" class="block px-3 py-2 hover:bg-paper">Upload document</a>
+        <p class="mono text-[1.35rem] font-medium tracking-tight" data-kpi="revenue">Rs. 485,000</p>
+        <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          +12.4% from last month
+        </p>
+      </div>
+
+      <div class="card card-hover p-4">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Total Expenses</p>
+          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 10l3 3 3-3 5 6"/></svg>
+        </div>
+        <p class="mono text-[1.35rem] font-medium tracking-tight" data-kpi="expenses">Rs. 182,500</p>
+        <p class="text-[0.75rem] text-neg mt-2 flex items-center gap-1">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 2v6M2 5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          +4.8% from last month
+        </p>
+      </div>
+
+      <div class="card card-hover p-4">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Net Profit</p>
+          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <p class="mono text-[1.35rem] font-medium tracking-tight" data-kpi="profit">Rs. 302,500</p>
+        <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          +16.2% from last month
+        </p>
+      </div>
+
+      <div class="card card-hover p-4">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Cash Balance</p>
+          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        </div>
+        <p class="mono text-[1.35rem] font-medium tracking-tight" data-kpi="cash">Rs. 625,000</p>
+        <p class="text-[0.75rem] text-sub mt-2">Across 2 accounts</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Chart + Cash flow
+         ============================================================ -->
+    <section class="grid lg:grid-cols-3 gap-3 mb-3">
+
+      <!-- Revenue vs Expenses -->
+      <div class="card lg:col-span-2 p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-semibold text-[0.98rem] tracking-tight">Revenue vs Expenses</h3>
+            <p class="text-sub text-[0.78rem] mt-0.5">Financial performance over the selected period</p>
+          </div>
+          <div class="flex items-center gap-0.5 bg-bg rounded-md p-0.5" role="group" aria-label="Chart period">
+            <button type="button" class="period-btn" data-period="7d">7D</button>
+            <button type="button" class="period-btn active" data-period="30d">30D</button>
+            <button type="button" class="period-btn" data-period="3m">3M</button>
+            <button type="button" class="period-btn" data-period="6m">6M</button>
+            <button type="button" class="period-btn" data-period="1y">1Y</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 mb-3" aria-hidden="true">
+          <span class="flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-2.5 h-2.5 rounded-sm" style="background:#047857"></span>Revenue</span>
+          <span class="flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-2.5 h-2.5 rounded-sm" style="background:#b91c1c"></span>Expenses</span>
+        </div>
+
+        <div class="h-56" id="chartWrap">
+          <canvas id="perfChart" aria-label="Revenue and expenses chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Cash flow -->
+      <div class="card p-5 flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-[0.98rem] tracking-tight">Cash Flow</h3>
+          <span class="text-[0.7rem] text-mute mono">Last 30 days</span>
+        </div>
+
+        <div class="space-y-3.5 flex-1">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[0.82rem] text-sub">Money In</span>
+              <span class="mono text-[0.9rem] text-pos font-medium">+ Rs. 485,000</span>
+            </div>
+            <div class="h-1.5 bg-bg rounded-full overflow-hidden">
+              <div class="h-full bg-pos rounded-full" style="width: 100%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[0.82rem] text-sub">Money Out</span>
+              <span class="mono text-[0.9rem] text-neg font-medium">− Rs. 182,500</span>
+            </div>
+            <div class="h-1.5 bg-bg rounded-full overflow-hidden">
+              <div class="h-full bg-neg rounded-full" style="width: 37.6%"></div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- KPI row -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-        <div class="bg-white rounded-md border border-line p-4">
-          <p class="text-xs text-sub">Cash balance</p>
-          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="845000">₨8,45,000</p>
-          <p class="text-xs text-teal mt-1.5">↑ 8.2% vs last month</p>
-        </div>
-        <div class="bg-white rounded-md border border-line p-4">
-          <p class="text-xs text-sub">Revenue</p>
-          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="420000">₨4,20,000</p>
-          <p class="text-xs text-teal mt-1.5">↑ 12.4% vs last month</p>
-        </div>
-        <div class="bg-white rounded-md border border-line p-4">
-          <p class="text-xs text-sub">Expenses</p>
-          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="275000">₨2,75,000</p>
-          <p class="text-xs text-rust mt-1.5">↑ 4.8% vs last month</p>
-        </div>
-        <div class="bg-white rounded-md border border-line p-4">
-          <p class="text-xs text-sub">Net profit</p>
-          <p class="tick text-2xl font-medium mt-1.5 currency-value" data-npr="145000">₨1,45,000</p>
-          <p class="text-xs text-teal mt-1.5">↑ 18.6% vs last month</p>
+        <div class="mt-5 pt-4 border-t border-line">
+          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium mb-1">Net Cash Flow</p>
+          <p class="mono text-[1.25rem] font-medium text-pos">+ Rs. 302,500</p>
         </div>
       </div>
+    </section>
 
-      <!-- Chart + Health -->
-      <div class="grid lg:grid-cols-3 gap-3 mb-4">
-        <div class="lg:col-span-2 bg-white rounded-md border border-line p-5">
-          <div class="flex items-center justify-between mb-4">
-            <p class="font-serif text-lg">Financial performance</p>
-            <div class="tick flex gap-1 text-xs">
-              <button class="px-2.5 py-1 rounded bg-navy-950 text-white">6M</button>
-              <button class="px-2.5 py-1 rounded text-sub hover:bg-paper">1Y</button>
-            </div>
-          </div>
-          <div class="h-56"><canvas id="perfChart"></canvas></div>
-        </div>
+    <!-- ============================================================
+         Recent transactions + Sales overview
+         ============================================================ -->
+    <section class="grid lg:grid-cols-3 gap-3 mb-3">
 
-        <div class="bg-white rounded-md border border-line p-5 flex flex-col items-center text-center">
-          <p class="font-serif text-lg self-start">Financial health</p>
-          <div class="relative w-32 h-32 my-3">
-            <svg viewBox="0 0 120 120" class="w-full h-full -rotate-90">
-              <circle cx="60" cy="60" r="52" fill="none" stroke="#e4e2da" stroke-width="9"/>
-              <circle id="healthRing" class="ring" cx="60" cy="60" r="52" fill="none" stroke="#1f7a63" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="tick text-2xl font-medium">87</span>
-              <span class="text-[11px] text-sub">/ 100</span>
-            </div>
-          </div>
-          <ul class="text-sm text-left w-full space-y-1.5">
-            <li class="flex justify-between"><span class="text-sub">Books</span><span class="text-teal">✓</span></li>
-            <li class="flex justify-between"><span class="text-sub">Bank reconciliation</span><span class="text-teal">✓</span></li>
-            <li class="flex justify-between"><span class="text-sub">Receivables</span><span class="text-teal">✓</span></li>
-            <li class="flex justify-between"><span class="text-sub">Documents</span><span class="text-gold">⚠</span></li>
-            <li class="flex justify-between"><span class="text-sub">Transactions</span><span class="text-gold">⚠</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- AR / AP / Audit -->
-      <div class="grid md:grid-cols-3 gap-3 mb-4">
-        <a href="#" class="group bg-white rounded-md border border-line p-5 hover:border-navy-600 transition-colors">
-          <p class="text-xs text-sub">Money you're owed</p>
-          <p class="tick text-xl font-medium mt-1 currency-value" data-npr="125000">₨1,25,000</p>
-          <p class="text-xs text-sub mt-1">8 outstanding invoices</p>
-          <div class="mt-3 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-sub">Overdue</span><span class="tick text-rust currency-value" data-npr="45000">₨45,000</span></div>
-            <div class="flex justify-between"><span class="text-sub">Due this week</span><span class="tick currency-value" data-npr="30000">₨30,000</span></div>
-            <div class="flex justify-between"><span class="text-sub">Upcoming</span><span class="tick currency-value" data-npr="50000">₨50,000</span></div>
-          </div>
-        </a>
-        <a href="#" class="group bg-white rounded-md border border-line p-5 hover:border-navy-600 transition-colors">
-          <p class="text-xs text-sub">Money you owe</p>
-          <p class="tick text-xl font-medium mt-1 currency-value" data-npr="82000">₨82,000</p>
-          <p class="text-xs text-sub mt-1">5 outstanding bills</p>
-          <div class="mt-3 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-sub">Due this week</span><span class="tick text-rust currency-value" data-npr="35000">₨35,000</span></div>
-            <div class="flex justify-between"><span class="text-sub">Due next week</span><span class="tick currency-value" data-npr="27000">₨27,000</span></div>
-            <div class="flex justify-between"><span class="text-sub">Later</span><span class="tick currency-value" data-npr="20000">₨20,000</span></div>
-          </div>
-        </a>
-        <div class="bg-navy-950 text-white rounded-md p-5">
-          <p class="text-xs text-white/60">CA / audit readiness</p>
-          <p class="tick text-xl font-medium mt-1">91%</p>
-          <ul class="mt-3 space-y-1 text-xs text-white/80">
-            <li>✓ Transactions categorized</li>
-            <li>✓ Bank reconciled</li>
-            <li>⚠ 4 missing receipts</li>
-            <li>⚠ 2 unreconciled transactions</li>
-          </ul>
-          <button class="mt-3 w-full h-8 rounded bg-gold text-navy-950 text-xs font-semibold">Generate CA package</button>
-        </div>
-      </div>
-
-      <!-- Needs attention -->
-      <div class="bg-white rounded-md border border-line p-5 mb-4">
-        <p class="font-serif text-lg mb-3">Needs attention</p>
-        <div class="grid sm:grid-cols-2 gap-2">
-          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
-            <span class="text-sm">3 overdue invoices</span>
-            <span class="tick text-xs text-rust currency-value" data-npr="45000">₨45,000</span>
-          </a>
-          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
-            <span class="text-sm">7 transactions missing receipts</span>
-            <span class="text-gold text-xs">⚠</span>
-          </a>
-          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
-            <span class="text-sm">3 unreconciled bank transactions</span>
-            <span class="text-gold text-xs">⚠</span>
-          </a>
-          <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-md bg-paper hover:bg-[#efece2]">
-            <span class="text-sm">2 bills due this week</span>
-            <span class="tick text-xs currency-value" data-npr="35000">₨35,000</span>
+      <!-- Transactions -->
+      <div class="card lg:col-span-2 overflow-hidden">
+        <div class="px-5 py-4 border-b border-line flex items-center justify-between">
+          <h3 class="font-semibold text-[0.98rem] tracking-tight">Recent Transactions</h3>
+          <a href="#" class="text-[0.78rem] text-sub hover:text-ink flex items-center gap-1 transition-colors">
+            View all transactions
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
-      </div>
 
-      <!-- Startup metrics + transactions -->
-      <div class="grid lg:grid-cols-3 gap-3 mb-8">
-        <div class="bg-white rounded-md border border-line p-5">
-          <p class="font-serif text-lg mb-3">Startup metrics</p>
-          <div class="space-y-2.5 text-sm">
-            <div class="flex justify-between"><span class="text-sub">Cash available</span><span class="tick currency-value" data-npr="2460000">₨24.6L</span></div>
-            <div class="flex justify-between"><span class="text-sub">Monthly burn</span><span class="tick currency-value" data-npr="410000">₨4.1L</span></div>
-            <div class="flex justify-between"><span class="text-sub">Runway</span><span class="tick font-medium">6.0 months</span></div>
-            <div class="flex justify-between"><span class="text-sub">Revenue growth</span><span class="tick text-teal">+18%</span></div>
-            <div class="flex justify-between"><span class="text-sub">Expense growth</span><span class="tick text-rust">+8%</span></div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-2 bg-white rounded-md border border-line p-5">
-          <p class="font-serif text-lg mb-3">Recent activity</p>
-          <table class="w-full text-sm">
+        <!-- Populated state -->
+        <div id="txTableWrap" class="overflow-x-auto">
+          <table class="w-full text-[0.84rem]">
             <thead>
-              <tr class="text-xs text-sub text-left border-b border-line">
-                <th class="pb-2 font-normal">Date</th>
-                <th class="pb-2 font-normal">Description</th>
-                <th class="pb-2 font-normal">Category</th>
-                <th class="pb-2 font-normal text-right">Amount</th>
+              <tr class="text-left text-[0.72rem] uppercase tracking-wider text-sub bg-bg/60">
+                <th class="px-5 py-2.5 font-medium">Date</th>
+                <th class="px-5 py-2.5 font-medium">Description</th>
+                <th class="px-5 py-2.5 font-medium">Category</th>
+                <th class="px-5 py-2.5 font-medium">Type</th>
+                <th class="px-5 py-2.5 font-medium text-right">Amount</th>
+                <th class="px-5 py-2.5 font-medium">Status</th>
               </tr>
             </thead>
-            <tbody class="tick text-[13px]">
-              <tr class="border-b border-line">
-                <td class="py-2.5 text-sub">Sep 03</td>
-                <td class="py-2.5 font-sans">ABC Payment</td>
-                <td class="py-2.5 text-sub">Revenue</td>
-                <td class="py-2.5 text-right text-teal currency-value" data-npr="85000">+₨85,000</td>
+            <tbody class="divide-y divide-line2">
+              <tr class="row-hover">
+                <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 16</td>
+                <td class="px-5 py-3">Client Payment</td>
+                <td class="px-5 py-3 text-sub">Sales</td>
+                <td class="px-5 py-3"><span class="text-pos text-[0.78rem]">Income</span></td>
+                <td class="px-5 py-3 text-right mono text-pos whitespace-nowrap">+ Rs. 25,000</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
               </tr>
-              <tr class="border-b border-line">
-                <td class="py-2.5 text-sub">Sep 03</td>
-                <td class="py-2.5 font-sans">AWS</td>
-                <td class="py-2.5 text-sub">Cloud</td>
-                <td class="py-2.5 text-right currency-value" data-npr="12500">-₨12,500</td>
+              <tr class="row-hover">
+                <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 15</td>
+                <td class="px-5 py-3">Office Supplies</td>
+                <td class="px-5 py-3 text-sub">Expenses</td>
+                <td class="px-5 py-3"><span class="text-neg text-[0.78rem]">Expense</span></td>
+                <td class="px-5 py-3 text-right mono text-neg whitespace-nowrap">− Rs. 4,500</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
               </tr>
-              <tr class="border-b border-line">
-                <td class="py-2.5 text-sub">Sep 02</td>
-                <td class="py-2.5 font-sans">Meta Ads</td>
-                <td class="py-2.5 text-sub">Marketing</td>
-                <td class="py-2.5 text-right currency-value" data-npr="20000">-₨20,000</td>
+              <tr class="row-hover">
+                <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 14</td>
+                <td class="px-5 py-3">Product Sale</td>
+                <td class="px-5 py-3 text-sub">Sales</td>
+                <td class="px-5 py-3"><span class="text-pos text-[0.78rem]">Income</span></td>
+                <td class="px-5 py-3 text-right mono text-pos whitespace-nowrap">+ Rs. 12,000</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
               </tr>
-              <tr>
-                <td class="py-2.5 text-sub">Sep 02</td>
-                <td class="py-2.5 font-sans">XYZ Payment</td>
-                <td class="py-2.5 text-sub">Revenue</td>
-                <td class="py-2.5 text-right text-teal currency-value" data-npr="45000">+₨45,000</td>
+              <tr class="row-hover">
+                <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 13</td>
+                <td class="px-5 py-3">Cloud Subscription</td>
+                <td class="px-5 py-3 text-sub">Software</td>
+                <td class="px-5 py-3"><span class="text-neg text-[0.78rem]">Expense</span></td>
+                <td class="px-5 py-3 text-right mono text-neg whitespace-nowrap">− Rs. 2,400</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
+              </tr>
+              <tr class="row-hover">
+                <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 12</td>
+                <td class="px-5 py-3">INV-00482</td>
+                <td class="px-5 py-3 text-sub">Sales</td>
+                <td class="px-5 py-3"><span class="text-pos text-[0.78rem]">Income</span></td>
+                <td class="px-5 py-3 text-right mono text-pos whitespace-nowrap">+ Rs. 68,000</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-warn"><span class="w-1.5 h-1.5 rounded-full bg-warn" aria-hidden="true"></span>Pending</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty state -->
+        <div id="txEmpty" class="hidden px-5 py-14 text-center">
+          <div class="w-11 h-11 mx-auto mb-3 rounded-full bg-bg flex items-center justify-center text-mute">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+          </div>
+          <p class="text-[0.95rem] font-medium mb-1">No transactions yet</p>
+          <p class="text-sub text-[0.85rem] max-w-sm mx-auto mb-4">
+            Start recording your first transaction to see your financial activity here.
+          </p>
+          <button type="button" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors inline-flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Transaction
+          </button>
+        </div>
+      </div>
+
+      <!-- Sales Overview -->
+      <div class="card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-[0.98rem] tracking-tight">Sales Overview</h3>
+          <span class="text-[0.7rem] text-mute mono">This month</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-x-4 gap-y-3.5 mb-5">
+          <div>
+            <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium mb-1">Total Sales</p>
+            <p class="mono text-[0.98rem] font-medium">Rs. 485,000</p>
+          </div>
+          <div>
+            <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium mb-1">Orders</p>
+            <p class="mono text-[0.98rem] font-medium">48</p>
+          </div>
+          <div>
+            <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium mb-1">Avg. Order</p>
+            <p class="mono text-[0.98rem] font-medium">Rs. 10,104</p>
+          </div>
+          <div>
+            <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium mb-1">Outstanding</p>
+            <p class="mono text-[0.98rem] font-medium text-warn">Rs. 32,000</p>
+          </div>
+        </div>
+
+        <!-- Mini sales trend -->
+        <div class="h-16 mb-5" aria-hidden="true">
+          <svg viewBox="0 0 240 60" preserveAspectRatio="none" class="w-full h-full">
+            <defs>
+              <linearGradient id="salesGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#047857" stop-opacity="0.14"/>
+                <stop offset="100%" stop-color="#047857" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,48 C20,44 40,38 60,40 C80,42 100,32 120,28 C140,24 160,30 180,22 C200,14 220,18 240,10 L240,60 L0,60 Z" fill="url(#salesGrad)"/>
+            <path d="M0,48 C20,44 40,38 60,40 C80,42 100,32 120,28 C140,24 160,30 180,22 C200,14 220,18 240,10" fill="none" stroke="#047857" stroke-width="1.6"/>
+          </svg>
+        </div>
+
+        <a href="#" class="inline-flex items-center justify-center gap-1.5 w-full h-9 rounded-md border border-line text-[0.82rem] font-medium text-ink hover:border-ink hover:bg-bg transition-colors">
+          View Sales
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Outstanding payments + Business insights
+         ============================================================ -->
+    <section class="grid lg:grid-cols-3 gap-3 mb-3">
+
+      <!-- Outstanding payments -->
+      <div class="card lg:col-span-2 overflow-hidden">
+        <div class="px-5 py-4 border-b border-line flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <h3 class="font-semibold text-[0.98rem] tracking-tight">Outstanding Payments</h3>
+            <span class="text-[0.7rem] mono px-1.5 py-0.5 rounded bg-bg text-sub">3</span>
+          </div>
+          <a href="#" class="text-[0.78rem] text-sub hover:text-ink flex items-center gap-1 transition-colors">
+            View invoices
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-[0.84rem]">
+            <thead>
+              <tr class="text-left text-[0.72rem] uppercase tracking-wider text-sub bg-bg/60">
+                <th class="px-5 py-2.5 font-medium">Customer</th>
+                <th class="px-5 py-2.5 font-medium">Invoice</th>
+                <th class="px-5 py-2.5 font-medium">Due Date</th>
+                <th class="px-5 py-2.5 font-medium text-right">Amount</th>
+                <th class="px-5 py-2.5 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line2">
+              <tr class="row-hover">
+                <td class="px-5 py-3">Himalayan Coffee Co.</td>
+                <td class="px-5 py-3 mono text-[0.78rem] text-sub">INV-00479</td>
+                <td class="px-5 py-3 mono text-[0.78rem] text-sub">Sep 12, 2025</td>
+                <td class="px-5 py-3 text-right mono">Rs. 42,000</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-neg"><span class="w-1.5 h-1.5 rounded-full bg-neg" aria-hidden="true"></span>Overdue</span></td>
+              </tr>
+              <tr class="row-hover">
+                <td class="px-5 py-3">Everest Retail Group</td>
+                <td class="px-5 py-3 mono text-[0.78rem] text-sub">INV-00481</td>
+                <td class="px-5 py-3 mono text-[0.78rem] text-sub">Sep 22, 2025</td>
+                <td class="px-5 py-3 text-right mono">Rs. 68,000</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-warn"><span class="w-1.5 h-1.5 rounded-full bg-warn" aria-hidden="true"></span>Due soon</span></td>
+              </tr>
+              <tr class="row-hover">
+                <td class="px-5 py-3">Lalitpur Design Studio</td>
+                <td class="px-5 py-3 mono text-[0.78rem] text-sub">INV-00483</td>
+                <td class="px-5 py-3 mono text-[0.78rem] text-sub">Oct 01, 2025</td>
+                <td class="px-5 py-3 text-right mono">Rs. 36,500</td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-mute" aria-hidden="true"></span>Upcoming</span></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <p class="text-center text-xs text-sub pt-4 border-t border-line">FinCore · Simple for the business owner, rigorous underneath.</p>
-    </div>
+      <!-- Business insights -->
+      <div class="card p-5">
+        <div class="flex items-center gap-2 mb-4">
+          <h3 class="font-semibold text-[0.98rem] tracking-tight">Business Insights</h3>
+          <span class="text-[0.65rem] uppercase tracking-wider text-mute mono">Auto</span>
+        </div>
+
+        <ul class="space-y-3">
+          <li class="flex gap-3">
+            <span class="w-1 rounded-full bg-pos shrink-0 self-stretch" aria-hidden="true"></span>
+            <p class="text-[0.85rem] leading-snug text-sub">
+              Revenue is up <span class="text-ink font-medium">12.4%</span> compared to last month.
+            </p>
+          </li>
+          <li class="flex gap-3">
+            <span class="w-1 rounded-full bg-neg shrink-0 self-stretch" aria-hidden="true"></span>
+            <p class="text-[0.85rem] leading-snug text-sub">
+              Expenses in <span class="text-ink font-medium">Software</span> increased by 22% this month.
+            </p>
+          </li>
+          <li class="flex gap-3">
+            <span class="w-1 rounded-full bg-warn shrink-0 self-stretch" aria-hidden="true"></span>
+            <p class="text-[0.85rem] leading-snug text-sub">
+              <span class="text-ink font-medium">1 invoice</span> is overdue and 1 is approaching its due date.
+            </p>
+          </li>
+          <li class="flex gap-3">
+            <span class="w-1 rounded-full bg-ink shrink-0 self-stretch" aria-hidden="true"></span>
+            <p class="text-[0.85rem] leading-snug text-sub">
+              <span class="text-ink font-medium">Website Development</span> accounts for 38% of this month's sales.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Quick actions
+         ============================================================ -->
+    <section class="card p-5 mb-6">
+      <h3 class="font-semibold text-[0.98rem] tracking-tight mb-4">Quick Actions</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+          </span>
+          <span class="text-[0.82rem] font-medium">Add Sale</span>
+        </button>
+        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          </span>
+          <span class="text-[0.82rem] font-medium">Create Invoice</span>
+        </button>
+        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+          </span>
+          <span class="text-[0.82rem] font-medium">Add Expense</span>
+        </button>
+        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+          </span>
+          <span class="text-[0.82rem] font-medium">Add Product</span>
+        </button>
+        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>
+          </span>
+          <span class="text-[0.82rem] font-medium">Add Customer</span>
+        </button>
+        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          </span>
+          <span class="text-[0.82rem] font-medium">Record Payment</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer line -->
+    <p class="text-center text-[0.72rem] text-mute">
+      FinCore · Simple for the business owner, rigorous underneath.
+    </p>
+
   </main>
 </div>
 
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
 <script>
-  // Currency conversion
-  const NPR_TO_USD_RATE = 133.5; // 1 USD = 133.5 NPR (update this rate as needed)
-  let currentCurrency = 'NPR';
-  const currencySelect = document.getElementById('currencySelect');
-  const chart = initChart();
+(function () {
+  'use strict';
 
-  function formatNPR(amount) {
-    return '₨' + amount.toLocaleString('en-IN');
-  }
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function formatUSD(amount) {
-    return '$' + (amount / NPR_TO_USD_RATE).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    });
-  }
+  /* ============================================================
+     Today's date
+     ============================================================ */
+  (function () {
+    var el = document.getElementById('todayDate');
+    if (!el) return;
+    var d = new Date();
+    var opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    el.textContent = d.toLocaleDateString('en-US', opts);
+  })();
 
-  function formatCurrency(amount, currency) {
-    if (currency === 'USD') {
-      return formatUSD(amount);
+  /* ============================================================
+     Mobile sidebar
+     ============================================================ */
+  (function () {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    var toggle  = document.getElementById('menuToggle');
+    if (!sidebar || !overlay || !toggle) return;
+
+    function open() {
+      sidebar.classList.add('open');
+      overlay.classList.remove('hidden');
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
     }
-    return formatNPR(amount);
-  }
+    function close() {
+      sidebar.classList.remove('open');
+      overlay.classList.add('hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    toggle.addEventListener('click', function () {
+      sidebar.classList.contains('open') ? close() : open();
+    });
+    overlay.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        close(); toggle.focus();
+      }
+    });
+    var mq = window.matchMedia('(min-width: 1024px)');
+    mq.addEventListener('change', function (e) { if (e.matches) close(); });
+  })();
 
-  function updateCurrencyDisplay() {
-    currentCurrency = currencySelect.value;
-    document.querySelectorAll('.currency-value').forEach(el => {
-      const nprAmount = parseInt(el.dataset.npr);
-      if (nprAmount) {
-        el.textContent = formatCurrency(nprAmount, currentCurrency);
-        // Add +/- signs back for transaction amounts
-        if (el.dataset.npr && el.textContent.includes('₹')) {
-          // Keep as is
-        }
-      }
+  /* ============================================================
+     Demo toggle — switches all data-bearing sections between
+     populated and empty. In production this would be driven by
+     whether the business has any transactions.
+     ============================================================ */
+  (function () {
+    var btn = document.getElementById('demoToggle');
+    var label = document.getElementById('demoLabel');
+    var dot = document.getElementById('demoDot');
+    var txTable = document.getElementById('txTableWrap');
+    var txEmpty = document.getElementById('txEmpty');
+    if (!btn) return;
+
+    var on = true;
+    btn.addEventListener('click', function () {
+      on = !on;
+      label.textContent = 'Demo data: ' + (on ? 'on' : 'off');
+      dot.style.background = on ? '#047857' : '#9ca3af';
+      txTable.classList.toggle('hidden', !on);
+      txEmpty.classList.toggle('hidden', on);
     });
-    
-    // Update transaction signs
-    document.querySelectorAll('tbody .currency-value').forEach(el => {
-      const nprAmount = parseInt(el.dataset.npr);
-      if (nprAmount) {
-        const sign = el.classList.contains('text-teal') ? '+' : '-';
-        el.textContent = sign + formatCurrency(nprAmount, currentCurrency);
-      }
-    });
-    
-    // Update chart
-    updateChart();
+  })();
+
+  /* ============================================================
+     Period toggle (chart)
+     ============================================================ */
+  var PERIOD_DATA = {
+    '7d': {
+      labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      revenue:  [52000, 61000, 48000, 74000, 89000, 66000, 95000],
+      expenses: [18000, 22000, 15000, 26000, 31000, 24000, 28500]
+    },
+    '30d': {
+      labels: ['W1','W2','W3','W4'],
+      revenue:  [98000, 118000, 128000, 141000],
+      expenses: [38000, 42000, 48000, 54500]
+    },
+    '3m': {
+      labels: ['Jul','Aug','Sep'],
+      revenue:  [412000, 445000, 485000],
+      expenses: [168000, 174000, 182500]
+    },
+    '6m': {
+      labels: ['Apr','May','Jun','Jul','Aug','Sep'],
+      revenue:  [328000, 356000, 382000, 412000, 445000, 485000],
+      expenses: [142000, 148000, 158000, 168000, 174000, 182500]
+    },
+    '1y': {
+      labels: ['Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'],
+      revenue:  [242000, 258000, 296000, 268000, 284000, 302000, 328000, 356000, 382000, 412000, 445000, 485000],
+      expenses: [118000, 124000, 132000, 128000, 132000, 136000, 142000, 148000, 158000, 168000, 174000, 182500]
+    }
+  };
+
+  var chart = null;
+
+  function formatRs(n) {
+    return 'Rs. ' + Math.round(n).toLocaleString('en-US');
   }
 
   function initChart() {
-    const ctx = document.getElementById('perfChart').getContext('2d');
-    const revGrad = ctx.createLinearGradient(0,0,0,220);
-    revGrad.addColorStop(0,'rgba(31,122,99,0.16)');
-    revGrad.addColorStop(1,'rgba(31,122,99,0)');
-    const expGrad = ctx.createLinearGradient(0,0,0,220);
-    expGrad.addColorStop(0,'rgba(163,73,46,0.12)');
-    expGrad.addColorStop(1,'rgba(163,73,46,0)');
+    var ctx = document.getElementById('perfChart');
+    if (!ctx) return null;
+
+    var revGrad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 220);
+    revGrad.addColorStop(0, 'rgba(4,120,87,0.10)');
+    revGrad.addColorStop(1, 'rgba(4,120,87,0)');
+    var expGrad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 220);
+    expGrad.addColorStop(0, 'rgba(185,28,28,0.08)');
+    expGrad.addColorStop(1, 'rgba(185,28,28,0)');
 
     return new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['Mar','Apr','May','Jun','Jul','Aug'],
+        labels: PERIOD_DATA['30d'].labels,
         datasets: [
-          { label:'Revenue', data:[3.8,4.1,4.55,4.98,5.6,6.12].map(v=>v*100000), borderColor:'#1f7a63', backgroundColor:revGrad, fill:true, tension:0.4, pointRadius:0, borderWidth:2.25 },
-          { label:'Expenses', data:[2.55,2.68,2.72,2.9,3.01,3.08].map(v=>v*100000), borderColor:'#a3492e', backgroundColor:expGrad, fill:true, tension:0.4, pointRadius:0, borderWidth:2.25 },
+          {
+            label: 'Revenue',
+            data: PERIOD_DATA['30d'].revenue,
+            borderColor: '#047857',
+            backgroundColor: revGrad,
+            fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 4,
+            borderWidth: 2
+          },
+          {
+            label: 'Expenses',
+            data: PERIOD_DATA['30d'].expenses,
+            borderColor: '#b91c1c',
+            backgroundColor: expGrad,
+            fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 4,
+            borderWidth: 2
+          }
         ]
       },
       options: {
-        responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:8, boxHeight:8, usePointStyle:true, font:{ family:'Inter', size:11 }, color:'#5b6272' } } },
-        scales:{
-          y:{ grid:{ color:'#e4e2da', borderDash:[3,3] }, border:{ display:false }, ticks:{ font:{ family:'IBM Plex Mono', size:10 }, color:'#5b6272', callback: function(v) {
-            if (currentCurrency === 'USD') {
-              return '$' + (v / NPR_TO_USD_RATE / 1000).toFixed(0) + 'K';
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: reduce ? false : { duration: 500, easing: 'easeOutCubic' },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0f1218',
+            titleColor: '#fafafa',
+            bodyColor: '#fafafa',
+            titleFont: { family: 'IBM Plex Mono', size: 11, weight: '500' },
+            bodyFont: { family: 'IBM Plex Mono', size: 12 },
+            padding: 10,
+            cornerRadius: 6,
+            displayColors: true,
+            boxWidth: 8, boxHeight: 8, boxPadding: 4,
+            callbacks: {
+              label: function (ctx) {
+                return '  ' + ctx.dataset.label + ':  ' + formatRs(ctx.parsed.y);
+              }
             }
-            return '₨' + (v/100000).toFixed(1) + 'L';
-          } } },
-          x:{ grid:{ display:false }, border:{ display:false }, ticks:{ font:{ family:'IBM Plex Mono', size:10 }, color:'#5b6272' } }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: '#f0f1f3', drawBorder: false },
+            border: { display: false },
+            ticks: {
+              font: { family: 'IBM Plex Mono', size: 10 },
+              color: '#9ca3af',
+              padding: 8,
+              callback: function (v) {
+                if (v >= 1000000) return 'Rs. ' + (v / 1000000).toFixed(1) + 'M';
+                if (v >= 1000) return 'Rs. ' + (v / 1000).toFixed(0) + 'K';
+                return 'Rs. ' + v;
+              }
+            }
+          },
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: {
+              font: { family: 'IBM Plex Mono', size: 10 },
+              color: '#9ca3af',
+              padding: 6
+            }
+          }
         }
       }
     });
   }
 
-  function updateChart() {
-    // Update chart data based on currency
-    const datasets = chart.data.datasets;
-    datasets.forEach(dataset => {
-      if (currentCurrency === 'USD') {
-        dataset.data = dataset.data.map(value => value / NPR_TO_USD_RATE);
-      } else {
-        dataset.data = dataset.data.map(value => value * NPR_TO_USD_RATE);
-      }
-    });
+  function setPeriod(period) {
+    if (!chart || !PERIOD_DATA[period]) return;
+    chart.data.labels = PERIOD_DATA[period].labels;
+    chart.data.datasets[0].data = PERIOD_DATA[period].revenue;
+    chart.data.datasets[1].data = PERIOD_DATA[period].expenses;
     chart.update();
   }
 
-  // Listen for currency changes
-  currencySelect.addEventListener('change', updateCurrencyDisplay);
+  document.querySelectorAll('.period-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.period-btn').forEach(function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      setPeriod(btn.getAttribute('data-period'));
+    });
+  });
 
-  // Initial currency display
-  updateCurrencyDisplay();
+  chart = initChart();
 
-  // Health ring animation
-  const ring = document.getElementById('healthRing');
-  const c = 326.7, target = 87;
-  const start = performance.now();
-  function tick(now){
-    const p = Math.min((now-start)/900,1);
-    const eased = 1-Math.pow(1-p,3);
-    ring.setAttribute('stroke-dashoffset', c - c*(target/100)*eased);
-    if(p<1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+  /* ============================================================
+     Company dropdown (top bar)
+     ============================================================ */
+  (function () {
+    var btn = document.getElementById('companyBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      // In a real app: toggle a dropdown menu.
+      // Visual feedback only for now.
+      btn.setAttribute('aria-expanded', btn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+    });
+  })();
 
-  // Mobile sidebar toggle
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('overlay');
-  const menuToggle = document.getElementById('menuToggle');
-  function openMenu(){ sidebar.classList.add('open'); overlay.classList.remove('hidden'); overlay.classList.add('show'); }
-  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.add('hidden'); overlay.classList.remove('show'); }
-  menuToggle.addEventListener('click', () => sidebar.classList.contains('open') ? closeMenu() : openMenu());
-  overlay.addEventListener('click', closeMenu);
-  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { if (window.innerWidth < 1024) closeMenu(); }));
+})();
 </script>
 </body>
 </html>

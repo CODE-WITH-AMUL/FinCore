@@ -4,20 +4,16 @@ from django.contrib import messages
 
 from .models import CompanyInformation, UserProfileData
 
-
 @login_required
 def userprofile(request):
-
-    try:
-        user_profile = UserProfileData.objects.get(
-            user=request.user
-        )
-    except UserProfileData.DoesNotExist:
-        messages.error(request, "User profile not found.")
-        return redirect("home")
+    user_profile, _ = UserProfileData.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "name": request.user.get_full_name(),
+        },
+    )
 
     if request.method == "POST":
-
         name = request.POST.get("name", "").strip()
         company_id = request.POST.get("company")
         bio = request.POST.get("bio", "").strip()
@@ -54,11 +50,9 @@ def userprofile(request):
 
         return redirect("userprofile")
 
-    company_info = user_profile.company
-
     context = {
         "user_profile": user_profile,
-        "company_info": company_info,
+        "company_info": user_profile.company,
     }
 
     return render(
@@ -66,7 +60,6 @@ def userprofile(request):
         "pages/profile.html",
         context
     )
-
 
 @login_required
 def company_profile(request, company_id):
@@ -89,6 +82,6 @@ def company_profile(request, company_id):
 
     return render(
         request,
-        "accounts/company_profile.html",
+        "pages/company_profile.html",
         context
     )

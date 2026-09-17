@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 EXTRA_APPS = [
     'configurepage',
     "accounts",
+    "accountings",  
 ]
 INSTALLED_APPS += EXTRA_APPS
 

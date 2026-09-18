@@ -1,780 +1,1461 @@
-
 {% load static %}
 
-{% block title %}My Profile · FinCore{% endblock %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-{% block extra_head %}
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="{% static 'css/profile.css' %}" />
-{% endblock %}
+    <title>My Profile — FinCore</title>
 
-{% block content %}
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<div class="pf-page" id="profilePage">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- ============================================================
-       Sidebar
-       ============================================================ -->
-  <aside class="pf-sidebar" id="pfSidebar" aria-label="Primary">
-    <div class="pf-sidebar-brand">
-      <a href="{% url 'home' %}" class="pf-brand" aria-label="FinCore home">
-        <span class="pf-brand-mark" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-            <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
-            <path d="M6 13.5L9 9l2.5 3L14 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-        <span class="pf-brand-name">FinCore</span>
-      </a>
-    </div>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: "#0f1218",
+              sub: "#6b7280",
+              mute: "#9ca3af",
+              line: "#e5e7eb",
+              line2: "#f0f1f3",
+              bg: "#fafafa",
+              card: "#ffffff",
+              pos: "#047857",
+              posSoft: "#ecfdf5",
+              neg: "#b91c1c",
+              negSoft: "#fef2f2",
+              warn: "#b45309",
+              warnSoft: "#fffbeb",
+              accent: "#111827",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
+            },
+            borderRadius: {
+              md: "6px",
+              lg: "8px",
+            },
+          },
+        },
+      };
+    </script>
 
-    <nav class="pf-sidebar-nav">
-      <ul>
-        <li><a href="{% url 'home' %}" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-          Dashboard
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
-          Sales
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          Purchases
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
-          Expenses
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
-          Products
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>
-          Customers
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
-          Suppliers
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
-          Invoices
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
-          Payments
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>
-          Taxes
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          Investments
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg>
-          Reports
-        </a></li>
-        <li><a href="#" class="pf-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
-          Settings
-        </a></li>
-      </ul>
-    </nav>
+    <style>
+      html,
+      body {
+        background: #fafafa;
+      }
 
-    <div class="pf-sidebar-footer">
-      <a href="{% url 'userprofile' %}" class="pf-nav-link is-active" aria-current="page">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-        Profile
-      </a>
-      <a href="#" class="pf-nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
-        Company
-      </a>
-      <form method="post" action="{% url 'logout' %}" class="pf-logout-form">
-        {% csrf_token %}
-        <button type="submit" class="pf-nav-link pf-nav-link-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
-          Logout
-        </button>
-      </form>
-    </div>
-  </aside>
+      .mono {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-feature-settings: "tnum";
+      }
 
-  <!-- Mobile sidebar overlay -->
-  <div class="pf-overlay" id="pfOverlay" aria-hidden="true"></div>
+      /* ============================================================
+         SCROLLBAR
+      ============================================================ */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d6d8dc;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #b8bcc2;
+      }
 
-  <!-- ============================================================
-       Main column
-       ============================================================ -->
-  <div class="pf-main">
+      :focus-visible {
+        outline: 2px solid #111827;
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
 
-    <!-- Mobile top bar -->
-    <header class="pf-topbar">
-      <button type="button" class="pf-menu-btn" id="pfMenuBtn" aria-label="Open navigation" aria-controls="pfSidebar" aria-expanded="false">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-      </button>
-      <span class="pf-topbar-title">My Profile</span>
-    </header>
+      /* ============================================================
+         SIDEBAR
+      ============================================================ */
+      #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 15.5rem;
+        z-index: 40;
+        transition: transform 0.24s cubic-bezier(0.32, 0.72, 0, 1);
+      }
 
-    <div class="pf-content">
+      #mainWrap {
+        margin-left: 15.5rem;
+        transition: margin-left 0.24s cubic-bezier(0.32, 0.72, 0, 1);
+      }
 
-      <!-- ============================================================
-           Page header
-           ============================================================ -->
-      <div class="pf-page-header">
-        <div>
-          <h1 class="pf-page-title">My Profile</h1>
-          <p class="pf-page-sub">Manage your personal details, company information, account security, and preferences.</p>
-        </div>
-        <button type="button" class="pf-btn pf-btn-primary" id="editProfileBtn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
-          Edit Profile
-        </button>
+      @media (max-width: 1023px) {
+        #sidebar {
+          transform: translateX(-100%);
+          z-index: 60;
+        }
+        #sidebar.open {
+          transform: translateX(0);
+          box-shadow: 24px 0 60px rgba(0, 0, 0, 0.28);
+        }
+        #mainWrap {
+          margin-left: 0;
+        }
+      }
+
+      .side-link {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #9ca3af;
+        transition:
+          background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          color 0.16s cubic-bezier(0.32, 0.72, 0, 1);
+        position: relative;
+      }
+
+      .side-link:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e5e7eb;
+      }
+
+      .side-link.active {
+        background: rgba(255, 255, 255, 0.09);
+        color: #ffffff;
+      }
+
+      .side-link.active::before {
+        content: "";
+        position: absolute;
+        left: -0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 18px;
+        background: #ffffff;
+        border-radius: 0 2px 2px 0;
+      }
+
+      .side-section {
+        font-size: 0.65rem;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.32);
+        padding: 0 0.75rem;
+        margin-top: 1.25rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .side-section:first-child {
+        margin-top: 0;
+      }
+
+      /* ============================================================
+         CARDS
+      ============================================================ */
+      .card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .card-hover {
+          transition:
+            border-color 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+            box-shadow 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .card-hover:hover {
+          border-color: #d1d5db;
+          box-shadow: 0 6px 24px -18px rgba(15, 18, 24, 0.25);
+        }
+      }
+
+      /* ============================================================
+         FORM CONTROLS
+      ============================================================ */
+      .fc-input {
+        width: 100%;
+        height: 2.25rem;
+        padding: 0 0.75rem;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        font-size: 0.85rem;
+        color: #0f1218;
+        transition:
+          border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          background 0.16s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .fc-input::placeholder {
+        color: #9ca3af;
+      }
+      .fc-input:hover:not(:read-only):not(:disabled) {
+        border-color: #d1d5db;
+      }
+      .fc-input:focus {
+        outline: none;
+        border-color: #111827;
+      }
+      .fc-input:read-only,
+      .fc-input:disabled {
+        background: #fafafa;
+        color: #6b7280;
+        cursor: not-allowed;
+      }
+
+      .fc-textarea {
+        height: auto;
+        min-height: 5rem;
+        padding: 0.55rem 0.75rem;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      .fc-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.65rem center;
+        padding-right: 2rem;
+      }
+
+      .fc-label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #0f1218;
+        margin-bottom: 0.375rem;
+      }
+
+      .fc-help {
+        margin-top: 0.375rem;
+        font-size: 0.72rem;
+        color: #9ca3af;
+      }
+
+      /* ============================================================
+         BADGES
+      ============================================================ */
+      .fc-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: #fafafa;
+        color: #6b7280;
+        border: 1px solid #e5e7eb;
+      }
+      .fc-badge-pos {
+        background: #ecfdf5;
+        color: #047857;
+        border-color: #d1fae5;
+      }
+      .fc-badge-ink {
+        background: #0f1218;
+        color: #ffffff;
+        border-color: #0f1218;
+      }
+
+      .fc-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #9ca3af;
+        flex-shrink: 0;
+      }
+      .fc-dot-pos {
+        background: #047857;
+      }
+      .fc-dot-warn {
+        background: #b45309;
+      }
+
+      /* ============================================================
+         AVATAR
+      ============================================================ */
+      .pf-avatar-wrap {
+        position: relative;
+        width: 5rem;
+        height: 5rem;
+        flex-shrink: 0;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        background: #fafafa;
+      }
+      .pf-avatar-wrap img,
+      .pf-avatar-initial {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #0f1218;
+        background: #ffffff;
+      }
+      .pf-avatar-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .pf-avatar-trigger {
+        position: absolute;
+        inset: 0;
+        cursor: pointer;
+        z-index: 2;
+      }
+      .pf-avatar-overlay {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0.25rem 0;
+        text-align: center;
+        font-size: 0.65rem;
+        font-weight: 500;
+        color: #ffffff;
+        background: rgba(15, 18, 24, 0.72);
+        opacity: 0;
+        transition: opacity 0.16s cubic-bezier(0.32, 0.72, 0, 1);
+        pointer-events: none;
+      }
+      .pf-avatar-wrap:hover .pf-avatar-overlay,
+      .pf-avatar-wrap:focus-within .pf-avatar-overlay {
+        opacity: 1;
+      }
+
+      /* ============================================================
+         TOGGLE
+      ============================================================ */
+      .fc-toggle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .fc-toggle input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .fc-toggle-track {
+        display: inline-block;
+        width: 2.25rem;
+        height: 1.25rem;
+        border-radius: 999px;
+        background: #e5e7eb;
+        position: relative;
+        transition: background 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .fc-toggle-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 999px;
+        background: #ffffff;
+        box-shadow: 0 1px 2px rgba(15, 18, 24, 0.15);
+        transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .fc-toggle input:checked + .fc-toggle-track {
+        background: #0f1218;
+      }
+      .fc-toggle input:checked + .fc-toggle-track .fc-toggle-thumb {
+        transform: translateX(1rem);
+      }
+      .fc-toggle input:focus-visible + .fc-toggle-track {
+        outline: 2px solid #111827;
+        outline-offset: 2px;
+      }
+      .fc-toggle input:disabled + .fc-toggle-track {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      /* ============================================================
+         DETAIL GRID
+      ============================================================ */
+      .pf-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem 1.5rem;
+      }
+      @media (max-width: 640px) {
+        .pf-detail-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .pf-detail-grid > div {
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #f0f1f3;
+      }
+      .pf-detail-grid > div:last-child,
+      .pf-detail-grid > div:nth-last-child(2) {
+        border-bottom: 0;
+      }
+      .pf-detail-grid dt {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #9ca3af;
+        font-weight: 500;
+        margin-bottom: 0.2rem;
+      }
+      .pf-detail-grid dd {
+        font-size: 0.85rem;
+        color: #0f1218;
+        word-break: break-word;
+      }
+
+      /* ============================================================
+         ROW LIST
+      ============================================================ */
+      .pf-list-rows {
+        display: block;
+      }
+      .pf-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid #f0f1f3;
+      }
+      .pf-row:first-child {
+        padding-top: 0;
+      }
+      .pf-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .pf-row-text {
+        flex: 1;
+        min-width: 0;
+      }
+      .pf-row-title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #0f1218;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+      .pf-row-sub {
+        font-size: 0.78rem;
+        color: #6b7280;
+        margin-top: 0.15rem;
+      }
+
+      /* ============================================================
+         BUTTONS
+      ============================================================ */
+      .fc-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        height: 2.25rem;
+        padding: 0 0.875rem;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition:
+          background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          transform 0.12s cubic-bezier(0.32, 0.72, 0, 1);
+        white-space: nowrap;
+      }
+      .fc-btn:active {
+        transform: scale(0.98);
+      }
+      .fc-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .fc-btn-primary {
+        background: #0f1218;
+        color: #ffffff;
+      }
+      .fc-btn-primary:hover:not(:disabled) {
+        background: #000000;
+      }
+      .fc-btn-ghost {
+        background: #ffffff;
+        border-color: #e5e7eb;
+        color: #6b7280;
+      }
+      .fc-btn-ghost:hover:not(:disabled) {
+        border-color: #0f1218;
+        color: #0f1218;
+      }
+      .fc-btn-danger {
+        background: #ffffff;
+        border-color: #fecaca;
+        color: #b91c1c;
+      }
+      .fc-btn-danger:hover:not(:disabled) {
+        background: #fef2f2;
+        border-color: #b91c1c;
+      }
+      .fc-btn-sm {
+        height: 2rem;
+        padding: 0 0.75rem;
+        font-size: 0.78rem;
+      }
+
+      /* ============================================================
+         MODAL
+      ============================================================ */
+      .fc-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .fc-modal.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .fc-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .fc-modal-card {
+        position: relative;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 26rem;
+        padding: 1.25rem;
+        transform: translateY(8px) scale(0.98);
+        transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .fc-modal.is-open .fc-modal-card {
+        transform: translateY(0) scale(1);
+      }
+
+      /* ============================================================
+         TOASTS
+      ============================================================ */
+      .fc-toasts {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        z-index: 120;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        pointer-events: none;
+      }
+      .fc-toast {
+        background: #0f1218;
+        color: #ffffff;
+        font-size: 0.82rem;
+        padding: 0.6rem 0.875rem;
+        border-radius: 6px;
+        border: 1px solid #0f1218;
+        max-width: 20rem;
+        box-shadow: 0 10px 30px -12px rgba(15, 18, 24, 0.35);
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+          opacity 0.22s cubic-bezier(0.32, 0.72, 0, 1),
+          transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+        pointer-events: auto;
+      }
+      .fc-toast.is-in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .fc-toast.is-success {
+        background: #047857;
+        border-color: #047857;
+      }
+      .fc-toast.is-error {
+        background: #b91c1c;
+        border-color: #b91c1c;
+      }
+
+      /* ============================================================
+         SECTION HEADERS
+      ============================================================ */
+      .pf-card-head {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+      .pf-card-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: #0f1218;
+      }
+      .pf-card-body {
+        padding: 1.25rem;
+      }
+      .pf-card-body-tight {
+        padding: 0.5rem 1.25rem;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="text-ink font-sans antialiased">
+    <!-- Mobile overlay -->
+    <div
+      id="overlay"
+      class="hidden fixed inset-0 bg-black/50 z-50 lg:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================ -->
+    <aside
+      id="sidebar"
+      class="flex flex-col bg-ink text-white/90"
+      aria-label="Primary"
+    >
+      <div class="px-5 pt-5 pb-4 border-b border-white/10">
+        <a href="/" class="flex items-center gap-2.5" aria-label="FinCore home">
+          <span
+            class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink"
+            aria-hidden="true"
+          >
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M6 13.5L9 9l2.5 3L14 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="font-semibold text-[0.98rem] tracking-tight text-white">FinCore</span>
+        </a>
       </div>
 
-      <!-- ============================================================
-           Profile summary
-           ============================================================ -->
-      <section class="pf-card pf-summary" aria-label="Profile summary">
-        <div class="pf-avatar" id="pfAvatarWrap">
-          {% if user_profile.profile_picture %}
-            <img id="pfAvatarImg" src="{{ user_profile.profile_picture.url }}" alt="Profile picture" />
-          {% else %}
-            <div class="pf-avatar-initial" id="pfAvatarImg" role="img" aria-label="Default profile picture">
-              {% firstof user_profile.name request.user.get_full_name request.user.username "U" as disp %}
-              {{ disp|slice:":1"|upper }}
-            </div>
-          {% endif %}
-          <input type="file" id="pfAvatarInput" name="profile_picture" accept="image/*" class="pf-sr-only" aria-label="Upload new profile photo" />
-          <label for="pfAvatarInput" class="pf-avatar-trigger" tabindex="0"><span class="pf-sr-only">Change profile photo</span></label>
-          <div class="pf-avatar-overlay" aria-hidden="true">Change</div>
-        </div>
-
-        <div class="pf-summary-text">
-          <h2 class="pf-summary-name">
-            {% firstof user_profile.name request.user.get_full_name request.user.username "Add your name" %}
-          </h2>
-          <p class="pf-summary-email">{{ request.user.email|default:"No email on file" }}</p>
-          <div class="pf-summary-badges">
-            <span class="pf-badge pf-badge-role">{{ user_role|default:"Administrator" }}</span>
-            <span class="pf-badge pf-badge-status">
-              <span class="pf-dot pf-dot-pos" aria-hidden="true"></span>
-              {{ account_status|default:"Active" }}
-            </span>
-          </div>
-        </div>
-
-        <div class="pf-summary-actions">
-          <label for="pfAvatarInput" class="pf-btn pf-btn-ghost pf-btn-sm">Change Photo</label>
-        </div>
-      </section>
-
-      <!-- ============================================================
-           Personal information
-           ============================================================ -->
-      <section class="pf-card" aria-labelledby="pfPersonalTitle">
-        <header class="pf-card-head">
-          <h2 class="pf-card-title" id="pfPersonalTitle">Personal Information</h2>
-        </header>
-
-        <form method="post" enctype="multipart/form-data" id="pfPersonalForm" class="pf-form">
-          {% csrf_token %}
-
-          <div class="pf-grid-2">
-            <div class="pf-field">
-              <label for="pfName" class="pf-label">Full Name</label>
-              <input type="text" id="pfName" name="name" maxlength="120" autocomplete="name"
-                     value="{{ user_profile.name|default:'' }}"
-                     placeholder="Add your name"
-                     class="pf-input" />
-            </div>
-
-            <div class="pf-field">
-              <label for="pfEmail" class="pf-label">
-                Email Address
-                <span class="pf-label-hint" title="Contact support to change your sign-in email">Read-only</span>
-              </label>
-              <input type="email" id="pfEmail" name="email" readonly
-                     value="{{ request.user.email|default:'' }}"
-                     placeholder="No email on file"
-                     class="pf-input pf-input-readonly"
-                     aria-describedby="pfEmailHelp" />
-              <p id="pfEmailHelp" class="pf-help">This is your sign-in email. Contact support to change it.</p>
-            </div>
-
-            <div class="pf-field">
-              <label for="pfPhone" class="pf-label">Phone Number</label>
-              <input type="tel" id="pfPhone" name="phone" maxlength="24" autocomplete="tel"
-                     value="{{ user_profile.phone|default:'' }}"
-                     placeholder="Add your phone number"
-                     class="pf-input" />
-            </div>
-
-            <div class="pf-field">
-              <label for="pfRole" class="pf-label">Role</label>
-              <input type="text" id="pfRole" readonly
-                     value="{{ user_role|default:'Administrator' }}"
-                     class="pf-input pf-input-readonly" />
-            </div>
-          </div>
-
-          <div class="pf-field">
-            <div class="pf-label-row">
-              <label for="pfBio" class="pf-label">Bio</label>
-              <span class="pf-counter" data-count-for="pfBio">0 / 400</span>
-            </div>
-            <textarea id="pfBio" name="bio" rows="4" maxlength="400"
-                      placeholder="Add a short bio"
-                      class="pf-input pf-textarea">{{ user_profile.bio|default:'' }}</textarea>
-          </div>
-
-          <div class="pf-field">
-            <label for="pfPhotoInline" class="pf-label">Profile Picture</label>
-            <input type="file" id="pfPhotoInline" name="profile_picture" accept="image/*"
-                   class="pf-file" />
-            <p class="pf-help">PNG or JPG, up to 5 MB.</p>
-          </div>
-
-          <div class="pf-form-actions">
-            <button type="submit" class="pf-btn pf-btn-primary" id="pfSaveBtn">Save Changes</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- ============================================================
-           Company
-           ============================================================ -->
-      <section class="pf-card" aria-labelledby="pfCompanyTitle">
-        <header class="pf-card-head">
-          <h2 class="pf-card-title" id="pfCompanyTitle">Company</h2>
-        </header>
-
-        {% if company_info %}
-          <div class="pf-company-row">
-            {% if company_info.company_logo %}
-              <img src="{{ company_info.company_logo.url }}" alt="{{ company_info.company_name }} logo" class="pf-company-logo" />
-            {% else %}
-              <div class="pf-company-logo pf-company-logo-fallback" aria-hidden="true">
-                {{ company_info.company_name|default:"?"|first|upper }}
-              </div>
-            {% endif %}
-
-            <div class="pf-company-info">
-              <p class="pf-company-name">{{ company_info.company_name|default:"Unnamed Company" }}</p>
-              <p class="pf-company-meta">{{ company_info.company_office_type|default:"—" }}</p>
-            </div>
-          </div>
-
-          <dl class="pf-detail-grid">
-            <div><dt>Address</dt><dd>{{ company_info.address|default:"—" }}</dd></div>
-            <div><dt>Business Phone</dt><dd>{{ company_info.phone|default:"—" }}</dd></div>
-            <div><dt>Business Email</dt><dd>{{ company_info.email|default:"—" }}</dd></div>
-            <div><dt>PAN / VAT</dt><dd class="pf-mono">{{ company_info.pan_vat|default:"—" }}</dd></div>
-            <div><dt>Registration No.</dt><dd class="pf-mono">{{ company_info.registration_number|default:"—" }}</dd></div>
-          </dl>
-
-          <div class="pf-company-actions">
-            <a href="{% url 'company_profile' company_info.id %}" class="pf-btn pf-btn-ghost pf-btn-sm">
-              View Company Information
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <nav class="flex-1 overflow-y-auto px-3 py-4">
+        <ul class="space-y-0.5">
+          <li>
+            <a href="{% url 'home' %}" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>
+              </svg>
+              Dashboard
             </a>
-            {% if allow_company_switch %}
-              <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm" id="pfChangeCompanyBtn">Change Company</button>
-            {% endif %}
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+              Sales
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              Purchases
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+              Expenses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'product' %}" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>
+              </svg>
+              Products
+            </a>
+          </li>
+
+          <li><p class="side-section">Contacts</p></li>
+
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/>
+              </svg>
+              Customers
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
+              Suppliers
+            </a>
+          </li>
+
+          <li><p class="side-section">Money</p></li>
+
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+              Invoices
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+              Payments
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>
+              Taxes
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              Investments
+            </a>
+          </li>
+
+          <li><p class="side-section">Analysis</p></li>
+
+          <li>
+            <a href="{% url 'category' %}" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+              Categories
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/>
+              </svg>
+              Reports
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>
+              </svg>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="border-t border-white/10">
+        <div class="px-3 py-3">
+          <a
+            href="{% url 'userprofile' %}"
+            class="flex items-center gap-2.5 px-2 py-1.5 rounded-md bg-white/5 transition-colors group"
+            title="{{ user.get_full_name|default:user.username|default:'Your Name' }} — View profile"
+          >
+            <span
+              class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[0.72rem] font-semibold text-white shrink-0"
+              aria-hidden="true"
+            >
+              {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
+            </span>
+            <span class="min-w-0 flex-1">
+              <span
+                class="block text-[0.82rem] font-medium text-white/90 truncate"
+                title="{{ user.get_full_name|default:user.username|default:'Your Name' }}"
+              >
+                {{ user.get_full_name|default:user.username|default:"Your Name" }}
+              </span>
+              <span
+                class="block text-[0.7rem] text-white/45 truncate"
+                title="{% if company_info %}{{ company_info.company_name }}{% else %}Your Company{% endif %}"
+              >
+                {% if company_info %}{{ company_info.company_name|default:"Your Company" }}{% else %}Your Company{% endif %}
+              </span>
+            </span>
+            <svg class="w-3.5 h-3.5 text-white/40 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </a>
+
+          <div class="mt-1 flex justify-center gap-1">
+            <a
+              href="{% url 'logout' %}"
+              class="text-center text-[0.72rem] text-white/55 hover:text-white py-1.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+            >
+              Log out
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN
+    ============================================================ -->
+    <div id="mainWrap" class="min-h-screen flex flex-col">
+      <!-- TOP BAR -->
+      <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+        <div class="px-5 sm:px-8 h-14 flex items-center gap-3">
+          <button
+            id="menuToggle"
+            type="button"
+            class="lg:hidden w-9 h-9 -ml-1 rounded-md flex items-center justify-center text-sub hover:bg-bg"
+            aria-label="Open navigation"
+            aria-controls="sidebar"
+            aria-expanded="false"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="4" y1="7" x2="20" y2="7"/>
+              <line x1="4" y1="12" x2="20" y2="12"/>
+              <line x1="4" y1="17" x2="20" y2="17"/>
+            </svg>
+          </button>
+
+          <h1 class="font-semibold text-[0.98rem] tracking-tight">My Profile</h1>
+
+          <button
+            type="button"
+            id="companyBtn"
+            class="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 h-8 rounded-md text-[0.82rem] text-sub hover:bg-bg hover:text-ink transition-colors"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
+            <span>{% if company_info %}{{ company_info.company_name|default:"Your Company" }}{% else %}Your Company{% endif %}</span>
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <div class="flex-1"></div>
+
+          <div class="hidden md:block relative">
+            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3.5-3.5" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search"
+              class="h-8 w-56 pl-8 pr-3 rounded-md border border-line bg-bg text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors"
+              aria-label="Search"
+            />
           </div>
 
-        {% else %}
-          <div class="pf-empty">
-            <div class="pf-empty-icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
-            </div>
-            <p class="pf-empty-title">No company connected</p>
-            <p class="pf-empty-desc">Connect a company to manage your business information.</p>
-            <a href="{% url 'company_profile' 0 %}" class="pf-btn pf-btn-primary pf-btn-sm">Connect Company</a>
+          <button
+            type="button"
+            class="relative w-9 h-9 rounded-md flex items-center justify-center text-sub hover:bg-bg hover:text-ink transition-colors"
+            aria-label="Notifications"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8" />
+              <path d="M13.7 21a2 2 0 01-3.4 0" />
+            </svg>
+            <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-neg" aria-label="Unread notifications"></span>
+          </button>
+
+          <a
+            href="{% url 'userprofile' %}"
+            class="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center text-[0.72rem] font-semibold"
+            aria-label="User profile"
+          >
+            {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
+          </a>
+        </div>
+      </header>
+
+      <!-- ========================================================
+           PAGE CONTENT
+      ======================================================== -->
+      <main class="flex-1 px-5 sm:px-8 py-6">
+        <!-- Page header -->
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">
+              My Profile
+            </h2>
+            <p class="text-sub text-[0.9rem] mt-1">
+              Manage your personal details, company information, account security, and preferences.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              id="editProfileBtn"
+              class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>
+              </svg>
+              Edit Profile
+            </button>
+          </div>
+        </div>
+
+        <!-- Django messages -->
+        {% if messages %}
+          <div class="space-y-2 mb-4">
+            {% for message in messages %}
+              <div class="card px-4 py-2.5 flex items-center gap-2.5 border-posSoft bg-posSoft">
+                <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
+                <p class="text-[0.82rem] text-pos font-medium">{{ message }}</p>
+              </div>
+            {% endfor %}
           </div>
         {% endif %}
-      </section>
 
-      <!-- ============================================================
-           Account information
-           ============================================================ -->
-      <section class="pf-card" aria-labelledby="pfAccountTitle">
-        <header class="pf-card-head">
-          <h2 class="pf-card-title" id="pfAccountTitle">Account Information</h2>
-        </header>
-
-        <dl class="pf-detail-grid pf-detail-grid-tight">
-          <div>
-            <dt>Account Status</dt>
-            <dd>
-              <span class="pf-status">
-                <span class="pf-dot pf-dot-pos" aria-hidden="true"></span>
-                {{ account_status|default:"Active" }}
-              </span>
-            </dd>
-          </div>
-          <div>
-            <dt>Email Verification</dt>
-            <dd>
-              <span class="pf-status">
-                <span class="pf-dot {% if email_verified %}pf-dot-pos{% else %}pf-dot-warn{% endif %}" aria-hidden="true"></span>
-                {% if email_verified %}Verified{% else %}Unverified{% endif %}
-              </span>
-            </dd>
-          </div>
-          <div>
-            <dt>Member Since</dt>
-            <dd>{{ member_since|default:"—" }}</dd>
-          </div>
-          <div>
-            <dt>Last Login</dt>
-            <dd>{{ last_login_display|default:"—" }}</dd>
-          </div>
-          <div>
-            <dt>Role</dt>
-            <dd>{{ user_role|default:"Administrator" }}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <!-- ============================================================
-           Security
-           ============================================================ -->
-      <section class="pf-card" aria-labelledby="pfSecurityTitle">
-        <header class="pf-card-head">
-          <h2 class="pf-card-title" id="pfSecurityTitle">Security</h2>
-        </header>
-
-        <ul class="pf-list-rows">
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Password</p>
-              <p class="pf-row-sub">{{ password_last_changed|default:"Last changed recently" }}</p>
+        <!-- ============================================================
+             PROFILE SUMMARY
+        ============================================================ -->
+        <section class="card card-hover p-5 mb-3">
+          <div class="flex flex-wrap items-center gap-5">
+            <div class="pf-avatar-wrap" id="pfAvatarWrap">
+              {% if user_profile.profile_picture %}
+                <img id="pfAvatarImg" src="{{ user_profile.profile_picture.url }}" alt="Profile picture" />
+              {% else %}
+                <div class="pf-avatar-initial" id="pfAvatarImg" role="img" aria-label="Default profile picture">
+                  {% firstof user_profile.name request.user.get_full_name request.user.username "U" as disp %}
+                  {{ disp|slice:":1"|upper }}
+                </div>
+              {% endif %}
+              <input
+                type="file"
+                id="pfAvatarInput"
+                name="profile_picture"
+                accept="image/*"
+                form="pfPersonalForm"
+                class="pf-avatar-input"
+                aria-label="Upload new profile photo"
+              />
+              <label for="pfAvatarInput" class="pf-avatar-trigger" tabindex="0">
+                <span class="sr-only">Change profile photo</span>
+              </label>
+              <div class="pf-avatar-overlay" aria-hidden="true">Change</div>
             </div>
-            <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm">Change Password</button>
-          </li>
 
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Two-Factor Authentication</p>
-              <p class="pf-row-sub">Add an additional layer of security to your account.</p>
-            </div>
-            {% if two_factor_enabled %}
-              <span class="pf-badge pf-badge-on">
-                <span class="pf-dot pf-dot-pos" aria-hidden="true"></span>Enabled
-              </span>
-            {% else %}
-              <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm">Enable 2FA</button>
-            {% endif %}
-          </li>
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Active Sessions</p>
-              <p class="pf-row-sub">Manage devices currently signed in to your account.</p>
-            </div>
-            <button type="button" class="pf-btn pf-btn-ghost pf-btn-sm">Manage Sessions</button>
-          </li>
-
-        </ul>
-      </section>
-
-      <!-- ============================================================
-           Preferences
-           ============================================================ -->
-      <section class="pf-card" aria-labelledby="pfPrefsTitle">
-        <header class="pf-card-head">
-          <h2 class="pf-card-title" id="pfPrefsTitle">Preferences</h2>
-        </header>
-
-        <div class="pf-grid-2">
-          <div class="pf-field">
-            <label for="pfCurrency" class="pf-label">Currency</label>
-            <select id="pfCurrency" name="currency" class="pf-input pf-select">
-              <option value="NPR" {% if prefs.currency == 'NPR' or not prefs.currency %}selected{% endif %}>NPR (Rs.)</option>
-              <option value="USD" {% if prefs.currency == 'USD' %}selected{% endif %}>USD ($)</option>
-              <option value="INR" {% if prefs.currency == 'INR' %}selected{% endif %}>INR (₹)</option>
-              <option value="EUR" {% if prefs.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
-            </select>
-          </div>
-
-          <div class="pf-field">
-            <label for="pfTimezone" class="pf-label">Timezone</label>
-            <select id="pfTimezone" name="timezone" class="pf-input pf-select">
-              <option value="Asia/Kathmandu" {% if prefs.timezone == 'Asia/Kathmandu' or not prefs.timezone %}selected{% endif %}>Asia/Kathmandu</option>
-              <option value="Asia/Kolkata" {% if prefs.timezone == 'Asia/Kolkata' %}selected{% endif %}>Asia/Kolkata</option>
-              <option value="Asia/Dubai" {% if prefs.timezone == 'Asia/Dubai' %}selected{% endif %}>Asia/Dubai</option>
-              <option value="Europe/London" {% if prefs.timezone == 'Europe/London' %}selected{% endif %}>Europe/London</option>
-              <option value="America/New_York" {% if prefs.timezone == 'America/New_York' %}selected{% endif %}>America/New_York</option>
-            </select>
-          </div>
-
-          <div class="pf-field">
-            <label for="pfLanguage" class="pf-label">Language</label>
-            <select id="pfLanguage" name="language" class="pf-input pf-select">
-              <option value="en" {% if prefs.language == 'en' or not prefs.language %}selected{% endif %}>English</option>
-              <option value="ne" {% if prefs.language == 'ne' %}selected{% endif %}>नेपाली (Nepali)</option>
-              <option value="hi" {% if prefs.language == 'hi' %}selected{% endif %}>हिन्दी (Hindi)</option>
-            </select>
-          </div>
-
-          <div class="pf-field">
-            <label for="pfDateFormat" class="pf-label">Date Format</label>
-            <select id="pfDateFormat" name="date_format" class="pf-input pf-select">
-              <option value="DD/MM/YYYY" {% if prefs.date_format == 'DD/MM/YYYY' or not prefs.date_format %}selected{% endif %}>DD/MM/YYYY</option>
-              <option value="MM/DD/YYYY" {% if prefs.date_format == 'MM/DD/YYYY' %}selected{% endif %}>MM/DD/YYYY</option>
-              <option value="YYYY-MM-DD" {% if prefs.date_format == 'YYYY-MM-DD' %}selected{% endif %}>YYYY-MM-DD</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="pf-form-actions">
-          <button type="button" class="pf-btn pf-btn-primary" data-toast="Preferences saved.">Save Preferences</button>
-        </div>
-      </section>
-
-      <!-- ============================================================
-           Notifications
-           ============================================================ -->
-      <section class="pf-card" aria-labelledby="pfNotifTitle">
-        <header class="pf-card-head">
-          <h2 class="pf-card-title" id="pfNotifTitle">Notifications</h2>
-        </header>
-
-        <ul class="pf-list-rows">
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Email Notifications</p>
-              <p class="pf-row-sub">Receive important account activity by email.</p>
-            </div>
-            <label class="pf-toggle">
-              <input type="checkbox" checked />
-              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
-              <span class="pf-sr-only">Email Notifications</span>
-            </label>
-          </li>
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Invoice Reminders</p>
-              <p class="pf-row-sub">Get notified before invoices are due.</p>
-            </div>
-            <label class="pf-toggle">
-              <input type="checkbox" checked />
-              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
-              <span class="pf-sr-only">Invoice Reminders</span>
-            </label>
-          </li>
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Payment Notifications</p>
-              <p class="pf-row-sub">Alerts when payments are received or sent.</p>
-            </div>
-            <label class="pf-toggle">
-              <input type="checkbox" checked />
-              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
-              <span class="pf-sr-only">Payment Notifications</span>
-            </label>
-          </li>
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Expense Notifications</p>
-              <p class="pf-row-sub">Updates when expenses are recorded or approved.</p>
-            </div>
-            <label class="pf-toggle">
-              <input type="checkbox" />
-              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
-              <span class="pf-sr-only">Expense Notifications</span>
-            </label>
-          </li>
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">Monthly Financial Reports</p>
-              <p class="pf-row-sub">A summary of your business finances each month.</p>
-            </div>
-            <label class="pf-toggle">
-              <input type="checkbox" checked />
-              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
-              <span class="pf-sr-only">Monthly Financial Reports</span>
-            </label>
-          </li>
-
-          <li class="pf-row">
-            <div class="pf-row-text">
-              <p class="pf-row-title">
-                Security Alerts
-                <span class="pf-lock" title="Required for account security">
-                  <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.3"/></svg>
-                </span>
+            <div class="flex-1 min-w-[200px]">
+              <h3 class="text-[1.1rem] font-semibold tracking-tight">
+                {% firstof user_profile.name request.user.get_full_name request.user.username "Add your name" %}
+              </h3>
+              <p class="text-sub text-[0.85rem] mt-0.5">
+                {{ request.user.email|default:"No email on file" }}
               </p>
-              <p class="pf-row-sub">Critical alerts about your account. Always on.</p>
+              <div class="flex flex-wrap items-center gap-1.5 mt-2.5">
+                <span class="fc-badge fc-badge-ink">{{ user_role|default:"Administrator" }}</span>
+                <span class="fc-badge fc-badge-pos">
+                  <span class="fc-dot fc-dot-pos" aria-hidden="true"></span>
+                  {{ account_status|default:"Active" }}
+                </span>
+              </div>
             </div>
-            <label class="pf-toggle is-locked">
-              <input type="checkbox" checked disabled />
-              <span class="pf-toggle-track" aria-hidden="true"><span class="pf-toggle-thumb"></span></span>
-              <span class="pf-sr-only">Security Alerts (required)</span>
-            </label>
-          </li>
 
-        </ul>
-      </section>
-
-      <!-- ============================================================
-           Danger Zone
-           ============================================================ -->
-      <section class="pf-card pf-danger" aria-labelledby="pfDangerTitle">
-        <header class="pf-card-head">
-          <h2 class="pf-card-title pf-danger-title" id="pfDangerTitle">Danger Zone</h2>
-        </header>
-
-        <div class="pf-row">
-          <div class="pf-row-text">
-            <p class="pf-row-title">Delete Account</p>
-            <p class="pf-row-sub">Permanently delete your FinCore account and associated account data.</p>
+            <div class="flex items-center gap-2">
+              <label for="pfAvatarInput" class="fc-btn fc-btn-ghost fc-btn-sm cursor-pointer">
+                Change Photo
+              </label>
+            </div>
           </div>
-          <button type="button" class="pf-btn pf-btn-danger pf-btn-sm" id="pfDeleteBtn">Delete Account</button>
-        </div>
-      </section>
+        </section>
 
+        <!-- ============================================================
+             PERSONAL INFORMATION
+        ============================================================ -->
+        <section class="card mb-3" aria-labelledby="pfPersonalTitle">
+          <header class="pf-card-head">
+            <h2 class="pf-card-title" id="pfPersonalTitle">Personal Information</h2>
+          </header>
+
+          <div class="pf-card-body">
+            <form method="post" enctype="multipart/form-data" id="pfPersonalForm" class="space-y-4">
+              {% csrf_token %}
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="pfName" class="fc-label">Full Name</label>
+                  <input
+                    type="text"
+                    id="pfName"
+                    name="name"
+                    maxlength="120"
+                    autocomplete="name"
+                    value="{{ user_profile.name|default:'' }}"
+                    placeholder="Add your name"
+                    class="fc-input"
+                  />
+                </div>
+
+                <div>
+                  <label for="pfEmail" class="fc-label">
+                    Email Address
+                    <span class="text-mute font-normal">· Read-only</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="pfEmail"
+                    name="email"
+                    readonly
+                    value="{{ request.user.email|default:'' }}"
+                    placeholder="No email on file"
+                    class="fc-input"
+                    aria-describedby="pfEmailHelp"
+                  />
+                  <p id="pfEmailHelp" class="fc-help">This is your sign-in email. Contact support to change it.</p>
+                </div>
+
+                <div>
+                  <label for="pfPhone" class="fc-label">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="pfPhone"
+                    name="phone"
+                    maxlength="24"
+                    autocomplete="tel"
+                    value="{{ user_profile.phone|default:'' }}"
+                    placeholder="Add your phone number"
+                    class="fc-input"
+                  />
+                </div>
+
+                <div>
+                  <label for="pfRole" class="fc-label">Role</label>
+                  <input
+                    type="text"
+                    id="pfRole"
+                    readonly
+                    value="{{ user_role|default:'Administrator' }}"
+                    class="fc-input"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label for="pfBio" class="fc-label !mb-0">Bio</label>
+                  <span class="text-[0.72rem] text-mute" data-count-for="pfBio">0 / 400</span>
+                </div>
+                <textarea
+                  id="pfBio"
+                  name="bio"
+                  rows="4"
+                  maxlength="400"
+                  placeholder="Add a short bio"
+                  class="fc-input fc-textarea"
+                >{{ user_profile.bio|default:'' }}</textarea>
+              </div>
+
+              <div class="flex justify-end pt-1">
+                <button type="submit" class="fc-btn fc-btn-primary" id="pfSaveBtn">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             COMPANY
+        ============================================================ -->
+        <section class="card mb-3" aria-labelledby="pfCompanyTitle">
+          <header class="pf-card-head">
+            <h2 class="pf-card-title" id="pfCompanyTitle">Company</h2>
+            {% if company_info %}
+              <a href="{% url 'company_profile' %}" class="text-[0.78rem] text-sub hover:text-ink flex items-center gap-1 transition-colors">
+                View details
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            {% endif %}
+          </header>
+
+          <div class="pf-card-body">
+            {% if company_info %}
+              <div class="flex items-center gap-3.5 mb-4">
+                {% if company_info.company_logo %}
+                  <img src="{{ company_info.company_logo.url }}" alt="{{ company_info.company_name }} logo" class="w-12 h-12 rounded-md border border-line object-cover" />
+                {% else %}
+                  <div class="w-12 h-12 rounded-md border border-line bg-bg flex items-center justify-center text-[1.1rem] font-semibold" aria-hidden="true">
+                    {{ company_info.company_name|default:"?"|first|upper }}
+                  </div>
+                {% endif %}
+                <div class="min-w-0">
+                  <p class="text-[0.95rem] font-semibold tracking-tight">{{ company_info.company_name|default:"Unnamed Company" }}</p>
+                  <p class="text-sub text-[0.8rem] mt-0.5">{{ company_info.company_office_type|default:"—" }}</p>
+                </div>
+              </div>
+
+              <dl class="pf-detail-grid">
+                <div><dt>Address</dt><dd>{{ company_info.company_address|default:"—" }}</dd></div>
+                <div><dt>Business Phone</dt><dd>{{ company_info.company_phone|default:"—" }}</dd></div>
+                <div><dt>Business Email</dt><dd>{{ company_info.company_email|default:"—" }}</dd></div>
+              </dl>
+
+              <div class="mt-4 pt-3 border-t border-line2 flex justify-end">
+                <a href="{% url 'company_profile' %}" class="fc-btn fc-btn-ghost fc-btn-sm">
+                  Edit Company
+                </a>
+              </div>
+            {% else %}
+              <div class="text-center py-8">
+                <div class="w-11 h-11 mx-auto mb-3 rounded-full bg-bg flex items-center justify-center text-mute">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    <path d="M9 21v-7h6v7"/>
+                  </svg>
+                </div>
+                <p class="text-[0.95rem] font-medium mb-1">No company connected</p>
+                <p class="text-sub text-[0.85rem] max-w-sm mx-auto mb-4">Connect a company to manage your business information.</p>
+                <a href="{% url 'company_profile' %}" class="fc-btn fc-btn-primary fc-btn-sm">Connect Company</a>
+              </div>
+            {% endif %}
+          </div>
+        </section>
+
+        <!-- ============================================================
+             ACCOUNT INFORMATION
+        ============================================================ -->
+        <section class="card mb-3" aria-labelledby="pfAccountTitle">
+          <header class="pf-card-head">
+            <h2 class="pf-card-title" id="pfAccountTitle">Account Information</h2>
+          </header>
+          <div class="pf-card-body">
+            <dl class="pf-detail-grid">
+              <div>
+                <dt>Account Status</dt>
+                <dd>
+                  <span class="flex items-center gap-1.5">
+                    <span class="fc-dot fc-dot-pos" aria-hidden="true"></span>
+                    {{ account_status|default:"Active" }}
+                  </span>
+                </dd>
+              </div>
+              <div>
+                <dt>Email Verification</dt>
+                <dd>
+                  <span class="flex items-center gap-1.5">
+                    <span class="fc-dot {% if email_verified %}fc-dot-pos{% else %}fc-dot-warn{% endif %}" aria-hidden="true"></span>
+                    {% if email_verified %}Verified{% else %}Unverified{% endif %}
+                  </span>
+                </dd>
+              </div>
+              <div><dt>Member Since</dt><dd>{{ member_since|default:"—" }}</dd></div>
+              <div><dt>Last Login</dt><dd>{{ last_login_display|default:"—" }}</dd></div>
+              <div><dt>Role</dt><dd>{{ user_role|default:"Administrator" }}</dd></div>
+            </dl>
+          </div>
+        </section>
+
+       
+
+        <!-- ============================================================
+             DANGER ZONE
+        ============================================================ -->
+        <section class="card mb-6" aria-labelledby="pfDangerTitle">
+          <header class="pf-card-head">
+            <h2 class="pf-card-title text-neg" id="pfDangerTitle">Danger Zone</h2>
+          </header>
+          <div class="pf-card-body-tight">
+            <div class="pf-row">
+              <div class="pf-row-text">
+                <p class="pf-row-title">Delete Account</p>
+                <p class="pf-row-sub">Permanently delete your FinCore account and associated account data.</p>
+              </div>
+              <button type="button" class="fc-btn fc-btn-danger fc-btn-sm" id="pfDeleteBtn">Delete Account</button>
+            </div>
+          </div>
+        </section>
+
+        <p class="text-center text-[0.72rem] text-mute">
+          FinCore · Simple for the business owner, rigorous underneath.
+        </p>
+      </main>
     </div>
-  </div>
 
-  <!-- ============================================================
-       Delete confirmation dialog
-       ============================================================ -->
-  <div class="pf-modal" id="pfDeleteModal" role="dialog" aria-modal="true" aria-labelledby="pfDeleteTitle" hidden>
-    <div class="pf-modal-backdrop" data-modal-close></div>
-    <div class="pf-modal-card" role="document">
-      <h3 class="pf-modal-title" id="pfDeleteTitle">Delete your account?</h3>
-      <p class="pf-modal-body">
-        This will permanently delete your FinCore account and all data associated with it. This action cannot be undone.
-      </p>
-      <div class="pf-modal-actions">
-        <button type="button" class="pf-btn pf-btn-ghost" data-modal-close>Cancel</button>
-        <button type="button" class="pf-btn pf-btn-danger" id="pfDeleteConfirm">Delete Account</button>
+    <!-- ============================================================
+         DELETE CONFIRMATION MODAL
+    ============================================================ -->
+    <div class="fc-modal" id="pfDeleteModal" role="dialog" aria-modal="true" aria-labelledby="pfDeleteTitle">
+      <div class="fc-modal-backdrop" data-modal-close></div>
+      <div class="fc-modal-card" role="document">
+        <h3 class="text-[1.05rem] font-semibold mb-2" id="pfDeleteTitle">Delete your account?</h3>
+        <p class="text-sub text-[0.85rem] mb-5">
+          This will permanently delete your FinCore account and all data associated with it. This action cannot be undone.
+        </p>
+        <div class="flex items-center justify-end gap-2">
+          <button type="button" class="fc-btn fc-btn-ghost" data-modal-close>Cancel</button>
+          <button type="button" class="fc-btn fc-btn-danger" id="pfDeleteConfirm">Delete Account</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ============================================================
-       Toast region
-       ============================================================ -->
-  <div class="pf-toasts" id="pfToasts" role="status" aria-live="polite" aria-atomic="true"></div>
+    <!-- Toast region -->
+    <div class="fc-toasts" id="pfToasts" role="status" aria-live="polite" aria-atomic="true"></div>
 
-</div>
+    <!-- ============================================================
+         JAVASCRIPT
+    ============================================================ -->
+    <script>
+      "use strict";
 
-<script>
-(function () {
-  'use strict';
+      (function () {
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        /* ============================================================
+           MOBILE SIDEBAR
+        ============================================================ */
+        (function () {
+          var sidebar = document.getElementById("sidebar");
+          var overlay = document.getElementById("overlay");
+          var toggle = document.getElementById("menuToggle");
+          if (!sidebar || !overlay || !toggle) return;
 
-  /* ============================================================
-     SIDEBAR (mobile)
-     ============================================================ */
-  (function () {
-    var sidebar = document.getElementById('pfSidebar');
-    var overlay = document.getElementById('pfOverlay');
-    var btn = document.getElementById('pfMenuBtn');
-    if (!sidebar || !overlay || !btn) return;
+          function openSidebar() {
+            sidebar.classList.add("open");
+            overlay.classList.remove("hidden");
+            toggle.setAttribute("aria-expanded", "true");
+            document.body.style.overflow = "hidden";
+          }
+          function closeSidebar() {
+            sidebar.classList.remove("open");
+            overlay.classList.add("hidden");
+            toggle.setAttribute("aria-expanded", "false");
+            document.body.style.overflow = "";
+          }
 
-    function open() {
-      sidebar.classList.add('is-open');
-      overlay.classList.add('is-open');
-      btn.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('pf-noscroll');
-    }
-    function close() {
-      sidebar.classList.remove('is-open');
-      overlay.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('pf-noscroll');
-    }
-    btn.addEventListener('click', function () {
-      sidebar.classList.contains('is-open') ? close() : open();
-    });
-    overlay.addEventListener('click', close);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
-        close(); btn.focus();
-      }
-    });
-    window.matchMedia('(min-width: 1024px)').addEventListener('change', function (e) {
-      if (e.matches) close();
-    });
-  })();
+          toggle.addEventListener("click", function () {
+            sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+          });
+          overlay.addEventListener("click", closeSidebar);
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && sidebar.classList.contains("open")) {
+              closeSidebar();
+              toggle.focus();
+            }
+          });
+          window.matchMedia("(min-width: 1024px)").addEventListener("change", function (e) {
+            if (e.matches) closeSidebar();
+          });
+        })();
 
-  /* ============================================================
-     AVATAR — live preview
-     ============================================================ */
-  (function () {
-    var input = document.getElementById('pfAvatarInput');
-    var wrap = document.getElementById('pfAvatarWrap');
-    if (!input || !wrap) return;
+        /* ============================================================
+           AVATAR — live preview
+        ============================================================ */
+        (function () {
+          var input = document.getElementById("pfAvatarInput");
+          if (!input) return;
 
-    input.addEventListener('change', function () {
-      var file = input.files && input.files[0];
-      if (!file) return;
+          input.addEventListener("change", function () {
+            var file = input.files && input.files[0];
+            if (!file) return;
 
-      if (!file.type.startsWith('image/')) {
-        toast('Please choose an image file.', 'error'); input.value = ''; return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        toast('Image must be smaller than 5 MB.', 'error'); input.value = ''; return;
-      }
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        var current = document.getElementById('pfAvatarImg');
-        if (!current) return;
-        var img = document.createElement('img');
-        img.id = 'pfAvatarImg';
-        img.alt = 'New profile picture preview';
-        img.src = e.target.result;
-        current.replaceWith(img);
-      };
-      reader.readAsDataURL(file);
-    });
+            if (!file.type.startsWith("image/")) {
+              toast("Please choose an image file.", "error");
+              input.value = "";
+              return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+              toast("Image must be smaller than 5 MB.", "error");
+              input.value = "";
+              return;
+            }
 
-    var trigger = wrap.querySelector('.pf-avatar-trigger');
-    if (trigger) {
-      trigger.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
-      });
-    }
-  })();
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var current = document.getElementById("pfAvatarImg");
+              if (!current) return;
+              var img = document.createElement("img");
+              img.id = "pfAvatarImg";
+              img.alt = "New profile picture preview";
+              img.src = e.target.result;
+              current.replaceWith(img);
+            };
+            reader.readAsDataURL(file);
+          });
 
-  /* ============================================================
-     CHARACTER COUNTER
-     ============================================================ */
-  document.querySelectorAll('[data-count-for]').forEach(function (counter) {
-    var field = document.getElementById(counter.getAttribute('data-count-for'));
-    if (!field) return;
-    var max = parseInt(field.getAttribute('maxlength'), 10) || 0;
-    function update() {
-      var len = field.value.length;
-      counter.textContent = len + ' / ' + max;
-      counter.classList.toggle('is-warn', max > 0 && len >= max * 0.9);
-    }
-    field.addEventListener('input', update);
-    update();
-  });
+          var trigger = document.querySelector(".pf-avatar-trigger");
+          if (trigger) {
+            trigger.addEventListener("keydown", function (e) {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                input.click();
+              }
+            });
+          }
+        })();
 
-  /* ============================================================
-     TOASTS
-     ============================================================ */
-  function toast(message, kind) {
-    var region = document.getElementById('pfToasts');
-    if (!region) return;
-    var el = document.createElement('div');
-    el.className = 'pf-toast' + (kind ? ' is-' + kind : '');
-    el.setAttribute('role', kind === 'error' ? 'alert' : 'status');
-    el.textContent = message;
-    region.appendChild(el);
+        /* ============================================================
+           CHARACTER COUNTER
+        ============================================================ */
+        document.querySelectorAll("[data-count-for]").forEach(function (counter) {
+          var field = document.getElementById(counter.getAttribute("data-count-for"));
+          if (!field) return;
+          var max = parseInt(field.getAttribute("maxlength"), 10) || 0;
+          function update() {
+            var len = field.value.length;
+            counter.textContent = len + " / " + max;
+            counter.classList.toggle("text-warn", max > 0 && len >= max * 0.9);
+          }
+          field.addEventListener("input", update);
+          update();
+        });
 
-    requestAnimationFrame(function () { el.classList.add('is-in'); });
+        /* ============================================================
+           TOASTS
+        ============================================================ */
+        function toast(message, kind) {
+          var region = document.getElementById("pfToasts");
+          if (!region) return;
+          var el = document.createElement("div");
+          el.className = "fc-toast" + (kind ? " is-" + kind : "");
+          el.setAttribute("role", kind === "error" ? "alert" : "status");
+          el.textContent = message;
+          region.appendChild(el);
 
-    setTimeout(function () {
-      el.classList.remove('is-in');
-      setTimeout(function () { el.remove(); }, 240);
-    }, 3200);
-  }
-  window.__pfToast = toast;
+          requestAnimationFrame(function () {
+            el.classList.add("is-in");
+          });
 
-  document.querySelectorAll('[data-toast]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      toast(btn.getAttribute('data-toast'), 'success');
-    });
-  });
+          setTimeout(function () {
+            el.classList.remove("is-in");
+            setTimeout(function () {
+              el.remove();
+            }, 240);
+          }, 3200);
+        }
+        window.__pfToast = toast;
 
-  /* ============================================================
-     FORM SUBMIT — intercept, show toast, prevent reload on demo
-     ============================================================ */
-  var personalForm = document.getElementById('pfPersonalForm');
-  if (personalForm) {
-    personalForm.addEventListener('submit', function (e) {
-      // If your Django view returns JSON, keep this. Otherwise remove
-      // the e.preventDefault() and let the normal POST happen.
-      // e.preventDefault();
-      var btn = document.getElementById('pfSaveBtn');
-      if (btn) { btn.disabled = true; btn.classList.add('is-busy'); }
-      // Optimistic feedback — a real POST would reload the page and
-      // surface the server message via Django's messages framework.
-      setTimeout(function () {
-        if (btn) { btn.disabled = false; btn.classList.remove('is-busy'); }
-        toast('Profile updated successfully.', 'success');
-      }, 500);
-    });
-  }
+        document.querySelectorAll("[data-toast]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            toast(btn.getAttribute("data-toast"), "success");
+          });
+        });
 
-  /* ============================================================
-     EDIT PROFILE — scroll + focus
-     ============================================================ */
-  var editBtn = document.getElementById('editProfileBtn');
-  if (editBtn) {
-    editBtn.addEventListener('click', function () {
-      var target = document.getElementById('pfName');
-      if (!target) return;
-      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-      setTimeout(function () { target.focus({ preventScroll: true }); }, 320);
-    });
-  }
+        /* ============================================================
+           FORM SUBMIT — optimistic UI
+        ============================================================ */
+        var personalForm = document.getElementById("pfPersonalForm");
+        if (personalForm) {
+          personalForm.addEventListener("submit", function () {
+            var btn = document.getElementById("pfSaveBtn");
+            if (btn) {
+              btn.disabled = true;
+              btn.textContent = "Saving…";
+            }
+            setTimeout(function () {
+              toast("Profile updated successfully.", "success");
+            }, 400);
+          });
+        }
 
-  /* ============================================================
-     DELETE ACCOUNT — modal
-     ============================================================ */
-  (function () {
-    var modal = document.getElementById('pfDeleteModal');
-    var openBtn = document.getElementById('pfDeleteBtn');
-    var confirmBtn = document.getElementById('pfDeleteConfirm');
-    if (!modal || !openBtn) return;
+        /* ============================================================
+           EDIT PROFILE — scroll + focus
+        ============================================================ */
+        var editBtn = document.getElementById("editProfileBtn");
+        if (editBtn) {
+          editBtn.addEventListener("click", function () {
+            var target = document.getElementById("pfName");
+            if (!target) return;
+            target.scrollIntoView({
+              behavior: reduce ? "auto" : "smooth",
+              block: "center",
+            });
+            setTimeout(function () {
+              target.focus({ preventScroll: true });
+            }, 320);
+          });
+        }
 
-    var lastFocus = null;
+        /* ============================================================
+           DELETE ACCOUNT MODAL
+        ============================================================ */
+        (function () {
+          var modal = document.getElementById("pfDeleteModal");
+          var openBtn = document.getElementById("pfDeleteBtn");
+          var confirmBtn = document.getElementById("pfDeleteConfirm");
+          if (!modal || !openBtn) return;
 
-    function openModal() {
-      lastFocus = document.activeElement;
-      modal.hidden = false;
-      requestAnimationFrame(function () { modal.classList.add('is-open'); });
-      var first = modal.querySelector('[data-modal-close]');
-      if (first) first.focus();
-      document.body.classList.add('pf-noscroll');
-    }
-    function closeModal() {
-      modal.classList.remove('is-open');
-      setTimeout(function () {
-        modal.hidden = true;
-        document.body.classList.remove('pf-noscroll');
-        if (lastFocus && lastFocus.focus) lastFocus.focus();
-      }, 200);
-    }
+          var lastFocus = null;
 
-    openBtn.addEventListener('click', openModal);
-    modal.querySelectorAll('[data-modal-close]').forEach(function (el) {
-      el.addEventListener('click', closeModal);
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !modal.hidden) closeModal();
-    });
+          function openModal() {
+            lastFocus = document.activeElement;
+            modal.classList.add("is-open");
+            document.body.style.overflow = "hidden";
+            var first = modal.querySelector("[data-modal-close]");
+            if (first) first.focus();
+          }
+          function closeModal() {
+            modal.classList.remove("is-open");
+            document.body.style.overflow = "";
+            if (lastFocus && lastFocus.focus) lastFocus.focus();
+          }
 
-    if (confirmBtn) {
-      confirmBtn.addEventListener('click', function () {
-        closeModal();
-        toast('Account deletion requested. Check your email to confirm.', 'error');
-        // Real app: POST to a delete-account endpoint, redirect on success.
-      });
-    }
-  })();
+          openBtn.addEventListener("click", openModal);
+          modal.querySelectorAll("[data-modal-close]").forEach(function (el) {
+            el.addEventListener("click", closeModal);
+          });
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && modal.classList.contains("is-open")) {
+              closeModal();
+            }
+          });
 
-})();
-</script>
-{% endblock %}
+          if (confirmBtn) {
+            confirmBtn.addEventListener("click", function () {
+              closeModal();
+              toast("Account deletion requested. Check your email to confirm.", "error");
+            });
+          }
+        })();
+      })();
+    </script>
+  </body>
+</html>

@@ -46,48 +46,45 @@ tailwind.config = {
   ::-webkit-scrollbar-thumb { background: #d6d8dc; border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: #b8bcc2; }
 
-  /* Focus rings — single, consistent */
   :focus-visible {
     outline: 2px solid #111827;
     outline-offset: 2px;
     border-radius: 4px;
   }
 
-  /* Sidebar — fixed on desktop, drawer on mobile */
+  /* ============================================================
+     SIDEBAR — spring ease-out
+  ============================================================ */
   #sidebar {
     position: fixed;
     top: 0; left: 0; bottom: 0;
     width: 15.5rem;
     z-index: 40;
-    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    transition: transform 0.24s cubic-bezier(0.32, 0.72, 0, 1);
   }
-  #mainWrap { margin-left: 15.5rem; transition: margin-left 0.28s cubic-bezier(.4,0,.2,1); }
+  #mainWrap { margin-left: 15.5rem; transition: margin-left 0.24s cubic-bezier(0.32, 0.72, 0, 1); }
   @media (max-width: 1023px) {
     #sidebar { transform: translateX(-100%); z-index: 60; }
     #sidebar.open { transform: translateX(0); box-shadow: 24px 0 60px rgba(0,0,0,.28); }
     #mainWrap { margin-left: 0; }
   }
 
-  /* Sidebar link active state — quiet but unmistakable */
   .side-link {
     display: flex; align-items: center; gap: 0.65rem;
     padding: 0.5rem 0.75rem;
     border-radius: 6px;
     font-size: 0.875rem;
     color: #9ca3af;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+                color 0.16s cubic-bezier(0.32, 0.72, 0, 1);
     position: relative;
   }
   .side-link:hover { background: rgba(255,255,255,.05); color: #e5e7eb; }
-  .side-link.active {
-    background: rgba(255,255,255,.09);
-    color: #ffffff;
-  }
+  .side-link.active { background: rgba(255,255,255,.09); color: #ffffff; }
   .side-link.active::before {
     content: "";
     position: absolute;
-    left: -0.75rem;
-    top: 50%;
+    left: -0.75rem; top: 50%;
     transform: translateY(-50%);
     width: 3px; height: 18px;
     background: #ffffff;
@@ -105,17 +102,19 @@ tailwind.config = {
   }
   .side-section:first-child { margin-top: 0; }
 
-  /* Cards */
+  /* ============================================================
+     CARDS — border-first, ambient shadow on hover only
+  ============================================================ */
   .card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
   }
 
-  /* Subtle hover lift on interactive cards */
   @media (hover: hover) and (pointer: fine) {
     .card-hover {
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      transition: border-color 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+                  box-shadow 0.2s cubic-bezier(0.32, 0.72, 0, 1);
     }
     .card-hover:hover {
       border-color: #d1d5db;
@@ -123,11 +122,12 @@ tailwind.config = {
     }
   }
 
-  /* Table row hover */
-  .row-hover { transition: background-color 0.15s ease; }
+  .row-hover { transition: background-color 0.15s cubic-bezier(0.32, 0.72, 0, 1); }
   .row-hover:hover { background-color: #fafafa; }
 
-  /* Skeleton shimmer for loading state */
+  /* ============================================================
+     SKELETON
+  ============================================================ */
   .skeleton {
     background: linear-gradient(90deg, #f1f2f4 0%, #e9eaee 50%, #f1f2f4 100%);
     background-size: 200% 100%;
@@ -139,42 +139,98 @@ tailwind.config = {
     100% { background-position: -200% 0; }
   }
 
-  /* Dropdown */
-  .dd {
-    opacity: 0; visibility: hidden; transform: translateY(-4px);
-    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+  /* ============================================================
+     ENTRANCE — staggered fade-up
+  ============================================================ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
-  .dd.open {
-    opacity: 1; visibility: visible; transform: translateY(0);
-    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s;
+  .stagger > * {
+    opacity: 0;
+    animation: fadeUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0.02s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.06s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.10s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.14s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.18s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.22s; }
+
+  .stagger-slow > * {
+    opacity: 0;
+    animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(var(--i, 0) * 0.04s + 0.08s);
   }
 
-  /* Chart period pill group */
+  /* ============================================================
+     CHART PERIOD PILLS — instant snap
+  ============================================================ */
   .period-btn {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.72rem;
     padding: 0.28rem 0.6rem;
     border-radius: 4px;
     color: #6b7280;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.15s cubic-bezier(0.32, 0.72, 0, 1),
+                color 0.15s cubic-bezier(0.32, 0.72, 0, 1),
+                transform 0.1s cubic-bezier(0.32, 0.72, 0, 1);
     border: none; cursor: pointer; background: transparent;
   }
   .period-btn:hover { background: #f3f4f6; color: #111827; }
+  .period-btn:active { transform: scale(0.94); }
   .period-btn.active { background: #111827; color: #ffffff; }
 
-  /* Number flash on change */
-  .flash { animation: flashIn 0.45s cubic-bezier(.16,1,.3,1); }
-  @keyframes flashIn {
-    0% { background: rgba(17,24,39,.07); }
-    100% { background: transparent; }
+  /* ============================================================
+     BUTTON MICRO-INTERACTIONS
+  ============================================================ */
+  .btn-snap {
+    transition: background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+                border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+                color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+                transform 0.1s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .btn-snap:active { transform: scale(0.97); }
+
+  /* Quick-action tiles — lift + press */
+  .qa-tile {
+    transition: border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+                background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+                transform 0.12s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .qa-tile:hover { transform: translateY(-1px); }
+  .qa-tile:active { transform: scale(0.98) translateY(0); }
+
+  /* ============================================================
+     AMBIENT HOVER — status dot pulse for overdue rows
+  ============================================================ */
+  .pulse-dot {
+    position: relative;
+  }
+  .pulse-dot::after {
+    content: "";
+    position: absolute; inset: -3px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.25;
+    animation: pulseRing 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes pulseRing {
+    0%   { transform: scale(0.85); opacity: 0.35; }
+    100% { transform: scale(2);    opacity: 0; }
   }
 
-  /* Reduced motion */
+  /* ============================================================
+     REDUCED MOTION
+  ============================================================ */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+    .stagger > *,
+    .stagger-slow > * { opacity: 1 !important; }
   }
 </style>
 </head>
@@ -189,8 +245,7 @@ tailwind.config = {
      ============================================================ -->
 <aside id="sidebar" class="flex flex-col bg-ink text-white/90" aria-label="Primary">
 
-  <!-- Brand -->
-  <div class="px-5 pt-5 pb-4 border-b border-white/8">
+  <div class="px-5 pt-5 pb-4 border-b border-white/10">
     <a href="/" class="flex items-center gap-2.5" aria-label="FinCore home">
       <span class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
@@ -202,11 +257,10 @@ tailwind.config = {
     </a>
   </div>
 
-  <!-- Nav -->
   <nav class="flex-1 overflow-y-auto px-3 py-4">
     <ul class="space-y-0.5">
       <li>
-        <a href="#" class="side-link active" aria-current="page">
+        <a href="{% url 'home' %}" class="side-link active" aria-current="page">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
           Dashboard
         </a>
@@ -278,6 +332,12 @@ tailwind.config = {
 
       <li><p class="side-section">Analysis</p></li>
       <li>
+        <a href="{% url 'category' %}" class="side-link">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Categories
+        </a>
+      </li>
+      <li>
         <a href="#" class="side-link">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg>
           Reports
@@ -292,54 +352,35 @@ tailwind.config = {
     </ul>
   </nav>
 
-  <!-- User / company footer -->
-<div class="border-t border-white/10">
-  <div class="px-3 py-3">
-
-    <!-- User identity — whole block links to profile -->
-    <a href="{% url 'userprofile' %}"
-       class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group"
-       title="{{ user.get_full_name|default:user.username|default:'Your Name' }} — View profile">
-
-      <!-- Avatar: initials of the best available name -->
-<span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[0.72rem] font-semibold text-white shrink-0"
-      aria-hidden="true">
-  {% if user.first_name and user.last_name %}
-    {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-  {% else %}
-    {% firstof user.get_full_name user.username "U" as display_name %}
-    {{ display_name|slice:":1"|upper }}
-  {% endif %}
-</span>
-      <!-- Name + company -->
-      <span class="min-w-0 flex-1">
-        <span class="block text-[0.82rem] font-medium text-white/90 group-hover:text-white truncate"
-              title="{{ user.get_full_name|default:user.username|default:'Your Name' }}">
-          {{ user.get_full_name|default:user.username|default:"Your Name" }}
+  <div class="border-t border-white/10">
+    <div class="px-3 py-3">
+      <a href="{% url 'userprofile' %}"
+         class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group"
+         title="{{ user.get_full_name|default:user.username|default:'Your Name' }} — View profile">
+        <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[0.72rem] font-semibold text-white shrink-0" aria-hidden="true">
+          {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
         </span>
-        <span class="block text-[0.7rem] text-white/45 truncate"
-              title="{{ company_name|default:'Your Company' }}">
-          {{ company_name|default:"Your Company" }}
+        <span class="min-w-0 flex-1">
+          <span class="block text-[0.82rem] font-medium text-white/90 group-hover:text-white truncate">
+            {{ user.get_full_name|default:user.username|default:"Your Name" }}
+          </span>
+          <span class="block text-[0.7rem] text-white/45 truncate">
+            {{ company_name|default:"Your Company" }}
+          </span>
         </span>
-      </span>
+        <svg class="w-3.5 h-3.5 text-white/30 group-hover:text-white/60 shrink-0 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </a>
 
-      <!-- Chevron hint (appears on hover) -->
-      <svg class="w-3.5 h-3.5 text-white/30 group-hover:text-white/60 shrink-0 transition-colors"
-           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M9 18l6-6-6-6"/>
-      </svg>
-    </a>
-
-    <!-- Account / Log out -->
-<div class="mt-1 flex justify-center gap-1">
-  <a href="{% url 'logout' %}"
-     class="text-center text-[0.72rem] text-white/55 hover:text-white py-1.5 px-3 rounded-md hover:bg-white/5 transition-colors">
-    Log out
-  </a>
-</div>
+      <div class="mt-1 flex justify-center gap-1">
+        <a href="{% url 'logout' %}"
+           class="text-center text-[0.72rem] text-white/55 hover:text-white py-1.5 px-3 rounded-md hover:bg-white/5 transition-colors">
+          Log out
+        </a>
+      </div>
     </div>
   </div>
-</div>
 </aside>
 
 <!-- ============================================================
@@ -347,20 +388,16 @@ tailwind.config = {
      ============================================================ -->
 <div id="mainWrap" class="min-h-screen flex flex-col">
 
-  <!-- Top bar -->
-  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-line/80">
     <div class="px-5 sm:px-8 h-14 flex items-center gap-3">
 
-      <!-- Mobile menu -->
-      <button id="menuToggle" type="button" class="lg:hidden w-9 h-9 -ml-1 rounded-md flex items-center justify-center text-sub hover:bg-bg" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+      <button id="menuToggle" type="button" class="lg:hidden w-9 h-9 -ml-1 rounded-md flex items-center justify-center text-sub hover:bg-bg btn-snap" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
       </button>
 
-      <!-- Page title -->
       <h1 class="font-semibold text-[0.98rem] tracking-tight">Dashboard</h1>
 
-      <!-- Company selector -->
-      <button type="button" id="companyBtn" class="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 h-8 rounded-md text-[0.82rem] text-sub hover:bg-bg hover:text-ink transition-colors" aria-haspopup="true" aria-expanded="false">
+      <button type="button" id="companyBtn" class="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 h-8 rounded-md text-[0.82rem] text-sub hover:bg-bg hover:text-ink transition-colors btn-snap" aria-haspopup="true" aria-expanded="false">
         <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
         <span>{{ company_name|default:"Your Company" }}</span>
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -368,42 +405,33 @@ tailwind.config = {
 
       <div class="flex-1"></div>
 
-      <!-- Search -->
       <div class="hidden md:block relative">
         <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-        <input type="search" placeholder="Search" class="h-8 w-56 pl-8 pr-3 rounded-md border border-line bg-bg text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors" aria-label="Search" />
+        <input type="search" placeholder="Search" class="h-8 w-56 pl-8 pr-3 rounded-md border border-line bg-bg/70 text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors" aria-label="Search" />
       </div>
 
-      <!-- Notifications -->
-      <button type="button" class="relative w-9 h-9 rounded-md flex items-center justify-center text-sub hover:bg-bg hover:text-ink transition-colors" aria-label="Notifications">
-        <svg class="w-4.5 h-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      <button type="button" class="relative w-9 h-9 rounded-md flex items-center justify-center text-sub hover:bg-bg hover:text-ink transition-colors btn-snap" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
         <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-neg" aria-label="Unread notifications"></span>
       </button>
 
-      <!-- User avatar -->
-<a href="{% url 'userprofile' %}" 
-   class="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center text-[0.72rem] font-semibold" 
-   aria-label="User profile">
-  {% if user.first_name and user.last_name %}
-    {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-  {% else %}
-    {% firstof user.get_full_name user.username "U" as display_name %}
-    {{ display_name|slice:":1"|upper }}
-  {% endif %}
-</a>
+      <a href="{% url 'userprofile' %}"
+         class="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center text-[0.72rem] font-semibold btn-snap"
+         aria-label="User profile">
+        {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
+      </a>
     </div>
   </header>
 
-  <!-- Page content -->
   <main class="flex-1 px-5 sm:px-8 py-6">
 
     <!-- ============================================================
          Welcome
-         ============================================================ -->
-    <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+    ============================================================ -->
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-6 stagger">
       <div>
         <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">
-          Good morning, {{ user.get_full_name|default:"there" }}
+          Good <span id="greetingPart">morning</span>, {{ user.get_full_name|default:"there" }}
         </h2>
         <p class="text-sub text-[0.9rem] mt-1">
           Here's what's happening with your business today.
@@ -412,15 +440,15 @@ tailwind.config = {
       </div>
 
       <div class="flex items-center gap-2">
-        <button type="button" id="demoToggle" class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors flex items-center gap-1.5">
+        <button type="button" id="demoToggle" class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors flex items-center gap-1.5 btn-snap">
           <span class="w-1.5 h-1.5 rounded-full bg-pos" id="demoDot" aria-hidden="true"></span>
           <span id="demoLabel">Demo data: on</span>
         </button>
-        <button type="button" class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors hidden sm:flex items-center gap-1.5">
+        <button type="button" class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors hidden sm:flex items-center gap-1.5 btn-snap">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
           Generate Report
         </button>
-        <button type="button" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5">
+        <button type="button" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5 btn-snap">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add Transaction
         </button>
@@ -428,9 +456,9 @@ tailwind.config = {
     </div>
 
     <!-- ============================================================
-         KPI cards
-         ============================================================ -->
-    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3" aria-label="Financial overview">
+         KPI cards — staggered entrance
+    ============================================================ -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger" aria-label="Financial overview">
       <div class="card card-hover p-4">
         <div class="flex items-center justify-between mb-3">
           <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Total Revenue</p>
@@ -479,10 +507,9 @@ tailwind.config = {
 
     <!-- ============================================================
          Chart + Cash flow
-         ============================================================ -->
-    <section class="grid lg:grid-cols-3 gap-3 mb-3">
+    ============================================================ -->
+    <section class="grid lg:grid-cols-3 gap-3 mb-3 stagger">
 
-      <!-- Revenue vs Expenses -->
       <div class="card lg:col-span-2 p-5">
         <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
           <div>
@@ -508,7 +535,6 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Cash flow -->
       <div class="card p-5 flex flex-col">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-semibold text-[0.98rem] tracking-tight">Cash Flow</h3>
@@ -537,7 +563,7 @@ tailwind.config = {
           </div>
         </div>
 
-        <div class="mt-5 pt-4 border-t border-line">
+        <div class="mt-5 pt-4 border-t border-line2">
           <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium mb-1">Net Cash Flow</p>
           <p class="mono text-[1.25rem] font-medium text-pos">+ Rs. 302,500</p>
         </div>
@@ -546,10 +572,9 @@ tailwind.config = {
 
     <!-- ============================================================
          Recent transactions + Sales overview
-         ============================================================ -->
-    <section class="grid lg:grid-cols-3 gap-3 mb-3">
+    ============================================================ -->
+    <section class="grid lg:grid-cols-3 gap-3 mb-3 stagger">
 
-      <!-- Transactions -->
       <div class="card lg:col-span-2 overflow-hidden">
         <div class="px-5 py-4 border-b border-line flex items-center justify-between">
           <h3 class="font-semibold text-[0.98rem] tracking-tight">Recent Transactions</h3>
@@ -559,7 +584,6 @@ tailwind.config = {
           </a>
         </div>
 
-        <!-- Populated state -->
         <div id="txTableWrap" class="overflow-x-auto">
           <table class="w-full text-[0.84rem]">
             <thead>
@@ -572,8 +596,8 @@ tailwind.config = {
                 <th class="px-5 py-2.5 font-medium">Status</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-line2">
-              <tr class="row-hover">
+            <tbody class="divide-y divide-line2 stagger-slow">
+              <tr class="row-hover" style="--i:0">
                 <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 16</td>
                 <td class="px-5 py-3">Client Payment</td>
                 <td class="px-5 py-3 text-sub">Sales</td>
@@ -581,7 +605,7 @@ tailwind.config = {
                 <td class="px-5 py-3 text-right mono text-pos whitespace-nowrap">+ Rs. 25,000</td>
                 <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
               </tr>
-              <tr class="row-hover">
+              <tr class="row-hover" style="--i:1">
                 <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 15</td>
                 <td class="px-5 py-3">Office Supplies</td>
                 <td class="px-5 py-3 text-sub">Expenses</td>
@@ -589,7 +613,7 @@ tailwind.config = {
                 <td class="px-5 py-3 text-right mono text-neg whitespace-nowrap">− Rs. 4,500</td>
                 <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
               </tr>
-              <tr class="row-hover">
+              <tr class="row-hover" style="--i:2">
                 <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 14</td>
                 <td class="px-5 py-3">Product Sale</td>
                 <td class="px-5 py-3 text-sub">Sales</td>
@@ -597,7 +621,7 @@ tailwind.config = {
                 <td class="px-5 py-3 text-right mono text-pos whitespace-nowrap">+ Rs. 12,000</td>
                 <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
               </tr>
-              <tr class="row-hover">
+              <tr class="row-hover" style="--i:3">
                 <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 13</td>
                 <td class="px-5 py-3">Cloud Subscription</td>
                 <td class="px-5 py-3 text-sub">Software</td>
@@ -605,7 +629,7 @@ tailwind.config = {
                 <td class="px-5 py-3 text-right mono text-neg whitespace-nowrap">− Rs. 2,400</td>
                 <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-sub"><span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>Completed</span></td>
               </tr>
-              <tr class="row-hover">
+              <tr class="row-hover" style="--i:4">
                 <td class="px-5 py-3 text-sub mono text-[0.78rem] whitespace-nowrap">Sep 12</td>
                 <td class="px-5 py-3">INV-00482</td>
                 <td class="px-5 py-3 text-sub">Sales</td>
@@ -617,7 +641,6 @@ tailwind.config = {
           </table>
         </div>
 
-        <!-- Empty state -->
         <div id="txEmpty" class="hidden px-5 py-14 text-center">
           <div class="w-11 h-11 mx-auto mb-3 rounded-full bg-bg flex items-center justify-center text-mute">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
@@ -626,14 +649,13 @@ tailwind.config = {
           <p class="text-sub text-[0.85rem] max-w-sm mx-auto mb-4">
             Start recording your first transaction to see your financial activity here.
           </p>
-          <button type="button" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors inline-flex items-center gap-1.5">
+          <button type="button" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors inline-flex items-center gap-1.5 btn-snap">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add Transaction
           </button>
         </div>
       </div>
 
-      <!-- Sales Overview -->
       <div class="card p-5">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-semibold text-[0.98rem] tracking-tight">Sales Overview</h3>
@@ -659,7 +681,6 @@ tailwind.config = {
           </div>
         </div>
 
-        <!-- Mini sales trend -->
         <div class="h-16 mb-5" aria-hidden="true">
           <svg viewBox="0 0 240 60" preserveAspectRatio="none" class="w-full h-full">
             <defs>
@@ -673,7 +694,7 @@ tailwind.config = {
           </svg>
         </div>
 
-        <a href="#" class="inline-flex items-center justify-center gap-1.5 w-full h-9 rounded-md border border-line text-[0.82rem] font-medium text-ink hover:border-ink hover:bg-bg transition-colors">
+        <a href="#" class="inline-flex items-center justify-center gap-1.5 w-full h-9 rounded-md border border-line text-[0.82rem] font-medium text-ink hover:border-ink hover:bg-bg transition-colors btn-snap">
           View Sales
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -682,10 +703,9 @@ tailwind.config = {
 
     <!-- ============================================================
          Outstanding payments + Business insights
-         ============================================================ -->
-    <section class="grid lg:grid-cols-3 gap-3 mb-3">
+    ============================================================ -->
+    <section class="grid lg:grid-cols-3 gap-3 mb-3 stagger">
 
-      <!-- Outstanding payments -->
       <div class="card lg:col-span-2 overflow-hidden">
         <div class="px-5 py-4 border-b border-line flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -709,22 +729,22 @@ tailwind.config = {
                 <th class="px-5 py-2.5 font-medium">Status</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-line2">
-              <tr class="row-hover">
+            <tbody class="divide-y divide-line2 stagger-slow">
+              <tr class="row-hover" style="--i:0">
                 <td class="px-5 py-3">Himalayan Coffee Co.</td>
                 <td class="px-5 py-3 mono text-[0.78rem] text-sub">INV-00479</td>
                 <td class="px-5 py-3 mono text-[0.78rem] text-sub">Sep 12, 2025</td>
                 <td class="px-5 py-3 text-right mono">Rs. 42,000</td>
-                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-neg"><span class="w-1.5 h-1.5 rounded-full bg-neg" aria-hidden="true"></span>Overdue</span></td>
+                <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-neg"><span class="w-1.5 h-1.5 rounded-full bg-neg pulse-dot" aria-hidden="true"></span>Overdue</span></td>
               </tr>
-              <tr class="row-hover">
+              <tr class="row-hover" style="--i:1">
                 <td class="px-5 py-3">Everest Retail Group</td>
                 <td class="px-5 py-3 mono text-[0.78rem] text-sub">INV-00481</td>
                 <td class="px-5 py-3 mono text-[0.78rem] text-sub">Sep 22, 2025</td>
                 <td class="px-5 py-3 text-right mono">Rs. 68,000</td>
                 <td class="px-5 py-3"><span class="inline-flex items-center gap-1.5 text-[0.75rem] text-warn"><span class="w-1.5 h-1.5 rounded-full bg-warn" aria-hidden="true"></span>Due soon</span></td>
               </tr>
-              <tr class="row-hover">
+              <tr class="row-hover" style="--i:2">
                 <td class="px-5 py-3">Lalitpur Design Studio</td>
                 <td class="px-5 py-3 mono text-[0.78rem] text-sub">INV-00483</td>
                 <td class="px-5 py-3 mono text-[0.78rem] text-sub">Oct 01, 2025</td>
@@ -736,33 +756,32 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Business insights -->
       <div class="card p-5">
         <div class="flex items-center gap-2 mb-4">
           <h3 class="font-semibold text-[0.98rem] tracking-tight">Business Insights</h3>
           <span class="text-[0.65rem] uppercase tracking-wider text-mute mono">Auto</span>
         </div>
 
-        <ul class="space-y-3">
-          <li class="flex gap-3">
+        <ul class="space-y-3 stagger-slow">
+          <li class="flex gap-3" style="--i:0">
             <span class="w-1 rounded-full bg-pos shrink-0 self-stretch" aria-hidden="true"></span>
             <p class="text-[0.85rem] leading-snug text-sub">
               Revenue is up <span class="text-ink font-medium">12.4%</span> compared to last month.
             </p>
           </li>
-          <li class="flex gap-3">
+          <li class="flex gap-3" style="--i:1">
             <span class="w-1 rounded-full bg-neg shrink-0 self-stretch" aria-hidden="true"></span>
             <p class="text-[0.85rem] leading-snug text-sub">
               Expenses in <span class="text-ink font-medium">Software</span> increased by 22% this month.
             </p>
           </li>
-          <li class="flex gap-3">
+          <li class="flex gap-3" style="--i:2">
             <span class="w-1 rounded-full bg-warn shrink-0 self-stretch" aria-hidden="true"></span>
             <p class="text-[0.85rem] leading-snug text-sub">
               <span class="text-ink font-medium">1 invoice</span> is overdue and 1 is approaching its due date.
             </p>
           </li>
-          <li class="flex gap-3">
+          <li class="flex gap-3" style="--i:3">
             <span class="w-1 rounded-full bg-ink shrink-0 self-stretch" aria-hidden="true"></span>
             <p class="text-[0.85rem] leading-snug text-sub">
               <span class="text-ink font-medium">Website Development</span> accounts for 38% of this month's sales.
@@ -774,41 +793,41 @@ tailwind.config = {
 
     <!-- ============================================================
          Quick actions
-         ============================================================ -->
+    ============================================================ -->
     <section class="card p-5 mb-6">
       <h3 class="font-semibold text-[0.98rem] tracking-tight mb-4">Quick Actions</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 stagger">
+        <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
           <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
           </span>
           <span class="text-[0.82rem] font-medium">Add Sale</span>
         </button>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+        <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
           <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
           </span>
           <span class="text-[0.82rem] font-medium">Create Invoice</span>
         </button>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+        <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
           <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
           </span>
           <span class="text-[0.82rem] font-medium">Add Expense</span>
         </button>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+        <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
           <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
           </span>
           <span class="text-[0.82rem] font-medium">Add Product</span>
         </button>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+        <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
           <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>
           </span>
           <span class="text-[0.82rem] font-medium">Add Customer</span>
         </button>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
+        <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
           <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
           </span>
@@ -817,7 +836,6 @@ tailwind.config = {
       </div>
     </section>
 
-    <!-- Footer line -->
     <p class="text-center text-[0.72rem] text-mute">
       FinCore · Simple for the business owner, rigorous underneath.
     </p>
@@ -835,19 +853,37 @@ tailwind.config = {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================================
-     Today's date
-     ============================================================ */
+     DYNAMIC DATE + GREETING
+  ============================================================ */
   (function () {
-    var el = document.getElementById('todayDate');
-    if (!el) return;
-    var d = new Date();
-    var opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    el.textContent = d.toLocaleDateString('en-US', opts);
+    var dateEl = document.getElementById('todayDate');
+    var greetEl = document.getElementById('greetingPart');
+    var now = new Date();
+
+    if (dateEl) {
+      dateEl.textContent = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    if (greetEl) {
+      var h = now.getHours();
+      var greet =
+        h < 5  ? 'night' :
+        h < 12 ? 'morning' :
+        h < 17 ? 'afternoon' :
+        h < 21 ? 'evening' :
+                 'night';
+      greetEl.textContent = greet;
+    }
   })();
 
   /* ============================================================
-     Mobile sidebar
-     ============================================================ */
+     MOBILE SIDEBAR
+  ============================================================ */
   (function () {
     var sidebar = document.getElementById('sidebar');
     var overlay = document.getElementById('overlay');
@@ -880,10 +916,8 @@ tailwind.config = {
   })();
 
   /* ============================================================
-     Demo toggle — switches all data-bearing sections between
-     populated and empty. In production this would be driven by
-     whether the business has any transactions.
-     ============================================================ */
+     DEMO TOGGLE — optimistic UI
+  ============================================================ */
   (function () {
     var btn = document.getElementById('demoToggle');
     var label = document.getElementById('demoLabel');
@@ -895,6 +929,7 @@ tailwind.config = {
     var on = true;
     btn.addEventListener('click', function () {
       on = !on;
+      // Optimistic — update UI instantly
       label.textContent = 'Demo data: ' + (on ? 'on' : 'off');
       dot.style.background = on ? '#047857' : '#9ca3af';
       txTable.classList.toggle('hidden', !on);
@@ -903,8 +938,8 @@ tailwind.config = {
   })();
 
   /* ============================================================
-     Period toggle (chart)
-     ============================================================ */
+     PERIOD DATA + CHART
+  ============================================================ */
   var PERIOD_DATA = {
     '7d': {
       labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
@@ -976,7 +1011,7 @@ tailwind.config = {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        animation: reduce ? false : { duration: 500, easing: 'easeOutCubic' },
+        animation: reduce ? false : { duration: 400, easing: 'easeOutCubic' },
         interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: { display: false },
@@ -1047,15 +1082,13 @@ tailwind.config = {
   chart = initChart();
 
   /* ============================================================
-     Company dropdown (top bar)
-     ============================================================ */
+     COMPANY DROPDOWN
+  ============================================================ */
   (function () {
     var btn = document.getElementById('companyBtn');
     if (!btn) return;
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
-      // In a real app: toggle a dropdown menu.
-      // Visual feedback only for now.
       btn.setAttribute('aria-expanded', btn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
     });
   })();

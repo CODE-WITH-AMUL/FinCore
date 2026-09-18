@@ -1,466 +1,792 @@
 {% load static %}
+
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Products — FinCore</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        ink:    '#0f1218',
-        sub:    '#6b7280',
-        mute:   '#9ca3af',
-        line:   '#e5e7eb',
-        line2:  '#f0f1f3',
-        bg:     '#fafafa',
-        card:   '#ffffff',
-        pos:    '#047857',
-        posSoft:'#ecfdf5',
-        neg:    '#b91c1c',
-        negSoft:'#fef2f2',
-        warn:   '#b45309',
-        warnSoft:'#fffbeb',
-        accent: '#111827',
-      },
-      fontFamily: {
-        sans: ['Inter','system-ui','sans-serif'],
-        mono: ['"IBM Plex Mono"','ui-monospace','monospace'],
-      },
-      borderRadius: { 'md': '6px', 'lg': '8px' },
-    }
-  }
-}
-</script>
-<style>
-  html, body { background: #fafafa; }
-  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-feature-settings: "tnum"; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #d6d8dc; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #b8bcc2; }
+    <title>Products — FinCore</title>
 
-  :focus-visible {
-    outline: 2px solid #111827;
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  /* Sidebar — fixed on desktop, drawer on mobile */
-  #sidebar {
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    width: 15.5rem;
-    z-index: 40;
-    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
-  }
-  #mainWrap { margin-left: 15.5rem; transition: margin-left 0.28s cubic-bezier(.4,0,.2,1); }
-  @media (max-width: 1023px) {
-    #sidebar { transform: translateX(-100%); z-index: 60; }
-    #sidebar.open { transform: translateX(0); box-shadow: 24px 0 60px rgba(0,0,0,.28); }
-    #mainWrap { margin-left: 0; }
-  }
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
-  /* Sidebar link active state */
-  .side-link {
-    display: flex; align-items: center; gap: 0.65rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    color: #9ca3af;
-    transition: background 0.15s ease, color 0.15s ease;
-    position: relative;
-  }
-  .side-link:hover { background: rgba(255,255,255,.05); color: #e5e7eb; }
-  .side-link.active {
-    background: rgba(255,255,255,.09);
-    color: #ffffff;
-  }
-  .side-link.active::before {
-    content: "";
-    position: absolute;
-    left: -0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px; height: 18px;
-    background: #ffffff;
-    border-radius: 0 2px 2px 0;
-  }
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: "#0f1218",
+              sub: "#6b7280",
+              mute: "#9ca3af",
+              line: "#e5e7eb",
+              line2: "#f0f1f3",
+              bg: "#fafafa",
+              card: "#ffffff",
+              pos: "#047857",
+              posSoft: "#ecfdf5",
+              neg: "#b91c1c",
+              negSoft: "#fef2f2",
+              warn: "#b45309",
+              warnSoft: "#fffbeb",
+              accent: "#111827",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
+            },
+            borderRadius: {
+              md: "6px",
+              lg: "8px",
+            },
+          },
+        },
+      };
+    </script>
 
-  .side-section {
-    font-size: 0.65rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.32);
-    padding: 0 0.75rem;
-    margin-top: 1.25rem;
-    margin-bottom: 0.35rem;
-  }
-  .side-section:first-child { margin-top: 0; }
+    <style>
+      html,
+      body {
+        background: #fafafa;
+      }
 
-  /* Cards */
-  .card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-  }
+      .mono {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-feature-settings: "tnum";
+      }
 
-  @media (hover: hover) and (pointer: fine) {
-    .card-hover {
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-    }
-    .card-hover:hover {
-      border-color: #d1d5db;
-      box-shadow: 0 6px 24px -18px rgba(15,18,24,.25);
-    }
-  }
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d6d8dc;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #b8bcc2;
+      }
 
-  .row-hover { transition: background-color 0.15s ease; }
-  .row-hover:hover { background-color: #fafafa; }
+      :focus-visible {
+        outline: 2px solid #111827;
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
 
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-</style>
-</head>
+      /* ============================================================
+         SIDEBAR
+      ============================================================ */
+      #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 15.5rem;
+        z-index: 40;
+        transition: transform 0.24s cubic-bezier(0.32, 0.72, 0, 1);
+      }
 
-<body class="text-ink font-sans antialiased">
+      #mainWrap {
+        margin-left: 15.5rem;
+        transition: margin-left 0.24s cubic-bezier(0.32, 0.72, 0, 1);
+      }
 
-<!-- Mobile overlay -->
-<div id="overlay" class="hidden fixed inset-0 bg-black/50 z-50 lg:hidden" aria-hidden="true"></div>
+      @media (max-width: 1023px) {
+        #sidebar {
+          transform: translateX(-100%);
+          z-index: 60;
+        }
+        #sidebar.open {
+          transform: translateX(0);
+          box-shadow: 24px 0 60px rgba(0, 0, 0, 0.28);
+        }
+        #mainWrap {
+          margin-left: 0;
+        }
+      }
 
-<!-- ============================================================
-     SIDEBAR
-     ============================================================ -->
-<aside id="sidebar" class="flex flex-col bg-ink text-white/90" aria-label="Primary">
+      .side-link {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #9ca3af;
+        transition:
+          background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          color 0.16s cubic-bezier(0.32, 0.72, 0, 1);
+        position: relative;
+      }
 
-  <!-- Brand -->
-  <div class="px-5 pt-5 pb-4 border-b border-white/8">
-    <a href="/" class="flex items-center gap-2.5" aria-label="FinCore home">
-      <span class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-          <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M6 13.5L9 9l2.5 3L14 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="font-semibold text-[0.98rem] tracking-tight text-white">FinCore</span>
-    </a>
-  </div>
+      .side-link:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #e5e7eb;
+      }
 
-  <!-- Nav -->
-  <nav class="flex-1 overflow-y-auto px-3 py-4">
-    <ul class="space-y-0.5">
-      <li>
-        <a href="{% url 'home' %}" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
-          Sales
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          Purchases
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
-          Expenses
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'product' %}" class="side-link active" aria-current="page">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
-          Products
-        </a>
-      </li>
+      .side-link.active {
+        background: rgba(255, 255, 255, 0.09);
+        color: #ffffff;
+      }
 
-      <li><p class="side-section">Contacts</p></li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>
-          Customers
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
-          Suppliers
-        </a>
-      </li>
+      .side-link.active::before {
+        content: "";
+        position: absolute;
+        left: -0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 18px;
+        background: #ffffff;
+        border-radius: 0 2px 2px 0;
+      }
 
-      <li><p class="side-section">Money</p></li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
-          Invoices
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
-          Payments
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>
-          Taxes
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          Investments
-        </a>
-      </li>
+      .side-section {
+        font-size: 0.65rem;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.32);
+        padding: 0 0.75rem;
+        margin-top: 1.25rem;
+        margin-bottom: 0.35rem;
+      }
 
-      <li><p class="side-section">Analysis</p></li>
-      <li>
-        <a href="{% url 'category' %}" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          Categories
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg>
-          Reports
-        </a>
-      </li>
-      <li>
-        <a href="#" class="side-link">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
-          Settings
-        </a>
-      </li>
-    </ul>
-  </nav>
+      .side-section:first-child {
+        margin-top: 0;
+      }
 
-  <!-- User / company footer -->
-  <div class="border-t border-white/10">
-    <div class="px-3 py-3">
-      <a href="{% url 'userprofile' %}"
-         class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group"
-         title="{{ user.get_full_name|default:user.username|default:'Your Name' }} — View profile">
-        <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[0.72rem] font-semibold text-white shrink-0" aria-hidden="true">
-          {% if user.first_name and user.last_name %}
-            {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-          {% else %}
-            {% firstof user.get_full_name user.username "U" as display_name %}
-            {{ display_name|slice:":1"|upper }}
-          {% endif %}
-        </span>
-        <span class="min-w-0 flex-1">
-          <span class="block text-[0.82rem] font-medium text-white/90 group-hover:text-white truncate"
-                title="{{ user.get_full_name|default:user.username|default:'Your Name' }}">
-            {{ user.get_full_name|default:user.username|default:"Your Name" }}
+      /* ============================================================
+         CARDS
+      ============================================================ */
+      .card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .card-hover {
+          transition:
+            border-color 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+            box-shadow 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .card-hover:hover {
+          border-color: #d1d5db;
+          box-shadow: 0 6px 24px -18px rgba(15, 18, 24, 0.25);
+        }
+      }
+
+      .row-hover {
+        transition: background-color 0.15s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .row-hover:hover {
+        background-color: #fafafa;
+      }
+
+      /* ============================================================
+         STAGGERED ENTRANCE
+      ============================================================ */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .stagger > * {
+        opacity: 0;
+        animation: fadeUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .stagger > *:nth-child(1) { animation-delay: 0.02s; }
+      .stagger > *:nth-child(2) { animation-delay: 0.06s; }
+      .stagger > *:nth-child(3) { animation-delay: 0.10s; }
+      .stagger > *:nth-child(4) { animation-delay: 0.14s; }
+      .stagger > *:nth-child(5) { animation-delay: 0.18s; }
+      .stagger > *:nth-child(6) { animation-delay: 0.22s; }
+
+      .stagger-slow > * {
+        opacity: 0;
+        animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: calc(var(--i, 0) * 0.035s + 0.08s);
+      }
+
+      /* ============================================================
+         MICRO-INTERACTIONS
+      ============================================================ */
+      .btn-snap {
+        transition:
+          background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          transform 0.1s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .btn-snap:active {
+        transform: scale(0.97);
+      }
+
+      .qa-tile {
+        transition:
+          border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
+          transform 0.12s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .qa-tile:hover {
+        transform: translateY(-1px);
+      }
+      .qa-tile:active {
+        transform: scale(0.98) translateY(0);
+      }
+
+      /* ============================================================
+         MODAL — spring snap-in
+      ============================================================ */
+      .fc-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .fc-modal.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .fc-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .fc-modal-card {
+        position: relative;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        width: 100%;
+        transform: translateY(8px) scale(0.98);
+        transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .fc-modal.is-open .fc-modal-card {
+        transform: translateY(0) scale(1);
+      }
+
+      /* ============================================================
+         SKELETON (perceived performance helper)
+      ============================================================ */
+      .skeleton {
+        background: linear-gradient(90deg, #f1f2f4 0%, #e9eaee 50%, #f1f2f4 100%);
+        background-size: 200% 100%;
+        animation: shimmer 1.4s ease-in-out infinite;
+        border-radius: 4px;
+      }
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      /* ============================================================
+         REDUCED MOTION
+      ============================================================ */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .stagger > *,
+        .stagger-slow > * {
+          opacity: 1 !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="text-ink font-sans antialiased">
+    <!-- Mobile overlay -->
+    <div
+      id="overlay"
+      class="hidden fixed inset-0 bg-black/50 z-50 lg:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================ -->
+    <aside
+      id="sidebar"
+      class="flex flex-col bg-ink text-white/90"
+      aria-label="Primary"
+    >
+      <div class="px-5 pt-5 pb-4 border-b border-white/10">
+        <a href="/" class="flex items-center gap-2.5" aria-label="FinCore home">
+          <span
+            class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink"
+            aria-hidden="true"
+          >
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M6 13.5L9 9l2.5 3L14 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </span>
-          <span class="block text-[0.7rem] text-white/45 truncate"
-                title="{{ company_name|default:'Your Company' }}">
-            {{ company_name|default:"Your Company" }}
+          <span class="font-semibold text-[0.98rem] tracking-tight text-white">
+            FinCore
           </span>
-        </span>
-        <svg class="w-3.5 h-3.5 text-white/30 group-hover:text-white/60 shrink-0 transition-colors"
-             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M9 18l6-6-6-6"/>
-        </svg>
-      </a>
-
-      <div class="mt-1 flex justify-center gap-1">
-        <a href="{% url 'logout' %}"
-           class="text-center text-[0.72rem] text-white/55 hover:text-white py-1.5 px-3 rounded-md hover:bg-white/5 transition-colors">
-          Log out
-        </a>
-      </div>
-    </div>
-  </div>
-</aside>
-
-<!-- ============================================================
-     MAIN
-     ============================================================ -->
-<div id="mainWrap" class="min-h-screen flex flex-col">
-
-  <!-- Top bar -->
-  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
-    <div class="px-5 sm:px-8 h-14 flex items-center gap-3">
-
-      <button id="menuToggle" type="button" class="lg:hidden w-9 h-9 -ml-1 rounded-md flex items-center justify-center text-sub hover:bg-bg" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-      </button>
-
-      <h1 class="font-semibold text-[0.98rem] tracking-tight">Products</h1>
-
-      <button type="button" id="companyBtn" class="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 h-8 rounded-md text-[0.82rem] text-sub hover:bg-bg hover:text-ink transition-colors" aria-haspopup="true" aria-expanded="false">
-        <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
-        <span>{{ company_name|default:"Your Company" }}</span>
-        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-
-      <div class="flex-1"></div>
-
-      <div class="hidden md:block relative">
-        <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-        <input type="search" placeholder="Search" class="h-8 w-56 pl-8 pr-3 rounded-md border border-line bg-bg text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors" aria-label="Search" />
-      </div>
-
-      <button type="button" class="relative w-9 h-9 rounded-md flex items-center justify-center text-sub hover:bg-bg hover:text-ink transition-colors" aria-label="Notifications">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
-        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-neg" aria-label="Unread notifications"></span>
-      </button>
-
-      <a href="{% url 'userprofile' %}" 
-         class="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center text-[0.72rem] font-semibold" 
-         aria-label="User profile">
-        {% if user.first_name and user.last_name %}
-          {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-        {% else %}
-          {% firstof user.get_full_name user.username "U" as display_name %}
-          {{ display_name|slice:":1"|upper }}
-        {% endif %}
-      </a>
-    </div>
-  </header>
-
-  <!-- Page content -->
-  <main class="flex-1 px-5 sm:px-8 py-6">
-
-    <!-- Page header -->
-    <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
-      <div>
-        <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">Products</h2>
-        <p class="text-sub text-[0.9rem] mt-1">Manage your product catalog and inventory</p>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <span class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
-          Demo data: on
-        </span>
-        <button type="button" class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors hidden sm:flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
-          Export
-        </button>
-        <button type="button" onclick="document.getElementById('addProductModal').classList.remove('hidden')" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add Product
-        </button>
-      </div>
-    </div>
-
-    <!-- KPI cards -->
-    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3" aria-label="Product overview">
-      <div class="card card-hover p-4">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Total Products</p>
-          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
-        </div>
-        <p class="mono text-[1.35rem] font-medium tracking-tight">{{ products|length }}</p>
-        <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          in catalog
-        </p>
-      </div>
-
-      <div class="card card-hover p-4">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Inventory Value</p>
-          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-        </div>
-        <p class="mono text-[1.35rem] font-medium tracking-tight">
-          {% if total_inventory_value %}Rs. {{ total_inventory_value }}{% else %}Rs. 6,42,500{% endif %}
-        </p>
-        <p class="text-[0.75rem] text-sub mt-2">across {{ categories|length|default:"5" }} categories</p>
-      </div>
-
-      <div class="card card-hover p-4">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Low Stock</p>
-          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
-        </div>
-        <p class="mono text-[1.35rem] font-medium tracking-tight">
-          {% if low_stock_count %}{{ low_stock_count }}{% else %}7{% endif %}
-        </p>
-        <p class="text-[0.75rem] text-warn mt-2">⚠️ reorder soon</p>
-      </div>
-
-      <div class="card card-hover p-4">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Avg. Margin</p>
-          <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
-        </div>
-        <p class="mono text-[1.35rem] font-medium tracking-tight">
-          {% if avg_margin %}{{ avg_margin }}%{% else %}32.4%{% endif %}
-        </p>
-        <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          +1.2% from last month
-        </p>
-      </div>
-    </section>
-
-    <!-- Products Table Card -->
-    <section class="card overflow-hidden mb-3">
-      <div class="px-5 py-4 border-b border-line flex items-center justify-between">
-        <h3 class="font-semibold text-[0.98rem] tracking-tight">Product Inventory</h3>
-        <a href="#" class="text-[0.78rem] text-sub hover:text-ink flex items-center gap-1 transition-colors">
-          View all products
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
 
-      <!-- Search + filter row -->
-      <div class="px-5 py-3 border-b border-line2 flex flex-wrap items-center gap-3">
-        <div class="relative max-w-xs flex-1 min-w-[180px]">
-          <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-          <input type="search" id="productSearch" placeholder="Search by name, SKU, or ISP..." aria-label="Search products" onkeyup="filterProductTable()" class="h-8 w-full pl-8 pr-3 rounded-md border border-line bg-bg text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors" />
-        </div>
-        <div class="flex flex-wrap items-center gap-1.5">
-          <a href="{% url 'product' %}" class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors {% if not selected_category %}bg-ink text-white border-ink{% else %}bg-white text-sub border-line hover:border-ink hover:text-ink{% endif %}">All</a>
-          {% for cat in categories %}
-            <a href="?category={{ cat.id }}" class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors {% if selected_category == cat.id|stringformat:'s' %}bg-ink text-white border-ink{% else %}bg-white text-sub border-line hover:border-ink hover:text-ink{% endif %}">
-              {{ cat.name }}
+      <nav class="flex-1 overflow-y-auto px-3 py-4">
+        <ul class="space-y-0.5">
+          <li>
+            <a href="{% url 'home' %}" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="7" height="9"/>
+                <rect x="14" y="3" width="7" height="5"/>
+                <rect x="14" y="12" width="7" height="9"/>
+                <rect x="3" y="16" width="7" height="5"/>
+              </svg>
+              Dashboard
             </a>
-          {% endfor %}
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/>
+              </svg>
+              Sales
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+              Purchases
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/>
+              </svg>
+              Expenses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'product' %}" class="side-link active" aria-current="page">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>
+              </svg>
+              Products
+            </a>
+          </li>
+
+          <li><p class="side-section">Contacts</p></li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/>
+              </svg>
+              Customers
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/>
+              </svg>
+              Suppliers
+            </a>
+          </li>
+
+          <li><p class="side-section">Money</p></li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>
+              </svg>
+              Invoices
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>
+              </svg>
+              Payments
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M9 2v20M15 2v20M2 9h20M2 15h20"/>
+              </svg>
+              Taxes
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+              </svg>
+              Investments
+            </a>
+          </li>
+
+          <li><p class="side-section">Analysis</p></li>
+          <li>
+            <a href="{% url 'category' %}" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+              Categories
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/>
+              </svg>
+              Reports
+            </a>
+          </li>
+          <li>
+            <a href="#" class="side-link">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>
+              </svg>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="border-t border-white/10">
+        <div class="px-3 py-3">
+          <a
+            href="{% url 'userprofile' %}"
+            class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group"
+            title="{{ user.get_full_name|default:user.username|default:'Your Name' }} — View profile"
+          >
+            <span
+              class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[0.72rem] font-semibold text-white shrink-0"
+              aria-hidden="true"
+            >
+              {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
+            </span>
+            <span class="min-w-0 flex-1">
+              <span class="block text-[0.82rem] font-medium text-white/90 group-hover:text-white truncate">
+                {{ user.get_full_name|default:user.username|default:"Your Name" }}
+              </span>
+              <span class="block text-[0.7rem] text-white/45 truncate">
+                {{ company_name|default:"Your Company" }}
+              </span>
+            </span>
+            <svg class="w-3.5 h-3.5 text-white/30 group-hover:text-white/60 shrink-0 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </a>
+
+          <div class="mt-1 flex justify-center gap-1">
+            <a
+              href="{% url 'logout' %}"
+              class="text-center text-[0.72rem] text-white/55 hover:text-white py-1.5 px-3 rounded-md hover:bg-white/5 transition-colors"
+            >
+              Log out
+            </a>
+          </div>
         </div>
       </div>
+    </aside>
 
-      {% if products %}
-        <div class="overflow-x-auto">
-          <table class="w-full text-[0.84rem]" id="productTable">
-            <thead>
-              <tr class="text-left text-[0.72rem] uppercase tracking-wider text-sub bg-bg/60">
-                <th class="px-5 py-2.5 font-medium">Product</th>
-                <th class="px-5 py-2.5 font-medium">SKU</th>
-                <th class="px-5 py-2.5 font-medium">ISP Code</th>
-                <th class="px-5 py-2.5 font-medium">Category</th>
-                <th class="px-5 py-2.5 font-medium text-right">Price</th>
-                <th class="px-5 py-2.5 font-medium">Stock</th>
-                <th class="px-5 py-2.5 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-line2">
-              {% for product in products %}
-                <tr class="row-hover">
+    <!-- ============================================================
+         MAIN
+    ============================================================ -->
+    <div id="mainWrap" class="min-h-screen flex flex-col">
+      <header class="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-line/80">
+        <div class="px-5 sm:px-8 h-14 flex items-center gap-3">
+          <button
+            id="menuToggle"
+            type="button"
+            class="lg:hidden w-9 h-9 -ml-1 rounded-md flex items-center justify-center text-sub hover:bg-bg btn-snap"
+            aria-label="Open navigation"
+            aria-controls="sidebar"
+            aria-expanded="false"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
+
+          <h1 class="font-semibold text-[0.98rem] tracking-tight">Products</h1>
+
+          <button
+            type="button"
+            id="companyBtn"
+            class="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 h-8 rounded-md text-[0.82rem] text-sub hover:bg-bg hover:text-ink transition-colors btn-snap"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
+            <span>{{ company_name|default:"Your Company" }}</span>
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+
+          <div class="flex-1"></div>
+
+          <div class="hidden md:block relative">
+            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3.5-3.5" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search"
+              class="h-8 w-56 pl-8 pr-3 rounded-md border border-line bg-bg/70 text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors"
+              aria-label="Search"
+            />
+          </div>
+
+          <button
+            type="button"
+            class="relative w-9 h-9 rounded-md flex items-center justify-center text-sub hover:bg-bg hover:text-ink transition-colors btn-snap"
+            aria-label="Notifications"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8" />
+              <path d="M13.7 21a2 2 0 01-3.4 0" />
+            </svg>
+            <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-neg" aria-label="Unread notifications"></span>
+          </button>
+
+          <a
+            href="{% url 'userprofile' %}"
+            class="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center text-[0.72rem] font-semibold btn-snap"
+            aria-label="User profile"
+          >
+            {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
+          </a>
+        </div>
+      </header>
+
+      <main class="flex-1 px-5 sm:px-8 py-6">
+        <!-- ============================================================
+             PAGE HEADER
+        ============================================================ -->
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-6 stagger">
+          <div>
+            <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">
+              Products
+            </h2>
+            <p class="text-sub text-[0.9rem] mt-1">
+              Manage your product catalog and inventory
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
+              Demo data: on
+            </span>
+
+            <button
+              type="button"
+              class="h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub hover:border-ink hover:text-ink transition-colors hidden sm:flex items-center gap-1.5 btn-snap"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <path d="M7 10l5 5 5-5M12 15V3" />
+              </svg>
+              Export
+            </button>
+
+            <button
+              type="button"
+              onclick="openProductTypeModal()"
+              class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors flex items-center gap-1.5 btn-snap"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add Product Type
+            </button>
+
+            <button
+              type="button"
+              onclick="openProductModal()"
+              class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5 btn-snap"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add Product
+            </button>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             KPI CARDS
+        ============================================================ -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger" aria-label="Product overview">
+          <!-- Total Products -->
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Total Products</p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                <path d="M3.3 7L12 12l8.7-5M12 22V12"/>
+              </svg>
+            </div>
+            <p class="mono text-[1.35rem] font-medium tracking-tight">{{ products|length }}</p>
+            <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              in catalog
+            </p>
+          </div>
+
+          <!-- Inventory Value -->
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Inventory Value</p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+              </svg>
+            </div>
+            <p class="mono text-[1.35rem] font-medium tracking-tight">
+              {% if total_inventory_value %} Rs. {{ total_inventory_value }} {% else %} Rs. 6,42,500 {% endif %}
+            </p>
+            <p class="text-[0.75rem] text-sub mt-2">across {{ categories|length }} categories</p>
+          </div>
+
+          <!-- Low Stock -->
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Low Stock</p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>
+              </svg>
+            </div>
+            <p class="mono text-[1.35rem] font-medium tracking-tight">
+              {% if low_stock_count %} {{ low_stock_count }} {% else %} 7 {% endif %}
+            </p>
+            <p class="text-[0.75rem] text-warn mt-2">Reorder soon</p>
+          </div>
+
+          <!-- Avg. Margin -->
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Avg. Margin</p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/>
+              </svg>
+            </div>
+            <p class="mono text-[1.35rem] font-medium tracking-tight">
+              {% if avg_margin %} {{ avg_margin }}% {% else %} 32.4% {% endif %}
+            </p>
+            <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              +1.2% from last month
+            </p>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             PRODUCT TABLE
+        ============================================================ -->
+        <section class="card overflow-hidden mb-3">
+          <div class="px-5 py-4 border-b border-line flex items-center justify-between">
+            <h3 class="font-semibold text-[0.98rem] tracking-tight">Product Inventory</h3>
+            <a href="{% url 'product' %}" class="text-[0.78rem] text-sub hover:text-ink flex items-center gap-1 transition-colors">
+              View all products
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="px-5 py-3 border-b border-line2 flex flex-wrap items-center gap-3">
+            <div class="relative max-w-xs flex-1 min-w-[180px]">
+              <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3.5-3.5" />
+              </svg>
+              <input
+                type="search"
+                id="productSearch"
+                placeholder="Search by name, SKU, or ISP..."
+                aria-label="Search products"
+                onkeyup="filterProductTable()"
+                class="h-8 w-full pl-8 pr-3 rounded-md border border-line bg-bg/70 text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors"
+              />
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5">
+              <a
+                href="{% url 'product' %}"
+                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if not selected_category %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
+              >
+                All
+              </a>
+              {% for cat in categories %}
+              <a
+                href="?category={{ cat.id }}"
+                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if selected_category == cat.id|stringformat:'s' %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
+              >
+                {{ cat.name }}
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if products %}
+          <div class="overflow-x-auto">
+            <table class="w-full text-[0.84rem]" id="productTable">
+              <thead>
+                <tr class="text-left text-[0.72rem] uppercase tracking-wider text-sub bg-bg/60">
+                  <th class="px-5 py-2.5 font-medium">Product</th>
+                  <th class="px-5 py-2.5 font-medium">SKU</th>
+                  <th class="px-5 py-2.5 font-medium">ISP Code</th>
+                  <th class="px-5 py-2.5 font-medium">Category</th>
+                  <th class="px-5 py-2.5 font-medium text-right">Price</th>
+                  <th class="px-5 py-2.5 font-medium">Stock</th>
+                  <th class="px-5 py-2.5 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-line2 stagger-slow">
+                {% for product in products %}
+                <tr class="row-hover" style="--i:{{ forloop.counter0 }}">
                   <td class="px-5 py-3">
                     <div class="font-medium">{{ product.name }}</div>
-                    <div class="text-sub text-[0.72rem] truncate max-w-[220px]">{{ product.decription|default:""|truncatechars:40 }}</div>
+                    <div class="text-sub text-[0.72rem] truncate max-w-[220px]">
+                      {{ product.decription|default:""|truncatechars:40 }}
+                    </div>
                   </td>
                   <td class="px-5 py-3">
                     <span class="mono text-[0.75rem] bg-bg px-2 py-0.5 rounded">{{ product.sku }}</span>
@@ -470,245 +796,474 @@ tailwind.config = {
                   </td>
                   <td class="px-5 py-3">
                     {% if product.category %}
-                      <span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">{{ product.category.name }}</span>
+                    <span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">
+                      {{ product.category.name }}
+                    </span>
                     {% else %}
-                      <span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">Uncategorized</span>
+                    <span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">
+                      Uncategorized
+                    </span>
                     {% endif %}
                   </td>
-                  <td class="px-5 py-3 text-right mono text-[0.82rem]">Rs. {{ product.price|floatformat:"2" }}</td>
+                  <td class="px-5 py-3 text-right mono text-[0.82rem]">
+                    Rs. {{ product.price|floatformat:"2" }}
+                  </td>
                   <td class="px-5 py-3 mono text-[0.82rem]">
-                    {% if product.stock_quantity %}{{ product.stock_quantity }}{% else %}∞{% endif %}
+                    {% if product.stock_quantity %} {{ product.stock_quantity }} {% else %} ∞ {% endif %}
                   </td>
                   <td class="px-5 py-3 text-right">
-                    <a href="#" class="text-sub hover:text-ink inline-flex items-center justify-center w-7 h-7 rounded hover:bg-bg transition-colors" aria-label="Edit product">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/></svg>
+                    <a
+                      href="#"
+                      class="text-sub hover:text-ink inline-flex items-center justify-center w-7 h-7 rounded hover:bg-bg transition-colors btn-snap"
+                      aria-label="Edit product"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                        <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>
+                      </svg>
                     </a>
                   </td>
                 </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      {% else %}
-        <!-- Empty state -->
-        <div class="px-5 py-14 text-center">
-          <div class="w-11 h-11 mx-auto mb-3 rounded-full bg-bg flex items-center justify-center text-mute">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-          <p class="text-[0.95rem] font-medium mb-1">No products yet</p>
-          <p class="text-sub text-[0.85rem] max-w-sm mx-auto mb-4">
-            Start by adding your first product to see it here.
-          </p>
-          <button type="button" onclick="document.getElementById('addProductModal').classList.remove('hidden')" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors inline-flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add Product
-          </button>
-        </div>
-      {% endif %}
-    </section>
+          {% else %}
+          <div class="px-5 py-14 text-center">
+            <div class="w-11 h-11 mx-auto mb-3 rounded-full bg-bg flex items-center justify-center text-mute">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                <path d="M3.3 7L12 12l8.7-5M12 22V12"/>
+              </svg>
+            </div>
+            <p class="text-[0.95rem] font-medium mb-1">No products yet</p>
+            <p class="text-sub text-[0.85rem] max-w-sm mx-auto mb-4">
+              Start by adding your first product to see it here.
+            </p>
+            <button
+              type="button"
+              onclick="openProductModal()"
+              class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors inline-flex items-center gap-1.5 btn-snap"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add Product
+            </button>
+          </div>
+          {% endif %}
+        </section>
 
-    <!-- Quick Actions -->
-    <section class="card p-5 mb-6">
-      <h3 class="font-semibold text-[0.98rem] tracking-tight mb-4">Quick Actions</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
-          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
-          </span>
-          <span class="text-[0.82rem] font-medium">Add Sale</span>
-        </button>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
-          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-          </span>
-          <span class="text-[0.82rem] font-medium">Create Invoice</span>
-        </button>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
-          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
-          </span>
-          <span class="text-[0.82rem] font-medium">Add Expense</span>
-        </button>
-        <button type="button" onclick="document.getElementById('addProductModal').classList.remove('hidden')" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
-          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
-          </span>
-          <span class="text-[0.82rem] font-medium">Add Product</span>
-        </button>
-        <a href="{% url 'category' %}" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
-          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          </span>
-          <span class="text-[0.82rem] font-medium">Add Category</span>
-        </a>
-        <button type="button" class="group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg transition-colors text-left">
-          <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
-          </span>
-          <span class="text-[0.82rem] font-medium">Record Payment</span>
-        </button>
-      </div>
-    </section>
+        <!-- ============================================================
+             QUICK ACTIONS
+        ============================================================ -->
+        <section class="card p-5 mb-6">
+          <h3 class="font-semibold text-[0.98rem] tracking-tight mb-4">Quick Actions</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 stagger">
+            <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+              <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/>
+                </svg>
+              </span>
+              <span class="text-[0.82rem] font-medium">Add Sale</span>
+            </button>
 
-    <p class="text-center text-[0.72rem] text-mute">
-      FinCore · Simple for the business owner, rigorous underneath.
-    </p>
+            <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+              <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>
+                </svg>
+              </span>
+              <span class="text-[0.82rem] font-medium">Create Invoice</span>
+            </button>
 
-  </main>
-</div>
+            <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+              <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/>
+                </svg>
+              </span>
+              <span class="text-[0.82rem] font-medium">Add Expense</span>
+            </button>
 
-<!-- ============================================================
-     ADD PRODUCT MODAL
-     ============================================================ -->
-<div id="addProductModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50" role="dialog" aria-modal="true" aria-labelledby="addProdTitle">
-  <div class="bg-white border border-line rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
-    <div class="flex items-center justify-between mb-5">
-      <h3 id="addProdTitle" class="text-[1.05rem] font-semibold">Add New Product</h3>
-      <button type="button" onclick="document.getElementById('addProductModal').classList.add('hidden')" class="w-8 h-8 rounded-md flex items-center justify-center text-sub hover:bg-bg transition-colors" aria-label="Close">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+            <button type="button" onclick="openProductModal()" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+              <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                  <path d="M3.3 7L12 12l8.7-5M12 22V12"/>
+                </svg>
+              </span>
+              <span class="text-[0.82rem] font-medium">Add Product</span>
+            </button>
+
+            <a href="{% url 'category' %}" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+              <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+                  <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+              </span>
+              <span class="text-[0.82rem] font-medium">Add Category</span>
+            </a>
+
+            <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+              <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>
+                </svg>
+              </span>
+              <span class="text-[0.82rem] font-medium">Record Payment</span>
+            </button>
+          </div>
+        </section>
+
+        <p class="text-center text-[0.72rem] text-mute">
+          FinCore · Simple for the business owner, rigorous underneath.
+        </p>
+      </main>
     </div>
 
-    <form method="POST" action="{% url 'product' %}" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="space-y-4">
-        <div>
-          <label for="prodName" class="block text-[0.8rem] font-medium mb-1.5">Product Name</label>
-          <input id="prodName" type="text" name="name" required class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+    <!-- ============================================================
+         ADD PRODUCT MODAL
+    ============================================================ -->
+    <div
+      id="addProductModal"
+      class="fc-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="addProdTitle"
+    >
+      <div class="fc-modal-backdrop" data-modal-close></div>
+      <div class="fc-modal-card max-w-lg p-6" role="document">
+        <div class="flex items-center justify-between mb-5">
+          <h3 id="addProdTitle" class="text-[1.05rem] font-semibold">Add New Product</h3>
+          <button
+            type="button"
+            onclick="closeProductModal()"
+            class="w-8 h-8 rounded-md flex items-center justify-center text-sub hover:bg-bg transition-colors btn-snap"
+            aria-label="Close"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
-        <div>
-          <label for="prodDesc" class="block text-[0.8rem] font-medium mb-1.5">Description</label>
-          <textarea id="prodDesc" name="description" rows="3" class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"></textarea>
-        </div>
-        <div>
-          <label for="prodTypes" class="block text-[0.8rem] font-medium mb-1.5">Product Types</label>
-          <select id="prodTypes" name="types_of_product" multiple class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
-            {% for pt in product_types %}
-              <option value="{{ pt.id }}">{{ pt.name }}</option>
-            {% endfor %}
-          </select>
-          <p class="text-mute text-[0.7rem] mt-1.5">Hold Ctrl/Cmd to select multiple</p>
-        </div>
-        <div>
-          <label for="prodCategory" class="block text-[0.8rem] font-medium mb-1.5">Category</label>
-          <select id="prodCategory" name="category" required class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
-            <option value="">Select a category</option>
-            {% for cat in categories %}
-              <option value="{{ cat.id }}">{{ cat.name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div>
-          <label for="prodManufacturer" class="block text-[0.8rem] font-medium mb-1.5">Manufacturer</label>
-          <input id="prodManufacturer" type="text" name="manufacturer" class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
-        </div>
-        <div>
-          <label for="prodPrice" class="block text-[0.8rem] font-medium mb-1.5">Price (Rs.)</label>
-          <input id="prodPrice" type="number" name="price" step="0.01" min="0" required class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] mono focus:border-ink transition-colors" />
-        </div>
-        <div>
-          <label for="prodImage" class="block text-[0.8rem] font-medium mb-1.5">Image</label>
-          <input id="prodImage" type="file" name="image" accept="image/*" class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
-        </div>
+
+        <form method="POST" action="{% url 'product' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="space-y-4">
+            <div>
+              <label for="prodName" class="block text-[0.8rem] font-medium mb-1.5">Product Name</label>
+              <input
+                id="prodName"
+                type="text"
+                name="name"
+                required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="prodDesc" class="block text-[0.8rem] font-medium mb-1.5">Description</label>
+              <textarea
+                id="prodDesc"
+                name="description"
+                rows="3"
+                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="prodTypes" class="block text-[0.8rem] font-medium mb-1.5">Product Types</label>
+              <select
+                id="prodTypes"
+                name="types_of_product"
+                multiple
+                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
+              >
+                {% for pt in product_types %}
+                <option value="{{ pt.id }}">{{ pt.name }}</option>
+                {% empty %}
+                <option value="" disabled>No product types available</option>
+                {% endfor %}
+              </select>
+              <p class="text-mute text-[0.7rem] mt-1.5">Hold Ctrl/Cmd to select multiple</p>
+            </div>
+
+            <div>
+              <label for="prodCategory" class="block text-[0.8rem] font-medium mb-1.5">Category</label>
+              <select
+                id="prodCategory"
+                name="category"
+                required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
+              >
+                <option value="">Select a category</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% empty %}
+                <option value="" disabled>No categories available</option>
+                {% endfor %}
+              </select>
+              {% if not categories %}
+              <p class="text-[0.7rem] text-neg mt-1.5">No categories have been created yet. Create a category first.</p>
+              {% endif %}
+            </div>
+
+            <div>
+              <label for="prodManufacturer" class="block text-[0.8rem] font-medium mb-1.5">Manufacturer</label>
+              <input
+                id="prodManufacturer"
+                type="text"
+                name="manufacturer"
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="prodPrice" class="block text-[0.8rem] font-medium mb-1.5">Price (Rs.)</label>
+              <input
+                id="prodPrice"
+                type="number"
+                name="price"
+                step="0.01"
+                min="0"
+                required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] mono focus:border-ink transition-colors"
+              />
+            </div>
+
+            <div>
+              <label for="prodImage" class="block text-[0.8rem] font-medium mb-1.5">Image</label>
+              <input
+                id="prodImage"
+                type="file"
+                name="image"
+                accept="image/*"
+                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 mt-6">
+            <button
+              type="button"
+              onclick="closeProductModal()"
+              class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors btn-snap"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors btn-snap"
+            >
+              Save Product
+            </button>
+          </div>
+        </form>
       </div>
+    </div>
 
-      <div class="flex items-center justify-end gap-2 mt-6">
-        <button type="button" onclick="document.getElementById('addProductModal').classList.add('hidden')" class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors">
-          Cancel
-        </button>
-        <button type="submit" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors">
-          Save Product
-        </button>
+    <!-- ============================================================
+         ADD PRODUCT TYPE MODAL
+    ============================================================ -->
+    <div
+      id="addProductTypeModal"
+      class="fc-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="addTypeTitle"
+    >
+      <div class="fc-modal-backdrop" data-modal-close></div>
+      <div class="fc-modal-card max-w-md p-6" role="document">
+        <div class="flex items-center justify-between mb-5">
+          <h3 id="addTypeTitle" class="text-[1.05rem] font-semibold">Add Product Type</h3>
+          <button
+            type="button"
+            onclick="closeProductTypeModal()"
+            class="w-8 h-8 rounded-md flex items-center justify-center text-sub hover:bg-bg transition-colors btn-snap"
+            aria-label="Close"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <form method="POST" action="{% url 'product_type_create' %}">
+          {% csrf_token %}
+
+          <div class="space-y-4">
+            <div>
+              <label for="typeName" class="block text-[0.8rem] font-medium mb-1.5">Type Name</label>
+              <input
+                id="typeName"
+                type="text"
+                name="name"
+                required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 mt-6">
+            <button
+              type="button"
+              onclick="closeProductTypeModal()"
+              class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors btn-snap"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors btn-snap"
+            >
+              Save Type
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
 
-<!-- ============================================================
-     SCRIPTS
-     ============================================================ -->
-<script>
-(function () {
-  'use strict';
+    <!-- ============================================================
+         JAVASCRIPT
+    ============================================================ -->
+    <script>
+      "use strict";
 
-  /* ============================================================
-     Mobile sidebar
-     ============================================================ */
-  (function () {
-    var sidebar = document.getElementById('sidebar');
-    var overlay = document.getElementById('overlay');
-    var toggle  = document.getElementById('menuToggle');
-    if (!sidebar || !overlay || !toggle) return;
-
-    function open() {
-      sidebar.classList.add('open');
-      overlay.classList.remove('hidden');
-      toggle.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden';
-    }
-    function close() {
-      sidebar.classList.remove('open');
-      overlay.classList.add('hidden');
-      toggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    }
-    toggle.addEventListener('click', function () {
-      sidebar.classList.contains('open') ? close() : open();
-    });
-    overlay.addEventListener('click', close);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-        close(); toggle.focus();
+      /* ============================================================
+         PRODUCT MODAL
+      ============================================================ */
+      function openProductModal() {
+        const modal = document.getElementById("addProductModal");
+        if (!modal) return;
+        modal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        const nameInput = document.getElementById("prodName");
+        if (nameInput) setTimeout(() => nameInput.focus(), 120);
       }
-    });
-    var mq = window.matchMedia('(min-width: 1024px)');
-    mq.addEventListener('change', function (e) { if (e.matches) close(); });
-  })();
 
-  /* ============================================================
-     Company dropdown (visual feedback only)
-     ============================================================ */
-  (function () {
-    var btn = document.getElementById('companyBtn');
-    if (!btn) return;
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      btn.setAttribute('aria-expanded', btn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
-    });
-  })();
-
-  /* ============================================================
-     Product search filter
-     ============================================================ */
-  window.filterProductTable = function () {
-    var input = document.getElementById('productSearch');
-    var table = document.getElementById('productTable');
-    if (!input || !table) return;
-    var filter = input.value.toLowerCase();
-    var rows = table.getElementsByTagName('tr');
-    for (var i = 1; i < rows.length; i++) {
-      var text = rows[i].textContent.toLowerCase();
-      rows[i].style.display = text.indexOf(filter) > -1 ? '' : 'none';
-    }
-  };
-
-  /* ============================================================
-     Close modal on Escape / outside click
-     ============================================================ */
-  (function () {
-    var modal = document.getElementById('addProductModal');
-    if (!modal) return;
-    modal.addEventListener('click', function (e) {
-      if (e.target === modal) modal.classList.add('hidden');
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-        modal.classList.add('hidden');
+      function closeProductModal() {
+        const modal = document.getElementById("addProductModal");
+        if (!modal) return;
+        modal.classList.remove("is-open");
+        document.body.style.overflow = "";
       }
-    });
-  })();
 
-})();
-</script>
-</body>
+      /* ============================================================
+         PRODUCT TYPE MODAL
+      ============================================================ */
+      function openProductTypeModal() {
+        const modal = document.getElementById("addProductTypeModal");
+        if (!modal) return;
+        modal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        const nameInput = document.getElementById("typeName");
+        if (nameInput) setTimeout(() => nameInput.focus(), 120);
+      }
+
+      function closeProductTypeModal() {
+        const modal = document.getElementById("addProductTypeModal");
+        if (!modal) return;
+        modal.classList.remove("is-open");
+        document.body.style.overflow = "";
+      }
+
+      /* ============================================================
+         MOBILE SIDEBAR
+      ============================================================ */
+      (function () {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const toggle = document.getElementById("menuToggle");
+        if (!sidebar || !overlay || !toggle) return;
+
+        function openSidebar() {
+          sidebar.classList.add("open");
+          overlay.classList.remove("hidden");
+          toggle.setAttribute("aria-expanded", "true");
+          document.body.style.overflow = "hidden";
+        }
+        function closeSidebar() {
+          sidebar.classList.remove("open");
+          overlay.classList.add("hidden");
+          toggle.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
+        }
+
+        toggle.addEventListener("click", () => {
+          sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+        });
+        overlay.addEventListener("click", closeSidebar);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && sidebar.classList.contains("open")) {
+            closeSidebar();
+            toggle.focus();
+          }
+        });
+        window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => {
+          if (event.matches) closeSidebar();
+        });
+      })();
+
+      /* ============================================================
+         COMPANY BUTTON
+      ============================================================ */
+      (function () {
+        const button = document.getElementById("companyBtn");
+        if (!button) return;
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const currentState = button.getAttribute("aria-expanded") === "true";
+          button.setAttribute("aria-expanded", currentState ? "false" : "true");
+        });
+      })();
+
+      /* ============================================================
+         PRODUCT SEARCH
+      ============================================================ */
+      window.filterProductTable = function () {
+        const input = document.getElementById("productSearch");
+        const table = document.getElementById("productTable");
+        if (!input || !table) return;
+        const filter = input.value.toLowerCase().trim();
+        const rows = table.getElementsByTagName("tr");
+        for (let i = 1; i < rows.length; i++) {
+          const text = rows[i].textContent.toLowerCase();
+          rows[i].style.display = text.indexOf(filter) > -1 ? "" : "none";
+        }
+      };
+
+      /* ============================================================
+         MODAL BACKDROP + ESCAPE
+      ============================================================ */
+      (function () {
+        const productModal = document.getElementById("addProductModal");
+        const typeModal = document.getElementById("addProductTypeModal");
+
+        if (productModal) {
+          productModal.querySelectorAll("[data-modal-close]").forEach((el) => {
+            el.addEventListener("click", closeProductModal);
+          });
+        }
+        if (typeModal) {
+          typeModal.querySelectorAll("[data-modal-close]").forEach((el) => {
+            el.addEventListener("click", closeProductTypeModal);
+          });
+        }
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            if (productModal && productModal.classList.contains("is-open")) closeProductModal();
+            if (typeModal && typeModal.classList.contains("is-open")) closeProductTypeModal();
+          }
+        });
+      })();
+    </script>
+  </body>
 </html>

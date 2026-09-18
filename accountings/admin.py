@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
+# from django.utils.safestring import mark_safe
 from .models import Category, product_type, Product
 
 
@@ -154,7 +154,7 @@ class ProductAdmin(admin.ModelAdmin):
     def stock_status(self, obj):
         # Since your model has no stock field, this is a placeholder.
         # Update if you add a `stock_quantity` field.
-        return mark_safe(
+        return format_html(
             '<span style="color:#6b7280;font-size:11px;">—</span>'
         )
 
@@ -166,7 +166,7 @@ class ProductAdmin(admin.ModelAdmin):
                 'object-fit:cover;border-radius:4px;border:1px solid #e5e7eb;" />',
                 obj.image.url
             )
-        return mark_safe(
+        return format_html(
             '<span style="color:#9ca3af;font-size:11px;">No image</span>'
         )
 

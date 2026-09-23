@@ -16,6 +16,7 @@ def product(request):
         image = request.FILES.get("image")
         category_id = request.POST.get("category")
         manufacturer = request.POST.get("manufacturer")
+        stock = request.POST.get("stock")
 
         # Get selected category
         category = get_object_or_404(Category, id=category_id)
@@ -28,6 +29,7 @@ def product(request):
             image=image,
             category=category,
             manufacturer=manufacturer,
+            stock=stock,
         )
 
         # Add many-to-many product types

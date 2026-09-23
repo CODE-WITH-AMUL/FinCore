@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Products — FinCore</title>
+    <title>Suppliers — FinCore</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -80,9 +80,7 @@
         border-radius: 4px;
       }
 
-      /* ============================================================
-         SIDEBAR
-      ============================================================ */
+      /* SIDEBAR */
       #sidebar {
         position: fixed;
         top: 0;
@@ -162,9 +160,7 @@
         margin-top: 0;
       }
 
-      /* ============================================================
-         CARDS
-      ============================================================ */
+      /* CARDS */
       .card {
         background: #ffffff;
         border: 1px solid #e5e7eb;
@@ -190,9 +186,7 @@
         background-color: #fafafa;
       }
 
-      /* ============================================================
-         STAGGERED ENTRANCE
-      ============================================================ */
+      /* STAGGERED ENTRANCE */
       @keyframes fadeUp {
         from {
           opacity: 0;
@@ -220,9 +214,7 @@
         animation-delay: calc(var(--i, 0) * 0.035s + 0.08s);
       }
 
-      /* ============================================================
-         MICRO-INTERACTIONS
-      ============================================================ */
+      /* MICRO-INTERACTIONS */
       .btn-snap {
         transition:
           background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
@@ -247,9 +239,7 @@
         transform: scale(0.98) translateY(0);
       }
 
-      /* ============================================================
-         MODAL — spring snap-in
-      ============================================================ */
+      /* MODAL */
       .fc-modal {
         position: fixed;
         inset: 0;
@@ -286,23 +276,7 @@
         transform: translateY(0) scale(1);
       }
 
-      /* ============================================================
-         SKELETON (perceived performance helper)
-      ============================================================ */
-      .skeleton {
-        background: linear-gradient(90deg, #f1f2f4 0%, #e9eaee 50%, #f1f2f4 100%);
-        background-size: 200% 100%;
-        animation: shimmer 1.4s ease-in-out infinite;
-        border-radius: 4px;
-      }
-      @keyframes shimmer {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-      }
-
-      /* ============================================================
-         REDUCED MOTION
-      ============================================================ */
+      /* REDUCED MOTION */
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -390,7 +364,7 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'product' %}" class="side-link active" aria-current="page">
+            <a href="{% url 'product' %}" class="side-link">
               <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>
               </svg>
@@ -408,7 +382,7 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'supplier_list' %}" class="side-link">
+            <a href="{% url 'supplier_list' %}" class="side-link active" aria-current="page">
               <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/>
               </svg>
@@ -537,7 +511,7 @@
             </svg>
           </button>
 
-          <h1 class="font-semibold text-[0.98rem] tracking-tight">Products</h1>
+          <h1 class="font-semibold text-[0.98rem] tracking-tight">Suppliers</h1>
 
           <button
             type="button"
@@ -591,16 +565,24 @@
       </header>
 
       <main class="flex-1 px-5 sm:px-8 py-6">
-        <!-- ============================================================
-             PAGE HEADER
-        ============================================================ -->
+        {% if messages %}
+        <div class="mb-4 space-y-2">
+          {% for m in messages %}
+          <div class="text-[0.82rem] px-3 py-2 rounded-md border border-line bg-white text-sub">
+            {{ m }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- PAGE HEADER -->
         <div class="flex flex-wrap items-start justify-between gap-4 mb-6 stagger">
           <div>
             <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">
-              Products
+              Suppliers
             </h2>
             <p class="text-sub text-[0.9rem] mt-1">
-              Manage your product catalog and inventory
+              Manage your supplier network and records
             </p>
           </div>
 
@@ -623,115 +605,97 @@
 
             <button
               type="button"
-              onclick="openProductTypeModal()"
-              class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors flex items-center gap-1.5 btn-snap"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Add Product Type
-            </button>
-
-            <button
-              type="button"
-              onclick="openProductModal()"
+              onclick="openSupplierModal()"
               class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5 btn-snap"
             >
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Add Product
+              Add Supplier
             </button>
           </div>
         </div>
 
-        <!-- ============================================================
-             KPI CARDS
-        ============================================================ -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger" aria-label="Product overview">
-          <!-- Total Products -->
+        <!-- KPI CARDS -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger" aria-label="Supplier overview">
           <div class="card card-hover p-4">
             <div class="flex items-center justify-between mb-3">
-              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Total Products</p>
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Total Suppliers</p>
               <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
-                <path d="M3.3 7L12 12l8.7-5M12 22V12"/>
+                <path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/>
               </svg>
             </div>
-            <p class="mono text-[1.35rem] font-medium tracking-tight">{{ products|length }}</p>
+            <p class="mono text-[1.35rem] font-medium tracking-tight">{{ total_count|default:supplier_list|length }}</p>
             <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                 <path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              in catalog
+              in directory
             </p>
           </div>
 
-          <!-- Inventory Value -->
           <div class="card card-hover p-4">
             <div class="flex items-center justify-between mb-3">
-              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Inventory Value</p>
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Active</p>
               <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                <path d="M20 6L9 17l-5-5"/>
               </svg>
             </div>
             <p class="mono text-[1.35rem] font-medium tracking-tight">
-              {% if total_inventory_value %} Rs. {{ total_inventory_value }} {% else %} Rs. 6,42,500 {% endif %}
+              {% if active_count %}{{ active_count }}{% else %}—{% endif %}
             </p>
-            <p class="text-[0.75rem] text-sub mt-2">across {{ categories|length }} categories</p>
+            <p class="text-[0.75rem] text-sub mt-2">currently trading</p>
           </div>
 
-          <!-- Low Stock -->
           <div class="card card-hover p-4">
             <div class="flex items-center justify-between mb-3">
-              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Low Stock</p>
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Unpaid</p>
               <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>
               </svg>
             </div>
             <p class="mono text-[1.35rem] font-medium tracking-tight">
-              {% if low_stock_count %} {{ low_stock_count }} {% else %} 7 {% endif %}
+              {% if unpaid_count %}{{ unpaid_count }}{% else %}—{% endif %}
             </p>
-            <p class="text-[0.75rem] text-warn mt-2">Reorder soon</p>
+            <p class="text-[0.75rem] text-warn mt-2">pending payment</p>
           </div>
 
-          <!-- Avg. Margin -->
           <div class="card card-hover p-4">
             <div class="flex items-center justify-between mb-3">
-              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Avg. Margin</p>
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium">Avg. Rating</p>
               <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/>
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"/>
               </svg>
             </div>
             <p class="mono text-[1.35rem] font-medium tracking-tight">
-              {% if avg_margin %} {{ avg_margin }}% {% else %} 32.4% {% endif %}
+              {% if avg_rating %}{{ avg_rating }}{% else %}—{% endif %}
             </p>
             <p class="text-[0.75rem] text-pos mt-2 flex items-center gap-1">
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                 <path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              +1.2% from last month
+              out of 5.00
             </p>
           </div>
         </section>
 
-        <!-- ============================================================
-             PRODUCT TABLE
-        ============================================================ -->
+        <!-- SUPPLIER TABLE -->
         <section class="card overflow-hidden mb-3">
           <div class="px-5 py-4 border-b border-line flex items-center justify-between">
-            <h3 class="font-semibold text-[0.98rem] tracking-tight">Product Inventory</h3>
-            <a href="{% url 'product' %}" class="text-[0.78rem] text-sub hover:text-ink flex items-center gap-1 transition-colors">
-              View all products
+            <h3 class="font-semibold text-[0.98rem] tracking-tight">All Suppliers</h3>
+            <a href="{% url 'supplier_list' %}" class="text-[0.78rem] text-sub hover:text-ink flex items-center gap-1 transition-colors">
+              View all suppliers
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </a>
           </div>
 
-          <div class="px-5 py-3 border-b border-line2 flex flex-wrap items-center gap-3">
+          <!-- Search + filters -->
+          <form method="post" action="{% url 'supplier_list' %}" class="px-5 py-3 border-b border-line2 flex flex-wrap items-center gap-3">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="search">
             <div class="relative max-w-xs flex-1 min-w-[180px]">
               <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="7" />
@@ -739,162 +703,223 @@
               </svg>
               <input
                 type="search"
-                id="productSearch"
-                placeholder="Search by name, SKU, or ISP..."
-                aria-label="Search products"
-                onkeyup="filterProductTable()"
+                id="supplierSearch"
+                name="search_query"
+                value="{{ query|default:'' }}"
+                placeholder="Search by name, company, or email..."
+                aria-label="Search suppliers"
+                onkeyup="filterSupplierTable()"
                 class="h-8 w-full pl-8 pr-3 rounded-md border border-line bg-bg/70 text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors"
               />
             </div>
 
             <div class="flex flex-wrap items-center gap-1.5">
               <a
-                href="{% url 'product' %}"
-                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if not selected_category %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
+                href="{% url 'supplier_list' %}"
+                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if not status %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
               >
                 All
               </a>
-              {% for cat in categories %}
               <a
-                href="?category={{ cat.id }}"
-                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if selected_category == cat.id|stringformat:'s' %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
+                href="?status=active"
+                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if status == 'active' %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
               >
-                {{ cat.name }}
+                Active
               </a>
-              {% endfor %}
+              <a
+                href="?status=inactive"
+                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if status == 'inactive' %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
+              >
+                Inactive
+              </a>
+              <a
+                href="?payment=unpaid"
+                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if payment == 'unpaid' %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
+              >
+                Unpaid
+              </a>
+              <a
+                href="?payment=paid"
+                class="text-[0.72rem] font-medium px-2.5 py-1 rounded-full border transition-colors btn-snap {% if payment == 'paid' %} bg-ink text-white border-ink {% else %} bg-white text-sub border-line hover:border-ink hover:text-ink {% endif %}"
+              >
+                Paid
+              </a>
             </div>
-          </div>
+          </form>
 
-          {% if products %}
+          {% if supplier_list %}
           <div class="overflow-x-auto">
-            <table class="w-full text-[0.84rem]" id="productTable">
+            <table class="w-full text-[0.84rem]" id="supplierTable">
               <thead>
                 <tr class="text-left text-[0.72rem] uppercase tracking-wider text-sub bg-bg/60">
-                  <th class="px-5 py-2.5 font-medium">Product</th>
-                  <th class="px-5 py-2.5 font-medium">Image</th>
-                  <th class="px-5 py-2.5 font-medium">SKU</th>
-                  <th class="px-5 py-2.5 font-medium">ISP Code</th>
-                  <th class="px-5 py-2.5 font-medium">Category</th>
-                  <th class="px-5 py-2.5 font-medium text-right">Price</th>
-                  <th class="px-5 py-2.5 font-medium">Stock</th>
+                  <th class="px-5 py-2.5 font-medium">Supplier</th>
+                  <th class="px-5 py-2.5 font-medium">Code</th>
+                  <th class="px-5 py-2.5 font-medium">Location</th>
+                  <th class="px-5 py-2.5 font-medium">Type</th>
+                  <th class="px-5 py-2.5 font-medium">Contact</th>
+                  <th class="px-5 py-2.5 font-medium">Status</th>
+                  <th class="px-5 py-2.5 font-medium">Payment</th>
                   <th class="px-5 py-2.5 font-medium text-right">Actions</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-line2 stagger-slow">
-                {% for product in products %}
+                {% for supplier in supplier_list %}
                 <tr class="row-hover" style="--i:{{ forloop.counter0 }}">
                   <td class="px-5 py-3">
-                    <div class="font-medium">{{ product.name }}</div>
+                    <div class="font-medium">{{ supplier.name }}</div>
                     <div class="text-sub text-[0.72rem] truncate max-w-[220px]">
-                      {{ product.decription|default:""|truncatechars:40 }}
+                      {{ supplier.company_name|default:""|truncatechars:40 }}
                     </div>
                   </td>
                   <td class="px-5 py-3">
-                    {% if product.image %}
-                    <a href="{{ product.image.url }}" target="_blank" class="inline-block group relative">
-                      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-10 h-10 object-cover rounded border border-line hover:border-ink transition-colors" />
-                      <span class="absolute inset-0 rounded flex items-center justify-center bg-black/0 group-hover:bg-black/10 transition-colors">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" class="opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">
-                          <path d="M21 21H3V3h9V1H3a2 2 0 00-2 2v18a2 2 0 002 2h18a2 2 0 002-2v-9h-2z"/><path d="M19 1l-8 8M19 1h-8M19 1v8"/>
-                        </svg>
+                    <span class="mono text-[0.75rem] bg-bg px-2 py-0.5 rounded">{{ supplier.code }}</span>
+                  </td>
+                  <td class="px-5 py-3 text-sub text-[0.78rem]">
+                    {{ supplier.city }}{% if supplier.provience %}, {{ supplier.provience }}{% endif %}
+                  </td>
+                  <td class="px-5 py-3">
+                    <span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">
+                      {{ supplier.get_supplier_type_display }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-3 text-sub text-[0.78rem]">
+                    <div class="truncate max-w-[180px]">{{ supplier.email }}</div>
+                    <div class="mono text-[0.72rem]">{{ supplier.contact_number }}</div>
+                  </td>
+                  <td class="px-5 py-3">
+                    {% if supplier.supplier_status == 'active' %}
+                      <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-posSoft text-pos font-medium text-[0.75rem]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-pos"></span>
+                        Active
                       </span>
-                    </a>
-                    {% else %}
-                    <div class="w-10 h-10 rounded border border-line bg-bg flex items-center justify-center text-mute">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-6-6-6 6"/>
-                      </svg>
-                    </div>
-                    {% endif %}
-                  </td>
-                  <td class="px-5 py-3">
-                    <span class="mono text-[0.75rem] bg-bg px-2 py-0.5 rounded">{{ product.sku }}</span>
-                  </td>
-                  <td class="px-5 py-3">
-                    <span class="mono text-[0.75rem] bg-bg px-2 py-0.5 rounded">{{ product.isp_code }}</span>
-                  </td>
-                  <td class="px-5 py-3">
-                    {% if product.category %}
-                    <span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">
-                      {{ product.category.name }}
-                    </span>
-                    {% else %}
-                    <span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">
-                      Uncategorized
-                    </span>
-                    {% endif %}
-                  </td>
-                  <td class="px-5 py-3 text-right mono text-[0.82rem]">
-                    Rs. {{ product.price|floatformat:"2" }}
-                  </td>
-                  <td class="px-5 py-3 mono text-[0.82rem]">
-                    {% if product.stock > 0 %}
-                      {% if product.stock < 10 %}
-                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-warnSoft text-warn font-medium text-[0.75rem]">
-                          <span class="w-1.5 h-1.5 rounded-full bg-warn"></span>
-                          {{ product.stock }}
-                        </span>
-                      {% else %}
-                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-posSoft text-pos font-medium text-[0.75rem]">
-                          <span class="w-1.5 h-1.5 rounded-full bg-pos"></span>
-                          {{ product.stock }}
-                        </span>
-                      {% endif %}
                     {% else %}
                       <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-negSoft text-neg font-medium text-[0.75rem]">
                         <span class="w-1.5 h-1.5 rounded-full bg-neg"></span>
-                        Out of Stock
+                        Inactive
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td class="px-5 py-3">
+                    {% if supplier.payment_status == 'paid' %}
+                      <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-posSoft text-pos font-medium text-[0.75rem]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-pos"></span>
+                        Paid
+                      </span>
+                    {% elif supplier.payment_status == 'pending' %}
+                      <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-warnSoft text-warn font-medium text-[0.75rem]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-warn"></span>
+                        Pending
+                      </span>
+                    {% else %}
+                      <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-negSoft text-neg font-medium text-[0.75rem]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-neg"></span>
+                        Unpaid
                       </span>
                     {% endif %}
                   </td>
                   <td class="px-5 py-3 text-right">
-                    <a
-                      href="#"
-                      class="text-sub hover:text-ink inline-flex items-center justify-center w-7 h-7 rounded hover:bg-bg transition-colors btn-snap"
-                      aria-label="Edit product"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                        <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>
-                      </svg>
-                    </a>
+                    <div class="inline-flex items-center gap-1">
+                      <button
+                        type="button"
+                        class="js-edit-supplier text-sub hover:text-ink inline-flex items-center justify-center w-7 h-7 rounded hover:bg-bg transition-colors btn-snap"
+                        aria-label="Edit supplier"
+                        data-pk="{{ supplier.pk }}"
+                        data-name="{{ supplier.name|escapejs }}"
+                        data-company="{{ supplier.company_name|escapejs }}"
+                        data-adress="{{ supplier.adress|escapejs }}"
+                        data-city="{{ supplier.city|escapejs }}"
+                        data-provience="{{ supplier.provience|escapejs }}"
+                        data-country="{{ supplier.country|escapejs }}"
+                        data-zip="{{ supplier.zip_code|escapejs }}"
+                        data-history="{{ supplier.History|default:''|escapejs }}"
+                        data-supplier-type="{{ supplier.supplier_type|escapejs }}"
+                        data-supplier-type-company="{{ supplier.supplier_type_company|escapejs }}"
+                        data-supplier-status="{{ supplier.supplier_status|escapejs }}"
+                        data-supplier-rating="{{ supplier.supplier_rating }}"
+                        data-supplier-company="{{ supplier.supplier_company|escapejs }}"
+                        data-email="{{ supplier.email|escapejs }}"
+                        data-contact="{{ supplier.contact_number|escapejs }}"
+                        data-payment-status="{{ supplier.payment_status|escapejs }}"
+                        data-notes="{{ supplier.notes|default:''|escapejs }}"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                          <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>
+                        </svg>
+                      </button>
+
+                      <form method="post" action="{% url 'supplier_list' %}" class="inline"
+                            onsubmit="return confirm('Delete this supplier?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="pk" value="{{ supplier.pk }}">
+                        <button
+                          type="submit"
+                          class="text-sub hover:text-neg inline-flex items-center justify-center w-7 h-7 rounded hover:bg-negSoft transition-colors btn-snap"
+                          aria-label="Delete supplier"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                          </svg>
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
           </div>
+
+          {% if page_obj and page_obj.paginator.num_pages > 1 %}
+          <div class="px-5 py-3 border-t border-line2 flex items-center justify-between text-[0.78rem] text-sub">
+            <div class="mono">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </div>
+            <div class="flex items-center gap-1">
+              {% if page_obj.has_previous %}
+              <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                 class="h-8 px-3 rounded-md border border-line bg-white hover:border-ink hover:text-ink transition-colors flex items-center btn-snap">
+                Previous
+              </a>
+              {% endif %}
+              {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}"
+                 class="h-8 px-3 rounded-md border border-line bg-white hover:border-ink hover:text-ink transition-colors flex items-center btn-snap">
+                Next
+              </a>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
+
           {% else %}
           <div class="px-5 py-14 text-center">
             <div class="w-11 h-11 mx-auto mb-3 rounded-full bg-bg flex items-center justify-center text-mute">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
-                <path d="M3.3 7L12 12l8.7-5M12 22V12"/>
+                <path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/>
               </svg>
             </div>
-            <p class="text-[0.95rem] font-medium mb-1">No products yet</p>
+            <p class="text-[0.95rem] font-medium mb-1">No suppliers yet</p>
             <p class="text-sub text-[0.85rem] max-w-sm mx-auto mb-4">
-              Start by adding your first product to see it here.
+              Start by adding your first supplier to see it here.
             </p>
             <button
               type="button"
-              onclick="openProductModal()"
+              onclick="openSupplierModal()"
               class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors inline-flex items-center gap-1.5 btn-snap"
             >
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Add Product
+              Add Supplier
             </button>
           </div>
           {% endif %}
         </section>
 
-        <!-- ============================================================
-             QUICK ACTIONS
-        ============================================================ -->
+        <!-- QUICK ACTIONS -->
         <section class="card p-5 mb-6">
           <h3 class="font-semibold text-[0.98rem] tracking-tight mb-4">Quick Actions</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 stagger">
@@ -925,7 +950,7 @@
               <span class="text-[0.82rem] font-medium">Add Expense</span>
             </button>
 
-            <button type="button" onclick="openProductModal()" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+            <a href="{% url 'product' %}" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
               <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
                   <path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
@@ -933,7 +958,7 @@
                 </svg>
               </span>
               <span class="text-[0.82rem] font-medium">Add Product</span>
-            </button>
+            </a>
 
             <a href="{% url 'category' %}" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
               <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
@@ -945,13 +970,13 @@
               <span class="text-[0.82rem] font-medium">Add Category</span>
             </a>
 
-            <button type="button" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
+            <button type="button" onclick="openSupplierModal()" class="qa-tile group flex flex-col items-start gap-2 p-3 rounded-md border border-line hover:border-ink hover:bg-bg text-left">
               <span class="w-7 h-7 rounded-md bg-bg group-hover:bg-white flex items-center justify-center text-sub transition-colors">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                  <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>
+                  <path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/>
                 </svg>
               </span>
-              <span class="text-[0.82rem] font-medium">Record Payment</span>
+              <span class="text-[0.82rem] font-medium">Add Supplier</span>
             </button>
           </div>
         </section>
@@ -963,22 +988,22 @@
     </div>
 
     <!-- ============================================================
-         ADD PRODUCT MODAL
+         ADD SUPPLIER MODAL
     ============================================================ -->
     <div
-      id="addProductModal"
+      id="addSupplierModal"
       class="fc-modal"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="addProdTitle"
+      aria-labelledby="addSuppTitle"
     >
       <div class="fc-modal-backdrop" data-modal-close></div>
       <div class="fc-modal-card max-w-lg p-6" role="document">
         <div class="flex items-center justify-between mb-5">
-          <h3 id="addProdTitle" class="text-[1.05rem] font-semibold">Add New Product</h3>
+          <h3 id="addSuppTitle" class="text-[1.05rem] font-semibold">Add New Supplier</h3>
           <button
             type="button"
-            onclick="closeProductModal()"
+            onclick="closeSupplierModal()"
             class="w-8 h-8 rounded-md flex items-center justify-center text-sub hover:bg-bg transition-colors btn-snap"
             aria-label="Close"
           >
@@ -989,107 +1014,148 @@
           </button>
         </div>
 
-        <form method="POST" action="{% url 'product' %}" enctype="multipart/form-data">
+        <form method="POST" action="{% url 'supplier_list' %}">
           {% csrf_token %}
+          <input type="hidden" name="action" value="create">
 
           <div class="space-y-4">
-            <div>
-              <label for="prodName" class="block text-[0.8rem] font-medium mb-1.5">Product Name</label>
-              <input
-                id="prodName"
-                type="text"
-                name="name"
-                required
-                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
-              />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="suppName" class="block text-[0.8rem] font-medium mb-1.5">Contact Name</label>
+                <input id="suppName" type="text" name="name" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="suppCompany" class="block text-[0.8rem] font-medium mb-1.5">Company Name</label>
+                <input id="suppCompany" type="text" name="company_name" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="suppEmail" class="block text-[0.8rem] font-medium mb-1.5">Email</label>
+                <input id="suppEmail" type="email" name="email" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="suppContact" class="block text-[0.8rem] font-medium mb-1.5">Contact Number</label>
+                <input id="suppContact" type="text" name="contact_number" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
             </div>
 
             <div>
-              <label for="prodDesc" class="block text-[0.8rem] font-medium mb-1.5">Description</label>
-              <textarea
-                id="prodDesc"
-                name="description"
-                rows="3"
-                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"
-              ></textarea>
+              <label for="suppAdress" class="block text-[0.8rem] font-medium mb-1.5">Address</label>
+              <input id="suppAdress" type="text" name="adress" required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label for="suppCity" class="block text-[0.8rem] font-medium mb-1.5">City</label>
+                <input id="suppCity" type="text" name="city" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="suppProvience" class="block text-[0.8rem] font-medium mb-1.5">Province</label>
+                <input id="suppProvience" type="text" name="provience" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="suppCountry" class="block text-[0.8rem] font-medium mb-1.5">Country</label>
+                <input id="suppCountry" type="text" name="country" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
             </div>
 
             <div>
-              <label for="prodTypes" class="block text-[0.8rem] font-medium mb-1.5">Product Types</label>
-              <select
-                id="prodTypes"
-                name="types_of_product"
-                multiple
-                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
-              >
-                {% for pt in product_types %}
-                <option value="{{ pt.id }}">{{ pt.name }}</option>
-                {% empty %}
-                <option value="" disabled>No product types available</option>
-                {% endfor %}
-              </select>
-              <p class="text-mute text-[0.7rem] mt-1.5">Hold Ctrl/Cmd to select multiple</p>
+              <label for="suppZip" class="block text-[0.8rem] font-medium mb-1.5">Zip Code</label>
+              <input id="suppZip" type="text" name="zip_code" required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="suppType" class="block text-[0.8rem] font-medium mb-1.5">Supplier Type</label>
+                <select id="suppType" name="supplier_type" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="">Select type</option>
+                  <option value="local">Local</option>
+                  <option value="international">International</option>
+                </select>
+              </div>
+              <div>
+                <label for="suppTypeCompany" class="block text-[0.8rem] font-medium mb-1.5">Company Type</label>
+                <select id="suppTypeCompany" name="supplier_type_company" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="">Select company type</option>
+                  <option value="manufacturer">Manufacturer</option>
+                  <option value="distributor">Distributor</option>
+                  <option value="wholesaler">Wholesaler</option>
+                  <option value="retailer">Retailer</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="suppStatus" class="block text-[0.8rem] font-medium mb-1.5">Status</label>
+                <select id="suppStatus" name="supplier_status" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <div>
+                <label for="suppPayStatus" class="block text-[0.8rem] font-medium mb-1.5">Payment Status</label>
+                <select id="suppPayStatus" name="payment_status" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                  <option value="unpaid">Unpaid</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="suppCategory" class="block text-[0.8rem] font-medium mb-1.5">Company Category</label>
+                <select id="suppCategory" name="supplier_company" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="">Select category</option>
+                  <option value="private">Private</option>
+                  <option value="public">Public</option>
+                  <option value="government">Government</option>
+                  <option value="non-profit">Non-Profit</option>
+                  <option value="individual">Individual</option>
+                </select>
+              </div>
+              <div>
+                <label for="suppRating" class="block text-[0.8rem] font-medium mb-1.5">Rating (0–5)</label>
+                <input id="suppRating" type="number" step="0.01" min="0" max="5" name="supplier_rating"
+                  value="0.00"
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] mono focus:border-ink transition-colors" />
+              </div>
             </div>
 
             <div>
-              <label for="prodCategory" class="block text-[0.8rem] font-medium mb-1.5">Category</label>
-              <select
-                id="prodCategory"
-                name="category"
-                required
-                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
-              >
-                <option value="">Select a category</option>
-                {% for cat in categories %}
-                <option value="{{ cat.id }}">{{ cat.name }}</option>
-                {% empty %}
-                <option value="" disabled>No categories available</option>
-                {% endfor %}
-              </select>
-              {% if not categories %}
-              <p class="text-[0.7rem] text-neg mt-1.5">No categories have been created yet. Create a category first.</p>
-              {% endif %}
+              <label for="suppHistory" class="block text-[0.8rem] font-medium mb-1.5">History</label>
+              <textarea id="suppHistory" name="History" rows="2"
+                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"></textarea>
             </div>
 
             <div>
-              <label for="prodManufacturer" class="block text-[0.8rem] font-medium mb-1.5">Manufacturer</label>
-              <input
-                id="prodManufacturer"
-                type="text"
-                name="manufacturer"
-                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
-              />
-            </div>
-
-            <div>
-              <label for="prodPrice" class="block text-[0.8rem] font-medium mb-1.5">Price (Rs.)</label>
-              <input
-                id="prodPrice"
-                type="number"
-                name="price"
-                step="0.01"
-                min="0"
-                required
-                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] mono focus:border-ink transition-colors"
-              />
-            </div>
-
-            <div>
-              <label for="prodImage" class="block text-[0.8rem] font-medium mb-1.5">Image</label>
-              <input
-                id="prodImage"
-                type="file"
-                name="image"
-                accept="image/*"
-                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
-              />
+              <label for="suppNotes" class="block text-[0.8rem] font-medium mb-1.5">Notes</label>
+              <textarea id="suppNotes" name="notes" rows="2"
+                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"></textarea>
             </div>
           </div>
 
           <div class="flex items-center justify-end gap-2 mt-6">
             <button
               type="button"
-              onclick="closeProductModal()"
+              onclick="closeSupplierModal()"
               class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors btn-snap"
             >
               Cancel
@@ -1098,7 +1164,7 @@
               type="submit"
               class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors btn-snap"
             >
-              Save Product
+              Save Supplier
             </button>
           </div>
         </form>
@@ -1106,22 +1172,22 @@
     </div>
 
     <!-- ============================================================
-         ADD PRODUCT TYPE MODAL
+         EDIT SUPPLIER MODAL
     ============================================================ -->
     <div
-      id="addProductTypeModal"
+      id="editSupplierModal"
       class="fc-modal"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="addTypeTitle"
+      aria-labelledby="editSuppTitle"
     >
-      <div class="fc-modal-backdrop" data-modal-close></div>
-      <div class="fc-modal-card max-w-md p-6" role="document">
+      <div class="fc-modal-backdrop" data-edit-close></div>
+      <div class="fc-modal-card max-w-lg p-6" role="document">
         <div class="flex items-center justify-between mb-5">
-          <h3 id="addTypeTitle" class="text-[1.05rem] font-semibold">Add Product Type</h3>
+          <h3 id="editSuppTitle" class="text-[1.05rem] font-semibold">Edit Supplier</h3>
           <button
             type="button"
-            onclick="closeProductTypeModal()"
+            onclick="closeEditSupplierModal()"
             class="w-8 h-8 rounded-md flex items-center justify-center text-sub hover:bg-bg transition-colors btn-snap"
             aria-label="Close"
           >
@@ -1132,26 +1198,145 @@
           </button>
         </div>
 
-        <form method="POST" action="{% url 'product_type_create' %}">
+        <form method="POST" action="{% url 'supplier_list' %}">
           {% csrf_token %}
+          <input type="hidden" name="action" value="update">
+          <input type="hidden" name="pk" id="editPk">
 
           <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="editName" class="block text-[0.8rem] font-medium mb-1.5">Contact Name</label>
+                <input id="editName" type="text" name="name" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="editCompany" class="block text-[0.8rem] font-medium mb-1.5">Company Name</label>
+                <input id="editCompany" type="text" name="company_name" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="editEmail" class="block text-[0.8rem] font-medium mb-1.5">Email</label>
+                <input id="editEmail" type="email" name="email" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="editContact" class="block text-[0.8rem] font-medium mb-1.5">Contact Number</label>
+                <input id="editContact" type="text" name="contact_number" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+            </div>
+
             <div>
-              <label for="typeName" class="block text-[0.8rem] font-medium mb-1.5">Type Name</label>
-              <input
-                id="typeName"
-                type="text"
-                name="name"
-                required
-                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors"
-              />
+              <label for="editAdress" class="block text-[0.8rem] font-medium mb-1.5">Address</label>
+              <input id="editAdress" type="text" name="adress" required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label for="editCity" class="block text-[0.8rem] font-medium mb-1.5">City</label>
+                <input id="editCity" type="text" name="city" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="editProvience" class="block text-[0.8rem] font-medium mb-1.5">Province</label>
+                <input id="editProvience" type="text" name="provience" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="editCountry" class="block text-[0.8rem] font-medium mb-1.5">Country</label>
+                <input id="editCountry" type="text" name="country" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+              </div>
+            </div>
+
+            <div>
+              <label for="editZip" class="block text-[0.8rem] font-medium mb-1.5">Zip Code</label>
+              <input id="editZip" type="text" name="zip_code" required
+                class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="editType" class="block text-[0.8rem] font-medium mb-1.5">Supplier Type</label>
+                <select id="editType" name="supplier_type" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="local">Local</option>
+                  <option value="international">International</option>
+                </select>
+              </div>
+              <div>
+                <label for="editTypeCompany" class="block text-[0.8rem] font-medium mb-1.5">Company Type</label>
+                <select id="editTypeCompany" name="supplier_type_company" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="manufacturer">Manufacturer</option>
+                  <option value="distributor">Distributor</option>
+                  <option value="wholesaler">Wholesaler</option>
+                  <option value="retailer">Retailer</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="editStatus" class="block text-[0.8rem] font-medium mb-1.5">Status</label>
+                <select id="editStatus" name="supplier_status" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <div>
+                <label for="editPayStatus" class="block text-[0.8rem] font-medium mb-1.5">Payment Status</label>
+                <select id="editPayStatus" name="payment_status" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                  <option value="unpaid">Unpaid</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="editCategory" class="block text-[0.8rem] font-medium mb-1.5">Company Category</label>
+                <select id="editCategory" name="supplier_company" required
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="private">Private</option>
+                  <option value="public">Public</option>
+                  <option value="government">Government</option>
+                  <option value="non-profit">Non-Profit</option>
+                  <option value="individual">Individual</option>
+                </select>
+              </div>
+              <div>
+                <label for="editRating" class="block text-[0.8rem] font-medium mb-1.5">Rating (0–5)</label>
+                <input id="editRating" type="number" step="0.01" min="0" max="5" name="supplier_rating"
+                  class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] mono focus:border-ink transition-colors" />
+              </div>
+            </div>
+
+            <div>
+              <label for="editHistory" class="block text-[0.8rem] font-medium mb-1.5">History</label>
+              <textarea id="editHistory" name="History" rows="2"
+                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"></textarea>
+            </div>
+
+            <div>
+              <label for="editNotes" class="block text-[0.8rem] font-medium mb-1.5">Notes</label>
+              <textarea id="editNotes" name="notes" rows="2"
+                class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"></textarea>
             </div>
           </div>
 
           <div class="flex items-center justify-end gap-2 mt-6">
             <button
               type="button"
-              onclick="closeProductTypeModal()"
+              onclick="closeEditSupplierModal()"
               class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors btn-snap"
             >
               Cancel
@@ -1160,7 +1345,7 @@
               type="submit"
               class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors btn-snap"
             >
-              Save Type
+              Update Supplier
             </button>
           </div>
         </form>
@@ -1173,47 +1358,70 @@
     <script>
       "use strict";
 
-      /* ============================================================
-         PRODUCT MODAL
-      ============================================================ */
-      function openProductModal() {
-        const modal = document.getElementById("addProductModal");
+      /* ADD MODAL */
+      function openSupplierModal() {
+        const modal = document.getElementById("addSupplierModal");
         if (!modal) return;
         modal.classList.add("is-open");
         document.body.style.overflow = "hidden";
-        const nameInput = document.getElementById("prodName");
+        const nameInput = document.getElementById("suppName");
         if (nameInput) setTimeout(() => nameInput.focus(), 120);
       }
 
-      function closeProductModal() {
-        const modal = document.getElementById("addProductModal");
+      function closeSupplierModal() {
+        const modal = document.getElementById("addSupplierModal");
         if (!modal) return;
         modal.classList.remove("is-open");
         document.body.style.overflow = "";
       }
 
-      /* ============================================================
-         PRODUCT TYPE MODAL
-      ============================================================ */
-      function openProductTypeModal() {
-        const modal = document.getElementById("addProductTypeModal");
+      /* EDIT MODAL */
+      function openEditSupplierModal(btn) {
+        const modal = document.getElementById("editSupplierModal");
         if (!modal) return;
+
+        const d = btn.dataset;
+
+        document.getElementById("editPk").value          = d.pk || "";
+        document.getElementById("editName").value        = d.name || "";
+        document.getElementById("editCompany").value     = d.company || "";
+        document.getElementById("editEmail").value       = d.email || "";
+        document.getElementById("editContact").value     = d.contact || "";
+        document.getElementById("editAdress").value      = d.adress || "";
+        document.getElementById("editCity").value        = d.city || "";
+        document.getElementById("editProvience").value   = d.provience || "";
+        document.getElementById("editCountry").value     = d.country || "";
+        document.getElementById("editZip").value         = d.zip || "";
+        document.getElementById("editType").value        = d.supplierType || "local";
+        document.getElementById("editTypeCompany").value = d.supplierTypeCompany || "manufacturer";
+        document.getElementById("editStatus").value      = d.supplierStatus || "active";
+        document.getElementById("editPayStatus").value   = d.paymentStatus || "paid";
+        document.getElementById("editCategory").value    = d.supplierCompany || "private";
+        document.getElementById("editRating").value      = d.supplierRating || "0.00";
+        document.getElementById("editHistory").value     = d.history || "";
+        document.getElementById("editNotes").value       = d.notes || "";
+
         modal.classList.add("is-open");
         document.body.style.overflow = "hidden";
-        const nameInput = document.getElementById("typeName");
-        if (nameInput) setTimeout(() => nameInput.focus(), 120);
+        setTimeout(() => {
+          const first = document.getElementById("editName");
+          if (first) first.focus();
+        }, 120);
       }
 
-      function closeProductTypeModal() {
-        const modal = document.getElementById("addProductTypeModal");
+      function closeEditSupplierModal() {
+        const modal = document.getElementById("editSupplierModal");
         if (!modal) return;
         modal.classList.remove("is-open");
         document.body.style.overflow = "";
       }
 
-      /* ============================================================
-         MOBILE SIDEBAR
-      ============================================================ */
+      /* Wire up edit buttons */
+      document.querySelectorAll(".js-edit-supplier").forEach((btn) => {
+        btn.addEventListener("click", () => openEditSupplierModal(btn));
+      });
+
+      /* Mobile sidebar */
       (function () {
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("overlay");
@@ -1248,9 +1456,7 @@
         });
       })();
 
-      /* ============================================================
-         COMPANY BUTTON
-      ============================================================ */
+      /* Company button */
       (function () {
         const button = document.getElementById("companyBtn");
         if (!button) return;
@@ -1261,12 +1467,10 @@
         });
       })();
 
-      /* ============================================================
-         PRODUCT SEARCH
-      ============================================================ */
-      window.filterProductTable = function () {
-        const input = document.getElementById("productSearch");
-        const table = document.getElementById("productTable");
+      /* Supplier search (client-side filter) */
+      window.filterSupplierTable = function () {
+        const input = document.getElementById("supplierSearch");
+        const table = document.getElementById("supplierTable");
         if (!input || !table) return;
         const filter = input.value.toLowerCase().trim();
         const rows = table.getElementsByTagName("tr");
@@ -1276,28 +1480,26 @@
         }
       };
 
-      /* ============================================================
-         MODAL BACKDROP + ESCAPE
-      ============================================================ */
+      /* Backdrop + Escape for both modals */
       (function () {
-        const productModal = document.getElementById("addProductModal");
-        const typeModal = document.getElementById("addProductTypeModal");
+        const addModal = document.getElementById("addSupplierModal");
+        const editModal = document.getElementById("editSupplierModal");
 
-        if (productModal) {
-          productModal.querySelectorAll("[data-modal-close]").forEach((el) => {
-            el.addEventListener("click", closeProductModal);
+        if (addModal) {
+          addModal.querySelectorAll("[data-modal-close]").forEach((el) => {
+            el.addEventListener("click", closeSupplierModal);
           });
         }
-        if (typeModal) {
-          typeModal.querySelectorAll("[data-modal-close]").forEach((el) => {
-            el.addEventListener("click", closeProductTypeModal);
+        if (editModal) {
+          editModal.querySelectorAll("[data-edit-close]").forEach((el) => {
+            el.addEventListener("click", closeEditSupplierModal);
           });
         }
 
         document.addEventListener("keydown", (event) => {
           if (event.key === "Escape") {
-            if (productModal && productModal.classList.contains("is-open")) closeProductModal();
-            if (typeModal && typeModal.classList.contains("is-open")) closeProductTypeModal();
+            if (addModal && addModal.classList.contains("is-open")) closeSupplierModal();
+            if (editModal && editModal.classList.contains("is-open")) closeEditSupplierModal();
           }
         });
       })();

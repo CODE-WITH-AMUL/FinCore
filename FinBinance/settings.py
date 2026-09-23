@@ -1,7 +1,7 @@
 # import os
 from pathlib import Path
 import environ
-
+from .admin import JAZZMIN_SETTINGS
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +25,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,11 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-
 EXTRA_APPS = [
     'configurepage',
-    "accounts",
-    "accountings",  
+    'accounts',
+    'accountings',
+    'information',
 ]
 INSTALLED_APPS += EXTRA_APPS
 
@@ -51,6 +52,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+AUTHENTICATION_BACKENDS = [
+    "accounts.backends.EmailBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 ROOT_URLCONF = 'FinBinance.urls'
 
 TEMPLATES = [
@@ -89,6 +95,8 @@ MAILERS = {
         },
     },
 }
+
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 AUTHENTICATION_BACKENDS = [
     "accounts.backends.EmailBackend",

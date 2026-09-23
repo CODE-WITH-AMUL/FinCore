@@ -31,6 +31,7 @@ class Product(models.Model):
     manufacturer = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2 , default=0.00 , help_text="Enter the price of the product")
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    stock = models.IntegerField(default=0, help_text="Enter the available stock quantity")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)

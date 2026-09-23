@@ -431,7 +431,7 @@ tailwind.config = {
     <div class="flex flex-wrap items-start justify-between gap-4 mb-6 stagger">
       <div>
         <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">
-          Good <span id="greetingPart">morning</span>, {{ user.get_full_name|default:"there" }}
+          Good <span id="greetingPart">morning</span>, {{ user.get_full_name|default:user.username }}
         </h2>
         <p class="text-sub text-[0.9rem] mt-1">
           Here's what's happening with your business today.

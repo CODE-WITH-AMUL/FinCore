@@ -10,6 +10,7 @@ urlpatterns = [
     path("", include("configurepage.urls")),
     path("user/accounts/", include("accounts.urls")),
     path("direct/accountings/", include("accountings.urls")),
+    path("direct/information/", include("information.urls")),
 ]
 
 

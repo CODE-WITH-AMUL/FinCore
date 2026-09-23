@@ -74,7 +74,7 @@ class ProductAdmin(admin.ModelAdmin):
         'category',
         'manufacturer',
         'price_display',
-        'stock_status',
+        'stock_display',
         'image_thumbnail',
         'created_at',
     )
@@ -112,7 +112,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('category', 'types_of_product', 'manufacturer')
         }),
         ('Details', {
-            'fields': ('decription', 'price')
+            'fields': ('decription', 'price', 'stock')
         }),
         ('Media', {
             'fields': ('image', 'image_preview_large'),
@@ -150,12 +150,11 @@ class ProductAdmin(admin.ModelAdmin):
             f"{obj.price:,.2f}"
         )
 
-    @admin.display(description='Stock')
-    def stock_status(self, obj):
-        # Since your model has no stock field, this is a placeholder.
-        # Update if you add a `stock_quantity` field.
+    @admin.display(description='Stock', ordering='stock')
+    def stock_display(self, obj):
         return format_html(
-            '<span style="color:#6b7280;font-size:11px;">—</span>'
+            '<span style="font-family:monospace;font-weight:600;">{}</span>',
+            obj.stock
         )
 
     @admin.display(description='Image')

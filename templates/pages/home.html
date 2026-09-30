@@ -52,9 +52,7 @@ tailwind.config = {
     border-radius: 4px;
   }
 
-  /* ============================================================
-     SIDEBAR — spring ease-out
-  ============================================================ */
+  /* SIDEBAR */
   #sidebar {
     position: fixed;
     top: 0; left: 0; bottom: 0;
@@ -102,9 +100,7 @@ tailwind.config = {
   }
   .side-section:first-child { margin-top: 0; }
 
-  /* ============================================================
-     CARDS — border-first, ambient shadow on hover only
-  ============================================================ */
+  /* CARDS */
   .card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -125,9 +121,7 @@ tailwind.config = {
   .row-hover { transition: background-color 0.15s cubic-bezier(0.32, 0.72, 0, 1); }
   .row-hover:hover { background-color: #fafafa; }
 
-  /* ============================================================
-     SKELETON
-  ============================================================ */
+  /* SKELETON */
   .skeleton {
     background: linear-gradient(90deg, #f1f2f4 0%, #e9eaee 50%, #f1f2f4 100%);
     background-size: 200% 100%;
@@ -139,9 +133,7 @@ tailwind.config = {
     100% { background-position: -200% 0; }
   }
 
-  /* ============================================================
-     ENTRANCE — staggered fade-up
-  ============================================================ */
+  /* ENTRANCE */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -163,9 +155,7 @@ tailwind.config = {
     animation-delay: calc(var(--i, 0) * 0.04s + 0.08s);
   }
 
-  /* ============================================================
-     CHART PERIOD PILLS — instant snap
-  ============================================================ */
+  /* PERIOD PILLS */
   .period-btn {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.72rem;
@@ -181,9 +171,7 @@ tailwind.config = {
   .period-btn:active { transform: scale(0.94); }
   .period-btn.active { background: #111827; color: #ffffff; }
 
-  /* ============================================================
-     BUTTON MICRO-INTERACTIONS
-  ============================================================ */
+  /* BUTTONS */
   .btn-snap {
     transition: background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
                 border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
@@ -192,7 +180,6 @@ tailwind.config = {
   }
   .btn-snap:active { transform: scale(0.97); }
 
-  /* Quick-action tiles — lift + press */
   .qa-tile {
     transition: border-color 0.16s cubic-bezier(0.32, 0.72, 0, 1),
                 background 0.16s cubic-bezier(0.32, 0.72, 0, 1),
@@ -201,12 +188,8 @@ tailwind.config = {
   .qa-tile:hover { transform: translateY(-1px); }
   .qa-tile:active { transform: scale(0.98) translateY(0); }
 
-  /* ============================================================
-     AMBIENT HOVER — status dot pulse for overdue rows
-  ============================================================ */
-  .pulse-dot {
-    position: relative;
-  }
+  /* PULSE DOT */
+  .pulse-dot { position: relative; }
   .pulse-dot::after {
     content: "";
     position: absolute; inset: -3px;
@@ -220,9 +203,6 @@ tailwind.config = {
     100% { transform: scale(2);    opacity: 0; }
   }
 
-  /* ============================================================
-     REDUCED MOTION
-  ============================================================ */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -240,13 +220,11 @@ tailwind.config = {
 <!-- Mobile overlay -->
 <div id="overlay" class="hidden fixed inset-0 bg-black/50 z-50 lg:hidden" aria-hidden="true"></div>
 
-<!-- ============================================================
-     SIDEBAR
-     ============================================================ -->
+<!-- SIDEBAR -->
 <aside id="sidebar" class="flex flex-col bg-ink text-white/90" aria-label="Primary">
 
   <div class="px-5 pt-5 pb-4 border-b border-white/10">
-    <a href="/" class="flex items-center gap-2.5" aria-label="FinCore home">
+    <a href="{% url 'home' %}" class="flex items-center gap-2.5" aria-label="FinCore home">
       <span class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
           <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
@@ -266,7 +244,7 @@ tailwind.config = {
         </a>
       </li>
       <li>
-        <a href="#" class="side-link">
+        <a href="{% url 'sales' %}" class="side-link">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
           Sales
         </a>
@@ -278,7 +256,7 @@ tailwind.config = {
         </a>
       </li>
       <li>
-        <a href="#" class="side-link">
+        <a href="{% url 'expense_list' %}" class="side-link">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
           Expenses
         </a>
@@ -383,9 +361,7 @@ tailwind.config = {
   </div>
 </aside>
 
-<!-- ============================================================
-     MAIN
-     ============================================================ -->
+<!-- MAIN -->
 <div id="mainWrap" class="min-h-screen flex flex-col">
 
   <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-line/80">
@@ -425,18 +401,18 @@ tailwind.config = {
 
   <main class="flex-1 px-5 sm:px-8 py-6">
 
-    <!-- ============================================================
-         Welcome
-    ============================================================ -->
+    <!-- Welcome -->
     <div class="flex flex-wrap items-start justify-between gap-4 mb-6 stagger">
       <div>
         <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">
-          Good <span id="greetingPart">morning</span>, {{ user.get_full_name|default:user.username }}
+          Good <span id="greetingPart">{{ greeting|default:"morning" }}</span>, {{ user.get_full_name|default:user.username }}
         </h2>
         <p class="text-sub text-[0.9rem] mt-1">
           Here's what's happening with your business today.
         </p>
-        <p class="text-mute text-[0.78rem] mt-2 mono" id="todayDate">—</p>
+        <p class="text-mute text-[0.78rem] mt-2 mono" id="todayDate"
+           data-server-date="{{ today_formatted }}"
+           data-server-greeting="{{ greeting }}">{{ today_formatted|default:"—" }}</p>
       </div>
 
       <div class="flex items-center gap-2">
@@ -455,9 +431,7 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- ============================================================
-         KPI cards — staggered entrance
-    ============================================================ -->
+    <!-- KPI cards -->
     <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger" aria-label="Financial overview">
       <div class="card card-hover p-4">
         <div class="flex items-center justify-between mb-3">
@@ -505,9 +479,7 @@ tailwind.config = {
       </div>
     </section>
 
-    <!-- ============================================================
-         Chart + Cash flow
-    ============================================================ -->
+    <!-- Chart + Cash flow -->
     <section class="grid lg:grid-cols-3 gap-3 mb-3 stagger">
 
       <div class="card lg:col-span-2 p-5">
@@ -570,9 +542,7 @@ tailwind.config = {
       </div>
     </section>
 
-    <!-- ============================================================
-         Recent transactions + Sales overview
-    ============================================================ -->
+    <!-- Recent transactions + Sales overview -->
     <section class="grid lg:grid-cols-3 gap-3 mb-3 stagger">
 
       <div class="card lg:col-span-2 overflow-hidden">
@@ -701,9 +671,7 @@ tailwind.config = {
       </div>
     </section>
 
-    <!-- ============================================================
-         Outstanding payments + Business insights
-    ============================================================ -->
+    <!-- Outstanding payments + Business insights -->
     <section class="grid lg:grid-cols-3 gap-3 mb-3 stagger">
 
       <div class="card lg:col-span-2 overflow-hidden">
@@ -791,9 +759,7 @@ tailwind.config = {
       </div>
     </section>
 
-    <!-- ============================================================
-         Quick actions
-    ============================================================ -->
+    <!-- Quick actions -->
     <section class="card p-5 mb-6">
       <h3 class="font-semibold text-[0.98rem] tracking-tight mb-4">Quick Actions</h3>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 stagger">
@@ -843,9 +809,7 @@ tailwind.config = {
   </main>
 </div>
 
-<!-- ============================================================
-     SCRIPTS
-     ============================================================ -->
+<!-- SCRIPTS -->
 <script>
 (function () {
   'use strict';
@@ -853,15 +817,23 @@ tailwind.config = {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================================
-     DYNAMIC DATE + GREETING
+     SERVER-DRIVEN DATE + GREETING
+     Reads from the data attributes Django rendered on #todayDate.
+     Falls back to the browser clock only if Django didn't provide
+     a value (e.g. view wasn't updated yet).
   ============================================================ */
   (function () {
     var dateEl = document.getElementById('todayDate');
     var greetEl = document.getElementById('greetingPart');
-    var now = new Date();
+    if (!dateEl) return;
 
-    if (dateEl) {
-      dateEl.textContent = now.toLocaleDateString('en-US', {
+    var serverDate = dateEl.dataset.serverDate;
+    var serverGreeting = dateEl.dataset.serverGreeting;
+
+    if (serverDate && serverDate.trim() !== '') {
+      dateEl.textContent = serverDate;
+    } else {
+      dateEl.textContent = new Date().toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -870,20 +842,21 @@ tailwind.config = {
     }
 
     if (greetEl) {
-      var h = now.getHours();
-      var greet =
-        h < 5  ? 'night' :
-        h < 12 ? 'morning' :
-        h < 17 ? 'afternoon' :
-        h < 21 ? 'evening' :
-                 'night';
-      greetEl.textContent = greet;
+      if (serverGreeting && serverGreeting.trim() !== '') {
+        greetEl.textContent = serverGreeting;
+      } else {
+        var h = new Date().getHours();
+        greetEl.textContent =
+          h < 5  ? 'night' :
+          h < 12 ? 'morning' :
+          h < 17 ? 'afternoon' :
+          h < 21 ? 'evening' :
+                   'night';
+      }
     }
   })();
 
-  /* ============================================================
-     MOBILE SIDEBAR
-  ============================================================ */
+  /* MOBILE SIDEBAR */
   (function () {
     var sidebar = document.getElementById('sidebar');
     var overlay = document.getElementById('overlay');
@@ -915,9 +888,7 @@ tailwind.config = {
     mq.addEventListener('change', function (e) { if (e.matches) close(); });
   })();
 
-  /* ============================================================
-     DEMO TOGGLE — optimistic UI
-  ============================================================ */
+  /* DEMO TOGGLE */
   (function () {
     var btn = document.getElementById('demoToggle');
     var label = document.getElementById('demoLabel');
@@ -929,17 +900,14 @@ tailwind.config = {
     var on = true;
     btn.addEventListener('click', function () {
       on = !on;
-      // Optimistic — update UI instantly
       label.textContent = 'Demo data: ' + (on ? 'on' : 'off');
       dot.style.background = on ? '#047857' : '#9ca3af';
-      txTable.classList.toggle('hidden', !on);
-      txEmpty.classList.toggle('hidden', on);
+      if (txTable) txTable.classList.toggle('hidden', !on);
+      if (txEmpty) txEmpty.classList.toggle('hidden', on);
     });
   })();
 
-  /* ============================================================
-     PERIOD DATA + CHART
-  ============================================================ */
+  /* PERIOD DATA + CHART */
   var PERIOD_DATA = {
     '7d': {
       labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
@@ -1081,9 +1049,7 @@ tailwind.config = {
 
   chart = initChart();
 
-  /* ============================================================
-     COMPANY DROPDOWN
-  ============================================================ */
+  /* COMPANY DROPDOWN */
   (function () {
     var btn = document.getElementById('companyBtn');
     if (!btn) return;

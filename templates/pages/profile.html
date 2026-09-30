@@ -669,7 +669,7 @@
       aria-label="Primary"
     >
       <div class="px-5 pt-5 pb-4 border-b border-white/10">
-        <a href="/" class="flex items-center gap-2.5" aria-label="FinCore home">
+        <a href="{% url 'index' %}" class="flex items-center gap-2.5" aria-label="FinCore home">
           <span
             class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink"
             aria-hidden="true"
@@ -694,7 +694,7 @@
             </a>
           </li>
           <li>
-            <a href="#" class="side-link">
+            <a href="{% url 'sales' %}" class="side-link">
               <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
               Sales
             </a>
@@ -706,7 +706,7 @@
             </a>
           </li>
           <li>
-            <a href="#" class="side-link">
+            <a href="{% url 'expense_list' %}" class="side-link">
               <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
               Expenses
             </a>
@@ -731,7 +731,7 @@
             </a>
           </li>
           <li>
-            <a href="#" class="side-link">
+            <a href="{% url 'supplier_list' %}" class="side-link">
               <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
               Suppliers
             </a>

@@ -1,0 +1,1493 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses — FinCore</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: "#0f1218", sub: "#6b7280", mute: "#9ca3af",
+              line: "#e5e7eb", line2: "#f0f1f3", bg: "#fafafa",
+              card: "#ffffff", pos: "#047857", posSoft: "#ecfdf5",
+              neg: "#b91c1c", negSoft: "#fef2f2", warn: "#b45309",
+              warnSoft: "#fffbeb", accent: "#111827",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
+            },
+            borderRadius: { md: "6px", lg: "8px" },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html, body { background: #fafafa; }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-feature-settings: "tnum"; }
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #d6d8dc; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #b8bcc2; }
+      :focus-visible { outline: 2px solid #111827; outline-offset: 2px; border-radius: 4px; }
+
+      #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 15.5rem; z-index: 40; transition: transform .24s cubic-bezier(.32,.72,0,1); }
+      #mainWrap { margin-left: 15.5rem; transition: margin-left .24s cubic-bezier(.32,.72,0,1); }
+      @media (max-width: 1023px) {
+        #sidebar { transform: translateX(-100%); z-index: 60; }
+        #sidebar.open { transform: translateX(0); box-shadow: 24px 0 60px rgba(0,0,0,.28); }
+        #mainWrap { margin-left: 0; }
+      }
+      .side-link { display: flex; align-items: center; gap: .65rem; padding: .5rem .75rem; border-radius: 6px; font-size: .875rem; color: #9ca3af; transition: background .16s cubic-bezier(.32,.72,0,1), color .16s cubic-bezier(.32,.72,0,1); position: relative; }
+      .side-link:hover { background: rgba(255,255,255,.05); color: #e5e7eb; }
+      .side-link.active { background: rgba(255,255,255,.09); color: #fff; }
+      .side-link.active::before { content: ""; position: absolute; left: -.75rem; top: 50%; transform: translateY(-50%); width: 3px; height: 18px; background: #fff; border-radius: 0 2px 2px 0; }
+      .side-section { font-size: .65rem; letter-spacing: .09em; text-transform: uppercase; color: rgba(255,255,255,.32); padding: 0 .75rem; margin-top: 1.25rem; margin-bottom: .35rem; }
+      .side-section:first-child { margin-top: 0; }
+
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }
+      @media (hover:hover) and (pointer:fine) {
+        .card-hover { transition: border-color .2s cubic-bezier(.32,.72,0,1), box-shadow .2s cubic-bezier(.32,.72,0,1); }
+        .card-hover:hover { border-color: #d1d5db; box-shadow: 0 6px 24px -18px rgba(15,18,24,.25); }
+      }
+      .row-hover { transition: background-color .15s cubic-bezier(.32,.72,0,1); }
+      .row-hover:hover { background-color: #fafafa; }
+
+      @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      .stagger > * { opacity: 0; animation: fadeUp .42s cubic-bezier(.22,1,.36,1) forwards; }
+      .stagger > *:nth-child(1) { animation-delay: .02s; }
+      .stagger > *:nth-child(2) { animation-delay: .06s; }
+      .stagger > *:nth-child(3) { animation-delay: .10s; }
+      .stagger > *:nth-child(4) { animation-delay: .14s; }
+      .stagger > *:nth-child(5) { animation-delay: .18s; }
+      .stagger > *:nth-child(6) { animation-delay: .22s; }
+      .stagger-slow > * { opacity: 0; animation: fadeUp .45s cubic-bezier(.22,1,.36,1) forwards; animation-delay: calc(var(--i,0) * .035s + .08s); }
+
+      .btn-snap { transition: background .16s cubic-bezier(.32,.72,0,1), border-color .16s cubic-bezier(.32,.72,0,1), color .16s cubic-bezier(.32,.72,0,1), transform .1s cubic-bezier(.32,.72,0,1); }
+      .btn-snap:active { transform: scale(.97); }
+      .qa-tile { transition: border-color .16s cubic-bezier(.32,.72,0,1), background .16s cubic-bezier(.32,.72,0,1), transform .12s cubic-bezier(.32,.72,0,1); }
+      .qa-tile:hover { transform: translateY(-1px); border-color: #d1d5db; background: #fafafa; }
+      .qa-tile:active { transform: scale(.98) translateY(0); }
+
+      .fc-modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity .2s cubic-bezier(.32,.72,0,1); }
+      .fc-modal.is-open { opacity: 1; pointer-events: auto; }
+      .fc-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.5); }
+      .fc-modal-card { position: relative; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; width: 100%; transform: translateY(8px) scale(.98); transition: transform .22s cubic-bezier(.34,1.56,.64,1); max-height: 90vh; overflow-y: auto; }
+      .fc-modal.is-open .fc-modal-card { transform: translateY(0) scale(1); }
+
+      .live-dot { position: relative; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #047857; }
+      .live-dot::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 1px solid #047857; opacity: 0; animation: livePulse 2s cubic-bezier(.32,.72,0,1) infinite; }
+      .live-dot.offline { background: #b91c1c; }
+      .live-dot.offline::after { border-color: #b91c1c; animation: none; }
+      .live-dot.paused { background: #9ca3af; }
+      .live-dot.paused::after { animation: none; }
+      @keyframes livePulse { 0% { transform: scale(.8); opacity: .7; } 100% { transform: scale(1.9); opacity: 0; } }
+
+      .sparkline-wrap { position: relative; width: 100%; height: 54px; overflow: hidden; }
+      .sparkline-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; }
+      .chart-empty-overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; font-size: .68rem; color: #9ca3af; background: #fafafa; pointer-events: none; }
+      .chart-empty-overlay.is-visible { display: flex; }
+      .chart-box { position: relative; }
+
+      /* ============ TOOLTIP SYSTEM ============ */
+      /* Info icon — small circled "i" that sits next to KPI titles */
+      .info-dot {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 14px; height: 14px; border-radius: 50%;
+        border: 1px solid #9ca3af; color: #6b7280;
+        font-size: 9px; font-weight: 700; font-family: Inter, sans-serif;
+        line-height: 1; cursor: help; user-select: none;
+        transition: all .15s cubic-bezier(.32,.72,0,1);
+      }
+      .info-dot:hover, .info-dot:focus-visible { background: #0f1218; color: #fff; border-color: #0f1218; }
+
+      /* The tooltip itself — hidden by default, shown on hover/focus of the wrapper */
+      .tip { position: relative; display: inline-flex; align-items: center; gap: 4px; cursor: help; }
+      .tip .tip-bubble {
+        position: absolute; bottom: calc(100% + 8px); left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        background: #0f1218; color: #fff;
+        font-size: 11px; line-height: 1.5; font-weight: 400;
+        padding: 8px 10px; border-radius: 6px;
+        width: max-content; max-width: 260px;
+        text-align: left; letter-spacing: 0;
+        opacity: 0; pointer-events: none;
+        transition: opacity .16s cubic-bezier(.32,.72,0,1), transform .16s cubic-bezier(.32,.72,0,1);
+        z-index: 80; box-shadow: 0 8px 20px -8px rgba(15,18,24,.35);
+        white-space: normal; word-wrap: break-word;
+        text-transform: none;
+      }
+      .tip .tip-bubble::after {
+        content: ""; position: absolute; top: 100%; left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent; border-top-color: #0f1218;
+      }
+      .tip:hover .tip-bubble,
+      .tip:focus-within .tip-bubble { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+      /* Tooltip that opens downward (for the top header bar) */
+      .tip-down .tip-bubble { bottom: auto; top: calc(100% + 8px); }
+      .tip-down .tip-bubble::after {
+        top: auto; bottom: 100%;
+        border-top-color: transparent; border-bottom-color: #0f1218;
+      }
+
+      /* Left-aligned tooltip (for KPI cards at the edges of the grid) */
+      .tip-left .tip-bubble { left: 0; transform: translateX(0) translateY(4px); }
+      .tip-left:hover .tip-bubble,
+      .tip-left:focus-within .tip-bubble { transform: translateX(0) translateY(0); }
+      .tip-left .tip-bubble::after { left: 12px; transform: translateX(0); }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        .stagger > *, .stagger-slow > * { opacity: 1 !important; }
+        .live-dot::after { animation: none !important; }
+      }
+    </style>
+  </head>
+
+  <body class="text-ink font-sans antialiased">
+    <div id="overlay" class="hidden fixed inset-0 bg-black/50 z-50 lg:hidden" aria-hidden="true"></div>
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside id="sidebar" class="flex flex-col bg-ink text-white/90" aria-label="Primary">
+      <div class="px-5 pt-5 pb-4 border-b border-white/10">
+        <a href="{% url 'index' %}" class="flex items-center gap-2.5" aria-label="FinCore home">
+          <span class="w-7 h-7 rounded-md bg-white flex items-center justify-center text-ink" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <rect x="1.5" y="1.5" width="17" height="17" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M6 13.5L9 9l2.5 3L14 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="font-semibold text-[0.98rem] tracking-tight text-white">FinCore</span>
+        </a>
+      </div>
+
+      <nav class="flex-1 overflow-y-auto px-3 py-4">
+        <ul class="space-y-0.5">
+          <li><a href="{% url 'home' %}" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a></li>
+          <li><a href="{% url 'sales' %}" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>Sales</a></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M16 10a4 4 0 01-8 0"/></svg>Purchases</a></li>
+          <li><a href="{% url 'expense_list' %}" class="side-link active" aria-current="page"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Expenses</a></li>
+          <li><a href="{% url 'product' %}" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>Products</a></li>
+
+          <li><p class="side-section">Contacts</p></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>Customers</a></li>
+          <li><a href="{% url 'supplier_list' %}" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>Suppliers</a></li>
+
+          <li><p class="side-section">Money</p></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Invoices</a></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>Payments</a></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v20M15 2v20M2 9h20M2 15h20"/></svg>Taxes</a></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Investments</a></li>
+
+          <li><p class="side-section">Analysis</p></li>
+          <li><a href="{% url 'category' %}" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Categories</a></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg>Reports</a></li>
+          <li><a href="#" class="side-link"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>Settings</a></li>
+        </ul>
+      </nav>
+
+      <div class="border-t border-white/10">
+        <div class="px-3 py-3">
+          <a href="#" class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group">
+            <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[0.72rem] font-semibold text-white shrink-0">
+              {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
+            </span>
+            <span class="min-w-0 flex-1">
+              <span class="block text-[0.82rem] font-medium text-white/90 group-hover:text-white truncate">{{ user.get_full_name|default:user.username|default:"Your Name" }}</span>
+              <span class="block text-[0.7rem] text-white/45 truncate">{{ company_name|default:"Your Company" }}</span>
+            </span>
+          </a>
+          <div class="mt-1 flex justify-center gap-1">
+            <a href="#" class="text-center text-[0.72rem] text-white/55 hover:text-white py-1.5 px-3 rounded-md hover:bg-white/5 transition-colors">Log out</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div id="mainWrap" class="min-h-screen flex flex-col">
+      <!-- ============ HEADER ============ -->
+      <header class="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-line/80">
+        <div class="px-5 sm:px-8 h-14 flex items-center gap-3">
+          <button id="menuToggle" type="button" class="lg:hidden w-9 h-9 -ml-1 rounded-md flex items-center justify-center text-sub hover:bg-bg btn-snap" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+          </button>
+          <h1 class="font-semibold text-[0.98rem] tracking-tight">Expenses</h1>
+
+          <button id="companyBtn" type="button" class="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 h-8 rounded-md text-[0.82rem] text-sub hover:bg-bg hover:text-ink transition-colors btn-snap" aria-haspopup="true" aria-expanded="false">
+            <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
+            <span>{{ company_name|default:"Your Company" }}</span>
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+
+          <div class="flex-1"></div>
+
+          <!-- ============ LIVE BADGE (with tooltip) ============ -->
+          <span class="tip tip-down hidden sm:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md border border-line bg-white text-[0.72rem] text-sub cursor-help">
+            <span class="live-dot" id="liveDot" aria-hidden="true"></span>
+            <span id="liveStatus">Live</span>
+            <span class="text-mute" id="liveUpdated"></span>
+            <span class="tip-bubble">
+              <strong class="block mb-1 font-semibold">Live status</strong>
+              Green dot — every number on this page was refreshed from the server just now.<br>
+              Red dot — the server is unreachable; the last known values stay on screen.<br>
+              Gray dot — you switched tabs, updates are paused until you come back.<br>
+              The timestamp is when Django last built the numbers.
+            </span>
+          </span>
+
+          <div class="hidden md:block relative">
+            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="search" placeholder="Search" class="h-8 w-56 pl-8 pr-3 rounded-md border border-line bg-bg/70 text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors" aria-label="Search" title="Quick search across the page (does not filter the table — use the table search below)" />
+          </div>
+
+          <button type="button" class="relative w-9 h-9 rounded-md flex items-center justify-center text-sub hover:bg-bg hover:text-ink transition-colors btn-snap" aria-label="Notifications" title="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+            <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-neg" aria-label="Unread notifications"></span>
+          </button>
+
+          <a href="#" class="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center text-[0.72rem] font-semibold btn-snap" aria-label="User profile" title="Your profile">
+            {% if user.first_name and user.last_name %}{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{% firstof user.get_full_name user.username "U" as display_name %}{{ display_name|slice:":1"|upper }}{% endif %}
+          </a>
+        </div>
+      </header>
+
+      <main class="flex-1 px-5 sm:px-8 py-6">
+        <!-- ============ PAGE TITLE ============ -->
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-6 stagger">
+          <div>
+            <h2 class="text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-tight">Expenses</h2>
+            <p class="text-sub text-[0.9rem] mt-1">Track and manage business spending</p>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="tip tip-down inline-flex items-center gap-1.5 h-9 px-3 rounded-md border border-line bg-white text-[0.82rem] text-sub cursor-help">
+              <span class="w-1.5 h-1.5 rounded-full bg-pos" aria-hidden="true"></span>
+              Auto-refresh on
+              <span class="tip-bubble">
+                This page checks the server every <strong>15 seconds</strong> and quietly updates every card, chart, and sparkline. You don't need to reload.
+              </span>
+            </span>
+            <button type="button" id="exportBtn" class="tip tip-down h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors flex items-center gap-1.5 btn-snap cursor-help">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+              Export CSV
+              <span class="tip-bubble">
+                Downloads every row currently visible in the table as a <strong>CSV file</strong> that opens in Excel or Google Sheets.<br>
+                Rows you've filtered out are skipped.
+              </span>
+            </button>
+            <button type="button" onclick="openExpenseModal()" class="tip tip-down h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors flex items-center gap-1.5 btn-snap cursor-help">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Expense
+              <span class="tip-bubble">
+                Opens a small form to record a new expense. It'll appear in the table right away and the totals will update within 15 seconds.
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ============ EXPENSE SUMMARY CARDS ============ -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger" aria-label="Expense overview">
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                Total Spent
+                <span class="tip tip-left" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">Total Spent</strong>
+                    Every expense ever recorded, added up.<br><br>
+                    This includes <strong>paid</strong>, <strong>pending</strong>, and <strong>cancelled</strong> rows — it's the full picture of what you've entered.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+            </div>
+            <p class="mono text-[1.45rem] font-medium tracking-tight" id="kpi-total-expenses-value">Rs. {{ total_expenses|default:0|floatformat:0 }}</p>
+            <p class="text-[0.75rem] text-sub mt-2">All expenses, all time</p>
+          </div>
+
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                This Month
+                <span class="tip" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">This Month</strong>
+                    Only expenses dated in the <strong>current calendar month</strong>.<br><br>
+                    Handy for answering "how much have I spent in the last 30-ish days?" without scrolling.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <p class="mono text-[1.45rem] font-medium tracking-tight" id="kpi-monthly-expenses-value">Rs. {{ monthly_expenses|default:0|floatformat:0 }}</p>
+            <p class="text-[0.75rem] text-sub mt-2">Spent so far this month</p>
+          </div>
+
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                Still to Pay
+                <span class="tip" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">Still to Pay</strong>
+                    Expenses marked as <strong>pending</strong> — the bill arrived, but you haven't paid it yet.<br><br>
+                    Once you mark them as <em>Paid</em>, this number drops and "Total Spent" stays the same.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </div>
+            <p class="mono text-[1.45rem] font-medium tracking-tight" id="kpi-pending-expenses-value">Rs. {{ pending_expenses|default:0|floatformat:0 }}</p>
+            <p class="text-[0.75rem] text-warn mt-2">Waiting to be paid</p>
+          </div>
+
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                Office Costs
+                <span class="tip" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">Office Costs</strong>
+                    Expenses tagged as <strong>Office</strong> type — rent, supplies, utilities, anything for the business.<br><br>
+                    Personal expenses are counted in "Total Spent" but not here.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21v-7h6v7"/></svg>
+            </div>
+            <p class="mono text-[1.45rem] font-medium tracking-tight" id="kpi-office-expenses-value">Rs. {{ office_expenses|default:0|floatformat:0 }}</p>
+            <p class="text-[0.75rem] text-sub mt-2">Office-type spending</p>
+          </div>
+        </section>
+
+        <!-- ============ CHARTS ============ -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 stagger">
+          <div class="card card-hover p-5 md:col-span-2">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-semibold text-[0.9rem] tracking-tight flex items-center gap-1.5">
+                  Monthly Spending
+                  <span class="tip tip-left" tabindex="0">
+                    <span class="info-dot">i</span>
+                    <span class="tip-bubble">
+                      <strong class="block mb-1 font-semibold">Monthly Spending</strong>
+                      Each bar is one month. The height is how much you spent that month.<br><br>
+                      The rightmost bar is the current month — it grows as you add more expenses.
+                    </span>
+                  </span>
+                </h3>
+                <p class="text-[0.72rem] text-mute mt-0.5">Last 12 months</p>
+              </div>
+              <span class="text-[0.7rem] text-mute">Rs.</span>
+            </div>
+            <div class="h-72 chart-box"><canvas id="monthlyExpenseChart" role="img" aria-label="Monthly spending, last 12 months"></canvas><span class="chart-empty-overlay" id="monthlyExpenseChart-empty">No data</span></div>
+          </div>
+          <div class="card card-hover p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-semibold text-[0.9rem] tracking-tight flex items-center gap-1.5">
+                  Office vs Personal
+                  <span class="tip tip-left" tabindex="0">
+                    <span class="info-dot">i</span>
+                    <span class="tip-bubble">
+                      <strong class="block mb-1 font-semibold">Office vs Personal</strong>
+                      A split of how many expense <em>records</em> fall into each category.<br><br>
+                      It's a count, not a rupee amount — useful for spotting how much of your bookkeeping is business vs personal.
+                    </span>
+                  </span>
+                </h3>
+                <p class="text-[0.72rem] text-mute mt-0.5">By number of expenses</p>
+              </div>
+            </div>
+            <div class="h-72 flex items-center justify-center chart-box"><canvas id="expenseTypeChart" role="img" aria-label="Office vs personal expense split"></canvas><span class="chart-empty-overlay" id="expenseTypeChart-empty">No data</span></div>
+          </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 stagger">
+          <div class="card card-hover p-5 md:col-span-2">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-semibold text-[0.9rem] tracking-tight flex items-center gap-1.5">
+                  Spending by Category
+                  <span class="tip tip-left" tabindex="0">
+                    <span class="info-dot">i</span>
+                    <span class="tip-bubble">
+                      <strong class="block mb-1 font-semibold">Spending by Category</strong>
+                      Every month's spending broken into <strong>Office</strong>, <strong>Personal</strong>, and <strong>waiting to pay</strong>.<br><br>
+                      Stacked so you can see the total per month <em>and</em> what's inside it.
+                    </span>
+                  </span>
+                </h3>
+                <p class="text-[0.72rem] text-mute mt-0.5">Last 12 months, stacked</p>
+              </div>
+              <span class="text-[0.7rem] text-mute">Rs.</span>
+            </div>
+            <div class="h-72 chart-box"><canvas id="expansionStackedChart" role="img" aria-label="Spending by category, stacked, last 12 months"></canvas><span class="chart-empty-overlay" id="expansionStackedChart-empty">No data</span></div>
+          </div>
+          <div class="card card-hover p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-semibold text-[0.9rem] tracking-tight flex items-center gap-1.5">
+                  Budget Progress
+                  <span class="tip tip-left" tabindex="0">
+                    <span class="info-dot">i</span>
+                    <span class="tip-bubble">
+                      <strong class="block mb-1 font-semibold">Budget Progress</strong>
+                      How close you are to your spending goal.<br><br>
+                      Green = reached, light gray = remaining, white = above goal.<br>
+                      Set a goal in <em>Expansion Targets</em> to see it here.
+                    </span>
+                  </span>
+                </h3>
+                <p class="text-[0.72rem] text-mute mt-0.5">How much of your goal is reached</p>
+              </div>
+            </div>
+            <div class="h-72 flex items-center justify-center relative">
+              <canvas id="penetrationGauge" role="img" aria-label="Budget progress toward goal"></canvas>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span class="mono text-[1.6rem] font-medium" id="gauge-value">{{ penetration_pct|default:0 }}%</span>
+                <span class="text-[0.7rem] text-mute">of goal</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ TREND SPARKLINES ============ -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3 stagger" aria-label="Last 7 days trends">
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                7-day Spend
+                <span class="tip tip-left" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">7-day Spend</strong>
+                    Money you spent on <strong>office</strong> items that are already <strong>paid</strong>, over the last 7 days.<br><br>
+                    Each bar is one day. Hover a bar to see the date and amount.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+            </div>
+            <p class="mono text-[1.2rem] font-medium tracking-tight" id="kpi-expansion-mrr-value">Rs. {{ expansion_mrr|default:0|floatformat:0 }}</p>
+            <p class="text-[0.7rem] text-mute mt-1" id="kpi-expansion-mrr-target">Paid office spending</p>
+            <div class="sparkline-wrap mt-2"><canvas id="spark-expansion-mrr" role="img" aria-label="Paid office spending, last 7 days"></canvas><span class="chart-empty-overlay" id="spark-expansion-mrr-empty">No data</span></div>
+          </div>
+
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                Paid Total
+                <span class="tip tip-left" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">Paid Total</strong>
+                    Everything you've <strong>already paid</strong> in the last 7 days, across all categories.<br><br>
+                    Pending and cancelled rows are not counted here.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+            </div>
+            <p class="mono text-[1.2rem] font-medium tracking-tight" id="kpi-new-market-value">Rs. {{ new_market_revenue|default:0|floatformat:0 }}</p>
+            <p class="text-[0.7rem] text-mute mt-1" id="kpi-new-market-target">All paid expenses</p>
+            <div class="sparkline-wrap mt-2"><canvas id="spark-new-market" role="img" aria-label="Paid total, last 7 days"></canvas><span class="chart-empty-overlay" id="spark-new-market-empty">No data</span></div>
+          </div>
+
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                Active Payees
+                <span class="tip tip-left" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">Active Payees</strong>
+                    How many <strong>different suppliers</strong> you paid office expenses to — counted by their reference number.<br><br>
+                    Each unique reference counts once, so paying the same supplier twice still counts as one.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M17 4.5a3 3 0 010 6M19 20c0-2.5-1-4-2.5-4.5"/></svg>
+            </div>
+            <p class="mono text-[1.2rem] font-medium tracking-tight" id="kpi-expansion-customers-value">{{ expansion_customers|default:0 }}</p>
+            <p class="text-[0.7rem] text-mute mt-1" id="kpi-expansion-customers-target">Distinct suppliers paid</p>
+            <div class="sparkline-wrap mt-2"><canvas id="spark-expansion-customers" role="img" aria-label="Active payees, last 7 days"></canvas><span class="chart-empty-overlay" id="spark-expansion-customers-empty">No data</span></div>
+          </div>
+
+          <div class="card card-hover p-4">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[0.72rem] uppercase tracking-wider text-sub font-medium flex items-center gap-1.5">
+                Spend Trend
+                <span class="tip" tabindex="0">
+                  <span class="info-dot">i</span>
+                  <span class="tip-bubble">
+                    <strong class="block mb-1 font-semibold">Spend Trend</strong>
+                    The <strong>share of paid vs pending</strong> expenses over the last 7 days.<br><br>
+                    100% = everything is paid. Lower = you still owe money on some expenses.
+                  </span>
+                </span>
+              </p>
+              <svg class="w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.5 3.5"/></svg>
+            </div>
+            <p class="mono text-[1.2rem] font-medium tracking-tight" id="kpi-penetration-value">{{ penetration_pct|default:0 }}%</p>
+            <p class="text-[0.7rem] text-mute mt-1" id="kpi-penetration-target">Share of paid vs pending</p>
+            <div class="sparkline-wrap mt-2"><canvas id="spark-penetration" role="img" aria-label="Spend trend, last 7 days"></canvas><span class="chart-empty-overlay" id="spark-penetration-empty">No data</span></div>
+          </div>
+        </section>
+
+        <!-- ============ EXPENSE TABLE ============ -->
+        <section class="card overflow-hidden mb-3">
+          <div class="px-5 py-4 border-b border-line flex items-center justify-between">
+            <h3 class="font-semibold text-[0.98rem] tracking-tight flex items-center gap-1.5">
+              All Expenses
+              <span class="tip tip-left" tabindex="0">
+                <span class="info-dot">i</span>
+                <span class="tip-bubble">
+                  <strong class="block mb-1 font-semibold">All Expenses</strong>
+                  Every expense record in the system, newest first.<br><br>
+                  Use the search and filters below to narrow down. Click the eye icon on any row to see full details.
+                </span>
+              </span>
+            </h3>
+            <span class="text-[0.72rem] text-mute">One row per expense</span>
+          </div>
+
+          <div class="px-5 py-3 border-b border-line2 flex flex-wrap items-center gap-3">
+            <div class="relative max-w-xs flex-1 min-w-[180px]">
+              <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mute pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input type="search" id="expenseSearch" placeholder="Search by name or reference" aria-label="Search expenses" onkeyup="filterExpenseTable()" title="Type to filter the table by name, reference, category, or payment method" class="h-8 w-full pl-8 pr-3 rounded-md border border-line bg-bg/70 text-[0.82rem] placeholder:text-mute focus:bg-white focus:border-ink transition-colors" />
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <label class="sr-only" for="statusFilter">Filter by status</label>
+              <select id="statusFilter" onchange="filterExpenseTable()" title="Show only expenses in a specific status" class="h-8 px-2.5 rounded-md border border-line bg-bg/70 text-[0.78rem] text-sub focus:bg-white focus:border-ink transition-colors">
+                <option value="">Any status</option>
+                <option value="pending">Waiting to pay</option>
+                <option value="paid">Already paid</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <label class="sr-only" for="typeFilter">Filter by type</label>
+              <select id="typeFilter" onchange="filterExpenseTable()" title="Show only Office or Personal expenses" class="h-8 px-2.5 rounded-md border border-line bg-bg/70 text-[0.78rem] text-sub focus:bg-white focus:border-ink transition-colors">
+                <option value="">Any category</option>
+                <option value="office">Office</option>
+                <option value="personal">Personal</option>
+              </select>
+              <label class="sr-only" for="paymentFilter">Filter by payment method</label>
+              <select id="paymentFilter" onchange="filterExpenseTable()" title="Show only expenses paid a certain way" class="h-8 px-2.5 rounded-md border border-line bg-bg/70 text-[0.78rem] text-sub focus:bg-white focus:border-ink transition-colors">
+                <option value="">Any payment</option>
+                <option value="cash">Cash</option>
+                <option value="credit">Credit</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="mobile_payment">Mobile Payment</option>
+              </select>
+            </div>
+          </div>
+
+          {% if expense_list %}
+          <div class="overflow-x-auto">
+            <table class="w-full text-[0.84rem]" id="expenseTable">
+              <thead>
+                <tr class="text-left text-[0.72rem] uppercase tracking-wider text-sub bg-bg/60">
+                  <th class="px-5 py-2.5 font-medium" scope="col" title="The name you gave this expense when you created it">Name</th>
+                  <th class="px-5 py-2.5 font-medium" scope="col" title="A unique ID automatically assigned to each expense">Reference</th>
+                  <th class="px-5 py-2.5 font-medium" scope="col" title="Office or Personal">Category</th>
+                  <th class="px-5 py-2.5 font-medium text-right" scope="col" title="How many units you bought">Qty</th>
+                  <th class="px-5 py-2.5 font-medium text-right" scope="col" title="Price for a single unit">Unit Price</th>
+                  <th class="px-5 py-2.5 font-medium text-right" scope="col" title="Unit Price × Quantity — the real amount of this expense">Amount</th>
+                  <th class="px-5 py-2.5 font-medium" scope="col" title="How it was paid — cash, card, bank transfer, etc.">Paid Via</th>
+                  <th class="px-5 py-2.5 font-medium" scope="col" title="Paid / Waiting to pay / Cancelled">Status</th>
+                  <th class="px-5 py-2.5 font-medium" scope="col" title="When the expense was recorded">Date</th>
+                  <th class="px-5 py-2.5 font-medium text-right" scope="col" title="Open the full details of this expense">Details</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-line2 stagger-slow">
+                {% for expense in expense_list %}
+                <tr class="row-hover"
+                    style="--i:{{ forloop.counter0 }}"
+                    data-status="{{ expense.status }}"
+                    data-type="{{ expense.expense_type }}"
+                    data-payment="{{ expense.transaction_type }}"
+                    data-id="{{ expense.id }}"
+                    data-name="{{ expense.name }}"
+                    data-description="{{ expense.description|default:"" }}"
+                    data-reference="{{ expense.reference_number }}"
+                    data-type-display="{{ expense.get_expense_type_display }}"
+                    data-unit-price="{{ expense.unit_price|floatformat:"2" }}"
+                    data-quantity="{{ expense.quantity }}"
+                    data-tax-rate="{{ expense.tax_rate|floatformat:"2" }}"
+                    data-payment-display="{{ expense.get_transaction_type_display }}"
+                    data-status-display="{{ expense.get_status_display }}"
+                    data-date="{{ expense.created_at|date:"d M Y, H:i" }}"
+                    data-image-url="{% if expense.image %}{{ expense.image.url }}{% endif %}"
+                    data-attachment-url="{% if expense.attachment_file %}{{ expense.attachment_file.url }}{% endif %}">
+                  <td class="px-5 py-3">
+                    <div class="font-medium">{{ expense.name }}</div>
+                    <div class="text-sub text-[0.72rem] truncate max-w-[220px]">{{ expense.description|default:""|truncatechars:40 }}</div>
+                  </td>
+                  <td class="px-5 py-3"><span class="mono text-[0.75rem] bg-bg px-2 py-0.5 rounded">{{ expense.reference_number }}</span></td>
+                  <td class="px-5 py-3"><span class="text-[0.72rem] font-medium px-2 py-0.5 rounded-full bg-bg text-sub">{{ expense.get_expense_type_display }}</span></td>
+                  <td class="px-5 py-3 text-right mono text-[0.82rem]">{{ expense.quantity }}</td>
+                  <td class="px-5 py-3 text-right mono text-[0.82rem]">Rs. {{ expense.unit_price|floatformat:"2" }}</td>
+                  <td class="px-5 py-3 text-right mono text-[0.84rem] font-medium">Rs. {% widthratio expense.unit_price 1 expense.quantity %}</td>
+                  <td class="px-5 py-3"><span class="text-[0.72rem] text-sub">{{ expense.get_transaction_type_display }}</span></td>
+                  <td class="px-5 py-3">
+                    {% if expense.status == "paid" %}
+                      <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-posSoft text-pos font-medium text-[0.75rem]" title="This expense has been paid">
+                        <span class="w-1.5 h-1.5 rounded-full bg-pos"></span>Paid
+                      </span>
+                    {% elif expense.status == "pending" %}
+                      <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-warnSoft text-warn font-medium text-[0.75rem]" title="Bill received, not paid yet">
+                        <span class="w-1.5 h-1.5 rounded-full bg-warn"></span>Pending
+                      </span>
+                    {% else %}
+                      <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-negSoft text-neg font-medium text-[0.75rem]" title="This expense was cancelled and does not count as real spending">
+                        <span class="w-1.5 h-1.5 rounded-full bg-neg"></span>Cancelled
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td class="px-5 py-3 text-sub text-[0.78rem]">{{ expense.created_at|date:"d M Y" }}</td>
+                  <td class="px-5 py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" onclick="openDetailModal({{ expense.id }})" class="text-sub hover:text-ink inline-flex items-center justify-center w-7 h-7 rounded hover:bg-bg transition-colors btn-snap" aria-label="View details for {{ expense.name }}" title="See full details — price, quantity, tax, receipt">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="px-5 py-14 text-center">
+            <div class="w-11 h-11 mx-auto mb-3 rounded-full bg-bg flex items-center justify-center text-mute">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+            </div>
+            <p class="text-[0.95rem] font-medium mb-1">No expenses yet</p>
+            <p class="text-sub text-[0.85rem] max-w-sm mx-auto mb-4">Add your first expense to start tracking your business spending.</p>
+            <button type="button" onclick="openExpenseModal()" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors inline-flex items-center gap-1.5 btn-snap">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Expense
+            </button>
+          </div>
+          {% endif %}
+        </section>
+
+        <!-- ============ QUICK ACTIONS ============ -->
+        <section class="card p-4 mb-3 stagger" aria-label="Quick actions">
+          <h3 class="font-semibold text-[0.9rem] tracking-tight mb-3">Quick Actions</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            <a href="#" class="qa-tile flex flex-col items-center gap-2 p-3 rounded-md border border-line text-center" title="Record a new sale">
+              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg>
+              <span class="text-[0.75rem] font-medium">New Sale</span>
+            </a>
+            <a href="#" class="qa-tile flex flex-col items-center gap-2 p-3 rounded-md border border-line text-center" title="Create a new invoice">
+              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+              <span class="text-[0.75rem] font-medium">New Invoice</span>
+            </a>
+            <button type="button" onclick="openExpenseModal()" class="qa-tile flex flex-col items-center gap-2 p-3 rounded-md border border-line text-center" title="Add a new expense record">
+              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+              <span class="text-[0.75rem] font-medium">Add Expense</span>
+            </button>
+            <a href="{% url 'product' %}" class="qa-tile flex flex-col items-center gap-2 p-3 rounded-md border border-line text-center" title="Add a product to your catalogue">
+              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+              <span class="text-[0.75rem] font-medium">Add Product</span>
+            </a>
+            <a href="{% url 'category' %}" class="qa-tile flex flex-col items-center gap-2 p-3 rounded-md border border-line text-center" title="Manage expense categories">
+              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              <span class="text-[0.75rem] font-medium">Add Category</span>
+            </a>
+            <a href="#" class="qa-tile flex flex-col items-center gap-2 p-3 rounded-md border border-line text-center" title="Record a payment against an existing expense">
+              <svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+              <span class="text-[0.75rem] font-medium">Record Payment</span>
+            </a>
+          </div>
+        </section>
+
+        <p class="text-center text-[0.72rem] text-mute">FinCore · Simple for the business owner, rigorous underneath.</p>
+      </main>
+    </div>
+
+    <!-- ============ ADD EXPENSE MODAL ============ -->
+    <div id="addExpenseModal" class="fc-modal" role="dialog" aria-modal="true" aria-labelledby="addExpenseTitle">
+      <div class="fc-modal-backdrop" data-modal-close></div>
+      <div class="fc-modal-card max-w-lg p-6" role="document">
+        <div class="flex items-center justify-between mb-5">
+          <h3 id="addExpenseTitle" class="text-[1.05rem] font-semibold">Add New Expense</h3>
+          <button type="button" onclick="closeExpenseModal()" class="w-8 h-8 rounded-md flex items-center justify-center text-sub hover:bg-bg transition-colors btn-snap" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <form method="POST" action="{% url 'expense_list' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="space-y-4">
+            <div>
+              <label for="expenseName" class="block text-[0.8rem] font-medium mb-1.5" title="Give this expense a short, clear name">What did you buy?</label>
+              <input id="expenseName" type="text" name="name" required placeholder="e.g. Office chairs, Printer ink" class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+            </div>
+            <div>
+              <label for="expenseDesc" class="block text-[0.8rem] font-medium mb-1.5">Notes <span class="text-mute font-normal">(optional)</span></label>
+              <textarea id="expenseDesc" name="description" rows="2" placeholder="Any extra details you want to remember" class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors resize-y"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="expenseUnitPrice" class="block text-[0.8rem] font-medium mb-1.5" title="The price of one single item">Price per item (Rs.)</label>
+                <input id="expenseUnitPrice" type="number" name="unit_price" step="0.01" min="0" required placeholder="5000" class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] mono focus:border-ink transition-colors" />
+              </div>
+              <div>
+                <label for="expenseQuantity" class="block text-[0.8rem] font-medium mb-1.5" title="How many of this item you bought">How many?</label>
+                <input id="expenseQuantity" type="number" name="quantity" min="1" value="1" required class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] mono focus:border-ink transition-colors" />
+              </div>
+            </div>
+            <p class="text-[0.72rem] text-mute -mt-2">The total will be <span class="font-medium text-ink">price × quantity</span>.</p>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="expenseType" class="block text-[0.8rem] font-medium mb-1.5" title="Office = business spending. Personal = your own">Category</label>
+                <select id="expenseType" name="expense_type" class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="office">Office (business)</option>
+                  <option value="personal">Personal</option>
+                </select>
+              </div>
+              <div>
+                <label for="transactionType" class="block text-[0.8rem] font-medium mb-1.5" title="How the money left your account">Paid using</label>
+                <select id="transactionType" name="transaction_type" class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                  <option value="cash">Cash</option>
+                  <option value="credit">Credit card</option>
+                  <option value="bank_transfer">Bank transfer</option>
+                  <option value="mobile_payment">Mobile payment</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label for="expenseStatus" class="block text-[0.8rem] font-medium mb-1.5" title="Choose whether this has been paid yet">Have you paid it?</label>
+              <select id="expenseStatus" name="status" class="w-full h-9 px-3 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors">
+                <option value="pending">Not yet — waiting to pay</option>
+                <option value="paid">Yes — already paid</option>
+                <option value="cancelled">Cancelled — no longer relevant</option>
+              </select>
+            </div>
+            <div>
+              <label for="expenseImage" class="block text-[0.8rem] font-medium mb-1.5">Photo <span class="text-mute font-normal">(optional)</span></label>
+              <input id="expenseImage" type="file" name="image" accept="image/*" class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+            </div>
+            <div>
+              <label for="expenseAttachment" class="block text-[0.8rem] font-medium mb-1.5">Receipt file <span class="text-mute font-normal">(optional)</span></label>
+              <input id="expenseAttachment" type="file" name="attachment_file" class="w-full px-3 py-2 rounded-md border border-line bg-white text-[0.85rem] focus:border-ink transition-colors" />
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2 mt-6">
+            <button type="button" onclick="closeExpenseModal()" class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors btn-snap">Cancel</button>
+            <button type="submit" class="h-9 px-3.5 rounded-md bg-ink text-white text-[0.82rem] font-medium hover:bg-black transition-colors btn-snap">Save Expense</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============ DETAIL MODAL ============ -->
+    <div id="expenseDetailModal" class="fc-modal" role="dialog" aria-modal="true" aria-labelledby="expenseDetailTitle">
+      <div class="fc-modal-backdrop" data-modal-close></div>
+      <div class="fc-modal-card max-w-md p-6" role="document">
+        <div class="flex items-center justify-between mb-5">
+          <h3 id="expenseDetailTitle" class="text-[1.05rem] font-semibold">Expense Details</h3>
+          <button type="button" onclick="closeDetailModal()" class="w-8 h-8 rounded-md flex items-center justify-center text-sub hover:bg-bg transition-colors btn-snap" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div id="detailContent" class="space-y-3"></div>
+        <div class="flex items-center justify-end mt-6">
+          <button type="button" onclick="closeDetailModal()" class="h-9 px-3.5 rounded-md border border-line bg-white text-[0.82rem] font-medium text-sub hover:border-ink hover:text-ink transition-colors btn-snap">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SAFE JSON ISLANDS ============ -->
+    {{ segment_a|json_script:"segment_a_data" }}
+    {{ segment_b|json_script:"segment_b_data" }}
+    {{ segment_c|json_script:"segment_c_data" }}
+    {{ months|json_script:"months_data" }}
+    {{ monthly_labels|json_script:"monthly_labels_data" }}
+    {{ monthly_expense_data|json_script:"monthly_expense_data_data" }}
+    {{ office_count|default:0|json_script:"office_count_data" }}
+    {{ personal_count|default:0|json_script:"personal_count_data" }}
+    {{ spark_labels|json_script:"spark_labels_data" }}
+    {{ mrr_trend|json_script:"mrr_trend_data" }}
+    {{ market_trend|json_script:"market_trend_data" }}
+    {{ customer_trend|json_script:"customer_trend_data" }}
+    {{ penetration_trend|json_script:"penetration_trend_data" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+      "use strict";
+
+      /* ============================================================
+         SAFE JSON READER
+      ============================================================ */
+      function readJSON(id, fallback) {
+        try {
+          const el = document.getElementById(id);
+          if (!el) return fallback;
+          const raw = (el.textContent || "").trim();
+          if (!raw || raw === "null" || raw === "undefined") return fallback;
+          const val = JSON.parse(raw);
+          return (val === null || val === undefined) ? fallback : val;
+        } catch (e) {
+          console.warn("[FinCore] readJSON failed for", id, e);
+          return fallback;
+        }
+      }
+      function readNumber(str, fallback) {
+        const n = Number(str);
+        return Number.isFinite(n) ? n : fallback;
+      }
+
+      const INITIAL_MONTHLY_LABELS   = readJSON("monthly_labels_data", []);
+      const INITIAL_MONTHLY_DATA     = readJSON("monthly_expense_data_data", []);
+      const INITIAL_OFFICE_COUNT     = readNumber(readJSON("office_count_data", 0), 0);
+      const INITIAL_PERSONAL_COUNT   = readNumber(readJSON("personal_count_data", 0), 0);
+      const INITIAL_SEGMENT_A        = readJSON("segment_a_data", []);
+      const INITIAL_SEGMENT_B        = readJSON("segment_b_data", []);
+      const INITIAL_SEGMENT_C        = readJSON("segment_c_data", []);
+      const INITIAL_MONTHS           = readJSON("months_data", []);
+      const INITIAL_PENETRATION      = readNumber({{ penetration_pct|default:0 }}, 0);
+      const INITIAL_PENETRATION_GOAL = readNumber({{ penetration_goal|default:0 }}, 0);
+      const INITIAL_SPARK_LABELS     = readJSON("spark_labels_data", []);
+      const INITIAL_MRR_TREND        = readJSON("mrr_trend_data", []);
+      const INITIAL_MARKET_TREND     = readJSON("market_trend_data", []);
+      const INITIAL_CUSTOMER_TREND   = readJSON("customer_trend_data", []);
+      const INITIAL_PENETRATION_TREND = readJSON("penetration_trend_data", []);
+
+      const PALETTE = {
+        ink: "#0f1218", sub: "#6b7280", mute: "#9ca3af",
+        line: "#e5e7eb", line2: "#f0f1f3", bg: "#fafafa",
+        pos: "#047857", warn: "#b45309", neg: "#b91c1c",
+      };
+
+      function normalizeLabels(labels, length) {
+        const base = Array.isArray(labels) ? labels.slice(0, length) : [];
+        while (base.length < length) base.push("—");
+        return base;
+      }
+      function toggleEmptyOverlay(canvasId, isEmpty) {
+        const el = document.getElementById(canvasId + "-empty");
+        if (!el) return;
+        el.classList.toggle("is-visible", !!isEmpty);
+      }
+
+      /* ============================================================
+         MODALS
+      ============================================================ */
+      let lastFocusedEl = null;
+      function trapFocus(modal, e) {
+        if (e.key !== "Tab") return;
+        const focusables = modal.querySelectorAll(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      window.openExpenseModal = function () {
+        const m = document.getElementById("addExpenseModal");
+        if (!m) return;
+        lastFocusedEl = document.activeElement;
+        m.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        const n = document.getElementById("expenseName");
+        if (n) setTimeout(() => n.focus(), 120);
+      };
+      window.closeExpenseModal = function () {
+        const m = document.getElementById("addExpenseModal");
+        if (!m) return;
+        m.classList.remove("is-open");
+        document.body.style.overflow = "";
+        if (lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus();
+      };
+      window.openDetailModal = function (id) {
+        const modal = document.getElementById("expenseDetailModal");
+        const content = document.getElementById("detailContent");
+        if (!modal || !content) return;
+        const row = document.querySelector(`#expenseTable tbody tr[data-id="${id}"]`);
+        if (!row) return;
+        const d = row.dataset;
+        const unitPrice = Number(d.unitPrice) || 0;
+        const quantity = Number(d.quantity) || 0;
+        const taxRate = Number(d.taxRate) || 0;
+        const subtotal = unitPrice * quantity;
+        const taxAmount = subtotal * (taxRate / 100);
+        const total = subtotal + taxAmount;
+        const statusDisplay = d.statusDisplay || d.status || "";
+        const sCls = d.status === "paid" ? "bg-posSoft text-pos"
+                  : d.status === "pending" ? "bg-warnSoft text-warn"
+                  : "bg-negSoft text-neg";
+        const imageBlock = d.imageUrl
+          ? `<div><p class="text-[0.8rem] text-sub mb-1.5">Photo</p>
+               <img src="${d.imageUrl}" alt="Expense photo" class="w-full max-h-40 object-cover rounded-md border border-line" /></div>`
+          : "";
+        const attachmentBlock = d.attachmentUrl
+          ? `<div><a href="${d.attachmentUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-[0.82rem] font-medium text-ink hover:underline">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3 3 0 014.24 4.24l-9.2 9.19a1 1 0 01-1.41-1.41l8.49-8.48"/></svg>
+               Open receipt file</a></div>`
+          : "";
+        content.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex justify-between items-start">
+              <div><p class="text-[0.8rem] text-sub">Expense</p><p class="font-medium text-[0.9rem]">${d.name || ""}</p></div>
+              <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full ${sCls} font-medium text-[0.72rem]">${statusDisplay}</span>
+            </div>
+            <div><p class="text-[0.8rem] text-sub">Notes</p><p class="text-[0.85rem] text-ink">${d.description || "—"}</p></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><p class="text-[0.8rem] text-sub">Reference</p><p class="mono text-[0.85rem]">${d.reference || ""}</p></div>
+              <div><p class="text-[0.8rem] text-sub">Category</p><p class="text-[0.85rem]">${d.typeDisplay || ""}</p></div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div><p class="text-[0.8rem] text-sub">Unit price</p><p class="mono text-[0.85rem]">Rs. ${unitPrice.toFixed(2)}</p></div>
+              <div><p class="text-[0.8rem] text-sub">Quantity</p><p class="mono text-[0.85rem]">${quantity}</p></div>
+              <div><p class="text-[0.8rem] text-sub">Amount</p><p class="mono text-[0.85rem] font-medium">Rs. ${subtotal.toFixed(2)}</p></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><p class="text-[0.8rem] text-sub">Tax (${taxRate.toFixed(0)}%)</p><p class="mono text-[0.85rem]">Rs. ${taxAmount.toFixed(2)}</p></div>
+              <div><p class="text-[0.8rem] text-sub">Total with tax</p><p class="mono text-[0.95rem] font-medium">Rs. ${total.toFixed(2)}</p></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><p class="text-[0.8rem] text-sub">Paid via</p><p class="text-[0.85rem]">${d.paymentDisplay || ""}</p></div>
+              <div><p class="text-[0.8rem] text-sub">Date</p><p class="text-[0.85rem]">${d.date || ""}</p></div>
+            </div>
+            ${imageBlock}
+            ${attachmentBlock}
+          </div>`;
+        lastFocusedEl = document.activeElement;
+        modal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          const closeBtn = modal.querySelector('button[onclick="closeDetailModal()"]');
+          if (closeBtn) closeBtn.focus();
+        }, 120);
+      };
+      window.closeDetailModal = function () {
+        const m = document.getElementById("expenseDetailModal");
+        if (!m) return;
+        m.classList.remove("is-open");
+        document.body.style.overflow = "";
+        if (lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus();
+      };
+
+      /* ============================================================
+         SIDEBAR
+      ============================================================ */
+      (function () {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const toggle = document.getElementById("menuToggle");
+        if (!sidebar || !overlay || !toggle) return;
+        function openS() { sidebar.classList.add("open"); overlay.classList.remove("hidden"); toggle.setAttribute("aria-expanded","true"); document.body.style.overflow="hidden"; }
+        function closeS() { sidebar.classList.remove("open"); overlay.classList.add("hidden"); toggle.setAttribute("aria-expanded","false"); document.body.style.overflow=""; }
+        toggle.addEventListener("click", () => sidebar.classList.contains("open") ? closeS() : openS());
+        overlay.addEventListener("click", closeS);
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape" && sidebar.classList.contains("open")) { closeS(); toggle.focus(); } });
+        window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => { if (e.matches) closeS(); });
+      })();
+      (function () {
+        const b = document.getElementById("companyBtn");
+        if (!b) return;
+        b.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const s = b.getAttribute("aria-expanded") === "true";
+          b.setAttribute("aria-expanded", s ? "false" : "true");
+        });
+      })();
+
+      /* ============================================================
+         EXPORT CSV
+      ============================================================ */
+      (function () {
+        const btn = document.getElementById("exportBtn");
+        if (!btn) return;
+        btn.addEventListener("click", () => {
+          try {
+            const rows = Array.from(document.querySelectorAll("#expenseTable tbody tr")).filter(r => r.style.display !== "none");
+            if (!rows.length) return;
+            const header = ["Name","Reference","Category","Quantity","Unit Price","Amount","Paid Via","Status","Date"];
+            const lines = [header.join(",")];
+            rows.forEach(r => {
+              const d = r.dataset;
+              const amount = (Number(d.unitPrice) || 0) * (Number(d.quantity) || 0);
+              const vals = [d.name, d.reference, d.typeDisplay, d.quantity, d.unitPrice, amount.toFixed(2), d.paymentDisplay, d.statusDisplay, d.date]
+                .map(v => `"${(v || "").toString().replace(/"/g, '""')}"`);
+              lines.push(vals.join(","));
+            });
+            const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "expenses.csv";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch (e) { console.warn("[FinCore] export failed:", e); }
+        });
+      })();
+
+      /* ============================================================
+         FILTER
+      ============================================================ */
+      window.filterExpenseTable = function () {
+        const s = document.getElementById("expenseSearch");
+        const st = document.getElementById("statusFilter");
+        const ty = document.getElementById("typeFilter");
+        const py = document.getElementById("paymentFilter");
+        const t = document.getElementById("expenseTable");
+        if (!t) return;
+        const q = s ? s.value.toLowerCase().trim() : "";
+        const sv = st ? st.value : "";
+        const tv = ty ? ty.value : "";
+        const pv = py ? py.value : "";
+        t.querySelectorAll("tbody tr").forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const match = (!q || text.indexOf(q) > -1)
+                     && (!sv || row.getAttribute("data-status") === sv)
+                     && (!tv || row.getAttribute("data-type") === tv)
+                     && (!pv || row.getAttribute("data-payment") === pv);
+          row.style.display = match ? "" : "none";
+        });
+      };
+
+      /* ============================================================
+         MODAL BACKDROP + ESC
+      ============================================================ */
+      (function () {
+        const em = document.getElementById("addExpenseModal");
+        const dm = document.getElementById("expenseDetailModal");
+        if (em) {
+          em.querySelectorAll("[data-modal-close]").forEach(el => el.addEventListener("click", closeExpenseModal));
+          em.addEventListener("keydown", (e) => trapFocus(em, e));
+        }
+        if (dm) {
+          dm.querySelectorAll("[data-modal-close]").forEach(el => el.addEventListener("click", closeDetailModal));
+          dm.addEventListener("keydown", (e) => trapFocus(dm, e));
+        }
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            if (em && em.classList.contains("is-open")) closeExpenseModal();
+            if (dm && dm.classList.contains("is-open")) closeDetailModal();
+          }
+        });
+      })();
+
+      /* ============================================================
+         FORMATTERS
+      ============================================================ */
+      function formatCurrency(n) {
+        const num = Number(n) || 0;
+        return "Rs. " + num.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+      }
+      function formatNumber(n) {
+        const num = Number(n) || 0;
+        return num.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+      }
+      function setNumericText(id, value, formatter) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const n = Number(value);
+        if (!Number.isFinite(n)) return;
+        el.textContent = formatter(n);
+      }
+
+      /* ============================================================
+         SPARKLINE
+      ============================================================ */
+      function createSparkline(canvasId, data, labels, color, type, valueFormatter) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return null;
+        const hasData = Array.isArray(data) && data.length > 0;
+        toggleEmptyOverlay(canvasId, !hasData);
+        const points = hasData ? data : [];
+        const labelCount = points.length || (Array.isArray(labels) ? labels.length : 7);
+        const safeLabels = normalizeLabels(labels, labelCount);
+        if (!hasData) return null;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return null;
+        const grad = ctx.createLinearGradient(0, 0, 0, 50);
+        grad.addColorStop(0, color + "40");
+        grad.addColorStop(1, color + "00");
+        const fmt = valueFormatter || formatCurrency;
+        return new Chart(canvas, {
+          type: type || "line",
+          data: {
+            labels: safeLabels,
+            datasets: [{
+              data: points,
+              borderColor: color,
+              backgroundColor: type === "bar" ? color : grad,
+              borderWidth: type === "bar" ? 0 : 1.5,
+              pointRadius: 0,
+              pointHoverRadius: 3,
+              tension: 0.35,
+              fill: type !== "bar",
+              barThickness: type === "bar" ? 6 : undefined,
+              borderRadius: type === "bar" ? 2 : 0,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { bottom: 2, top: 4 } },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                enabled: true,
+                callbacks: {
+                  title: (items) => (items && items[0]) ? items[0].label : "",
+                  label: (item) => fmt(item.parsed.y),
+                },
+              },
+            },
+            scales: {
+              x: {
+                display: true,
+                grid: { display: false },
+                border: { display: false },
+                ticks: {
+                  font: { size: 9, family: "Inter" },
+                  color: PALETTE.mute,
+                  maxRotation: 0,
+                  autoSkip: false,
+                  padding: 2,
+                  callback: function (value, index) {
+                    const w = (this.chart && this.chart.width) || 0;
+                    const last = safeLabels.length - 1;
+                    if (w < 120 && index !== 0 && index !== last) return "";
+                    return this.getLabelForValue(value);
+                  },
+                },
+              },
+              y: { display: false, beginAtZero: true },
+            },
+            elements: { point: { radius: 0 } },
+            animation: { duration: 400 },
+          },
+        });
+      }
+
+      /* ============================================================
+         CHART INSTANCES
+      ============================================================ */
+      let sparkMrr, sparkMarket, sparkCust, sparkPen, stackedChart, gaugeChart;
+      let monthlyChart, typeChart;
+
+      /* ============================================================
+         KPI UPDATERS
+      ============================================================ */
+      function updateKpiCards(d) {
+        setNumericText("kpi-total-expenses-value",   d.total_expenses,   formatCurrency);
+        setNumericText("kpi-monthly-expenses-value", d.monthly_expenses, formatCurrency);
+        setNumericText("kpi-pending-expenses-value", d.pending_expenses, formatCurrency);
+        setNumericText("kpi-office-expenses-value",  d.office_expenses,  formatCurrency);
+
+        setNumericText("kpi-expansion-mrr-value", d.expansion_mrr, formatCurrency);
+        setNumericText("kpi-new-market-value",    d.new_market_revenue, formatCurrency);
+        setNumericText("kpi-expansion-customers-value", d.expansion_customers, formatNumber);
+
+        const pct = Number(d.penetration_pct);
+        if (Number.isFinite(pct)) {
+          const pV = document.getElementById("kpi-penetration-value");
+          if (pV) pV.textContent = pct + "%";
+          const gV = document.getElementById("gauge-value");
+          if (gV) gV.textContent = pct + "%";
+        }
+      }
+
+      function updateSparklines(d) {
+        const labels = (Array.isArray(d.spark_labels) && d.spark_labels.length)
+          ? d.spark_labels
+          : INITIAL_SPARK_LABELS;
+
+        if (sparkMrr)    { sparkMrr.destroy();    sparkMrr = null; }
+        sparkMrr = createSparkline("spark-expansion-mrr",       d.mrr_trend        || [], labels, PALETTE.ink,  "bar",  formatCurrency);
+
+        if (sparkMarket) { sparkMarket.destroy(); sparkMarket = null; }
+        sparkMarket = createSparkline("spark-new-market",        d.market_trend     || [], labels, PALETTE.pos,  "line", formatCurrency);
+
+        if (sparkCust)   { sparkCust.destroy();   sparkCust = null; }
+        sparkCust = createSparkline("spark-expansion-customers", d.customer_trend   || [], labels, PALETTE.mute, "line", formatNumber);
+
+        if (sparkPen)    { sparkPen.destroy();    sparkPen = null; }
+        sparkPen = createSparkline("spark-penetration",          d.penetration_trend || [], labels, PALETTE.pos,  "line",
+                                   (v) => `${(Number(v) || 0).toFixed(1)}%`);
+      }
+
+      function updateStackedChart(d) {
+        const c = document.getElementById("expansionStackedChart");
+        if (!c) return;
+        const monthsRaw = Array.isArray(d.months) ? d.months : [];
+        const sa = Array.isArray(d.segment_a) ? d.segment_a : [];
+        const sb = Array.isArray(d.segment_b) ? d.segment_b : [];
+        const sc = Array.isArray(d.segment_c) ? d.segment_c : [];
+        const hasData = monthsRaw.length > 0 && (sa.length || sb.length || sc.length);
+        toggleEmptyOverlay("expansionStackedChart", !hasData);
+        const months = normalizeLabels(monthsRaw, 12);
+
+        if (stackedChart) {
+          stackedChart.data.labels = months;
+          stackedChart.data.datasets[0].data = sa;
+          stackedChart.data.datasets[1].data = sb;
+          stackedChart.data.datasets[2].data = sc;
+          stackedChart.update("none");
+          return;
+        }
+
+        stackedChart = new Chart(c, {
+          type: "bar",
+          data: {
+            labels: months,
+            datasets: [
+              { label: "Office",   data: sa, backgroundColor: PALETTE.ink,  borderRadius: 3, barThickness: 22 },
+              { label: "Personal", data: sb, backgroundColor: PALETTE.sub,  borderRadius: 3, barThickness: 22 },
+              { label: "Waiting to pay", data: sc, backgroundColor: PALETTE.mute, borderRadius: 3, barThickness: 22 },
+            ],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            layout: { padding: { top: 4 } },
+            plugins: {
+              legend: {
+                display: true, position: "bottom",
+                labels: { font: { size: 10, family: "Inter" }, color: PALETTE.sub,
+                          padding: 14, usePointStyle: true, pointStyle: "circle" },
+              },
+              tooltip: { callbacks: { label: (x) => ` ${x.dataset.label}: ${formatCurrency(x.parsed.y)}` } },
+            },
+            scales: {
+              x: {
+                stacked: true, grid: { display: false },
+                ticks: { font: { size: 10, family: "Inter" }, color: PALETTE.mute, maxRotation: 0, autoSkip: false },
+              },
+              y: {
+                stacked: true, grid: { color: PALETTE.line2, drawTicks: false }, beginAtZero: true,
+                ticks: { font: { size: 10, family: "Inter" }, color: PALETTE.mute,
+                         callback: (v) => "Rs. " + (v >= 1000 ? (v / 1000).toFixed(0) + "k" : v) },
+              },
+            },
+          },
+        });
+      }
+
+      function updateGauge(d) {
+        const c = document.getElementById("penetrationGauge");
+        if (!c) return;
+        const pct  = Math.min(100, Math.max(0, Number(d.penetration_pct) || 0));
+        const goal = Math.max(0, Number(d.penetration_goal) || 0);
+        const above = Math.max(0, 100 - Math.max(goal, pct));
+        const remaining = Math.max(0, goal - pct);
+        if (gaugeChart) {
+          gaugeChart.data.datasets[0].data = [pct, remaining, above];
+          gaugeChart.update("none");
+          return;
+        }
+        gaugeChart = new Chart(c, {
+          type: "doughnut",
+          data: {
+            labels: ["Achieved", "Remaining", "Above Goal"],
+            datasets: [{
+              data: [pct, remaining, above],
+              backgroundColor: [PALETTE.pos, PALETTE.line, PALETTE.bg],
+              borderWidth: 0,
+            }],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: "78%",
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: (x) => ` ${x.label}: ${Number(x.parsed).toFixed(1)}%` } },
+            },
+          },
+        });
+      }
+
+      function updateMonthlyChart(d) {
+        const c = document.getElementById("monthlyExpenseChart");
+        if (!c) return;
+        const labels = normalizeLabels(d.monthly_labels || d.months || [], 12);
+        const data   = Array.isArray(d.monthly_expense_data) ? d.monthly_expense_data : [];
+        toggleEmptyOverlay("monthlyExpenseChart", !data.length);
+        if (monthlyChart) {
+          monthlyChart.data.labels = labels;
+          monthlyChart.data.datasets[0].data = data;
+          monthlyChart.update("none");
+          return;
+        }
+        monthlyChart = new Chart(c, {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [{
+              label: "Spent",
+              data,
+              backgroundColor: PALETTE.ink,
+              borderRadius: 4,
+              barThickness: 20,
+            }],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            layout: { padding: { top: 4 } },
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: (x) => "Rs. " + Number(x.parsed.y).toLocaleString("en-IN") } },
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { font: { size: 10, family: "Inter" }, color: PALETTE.mute, maxRotation: 0, autoSkip: false },
+              },
+              y: {
+                grid: { color: PALETTE.line2, drawTicks: false },
+                ticks: { font: { size: 10, family: "Inter" }, color: PALETTE.mute },
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
+
+      function updateTypeChart(d) {
+        const c = document.getElementById("expenseTypeChart");
+        if (!c) return;
+        const office   = Number(d.office_count)   || 0;
+        const personal = Number(d.personal_count) || 0;
+        toggleEmptyOverlay("expenseTypeChart", !(office + personal));
+        if (typeChart) {
+          typeChart.data.datasets[0].data = [office, personal];
+          typeChart.update("none");
+          return;
+        }
+        typeChart = new Chart(c, {
+          type: "doughnut",
+          data: {
+            labels: ["Office", "Personal"],
+            datasets: [{
+              data: [office, personal],
+              backgroundColor: [PALETTE.ink, PALETTE.mute],
+              borderWidth: 0,
+            }],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: "70%",
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { font: { size: 10, family: "Inter" }, color: PALETTE.sub,
+                          padding: 14, usePointStyle: true, pointStyle: "circle" },
+              },
+            },
+          },
+        });
+      }
+
+      /* ============================================================
+         FETCH + POLL
+      ============================================================ */
+      const KPI_ENDPOINT = "/api/expansion-kpis/";
+      const POLL_INTERVAL_MS = 15000;
+      const liveDot     = document.getElementById("liveDot");
+      const liveStatus  = document.getElementById("liveStatus");
+      const liveUpdated = document.getElementById("liveUpdated");
+
+      function applyKpiData(d) {
+        try { updateKpiCards(d); }       catch (e) { console.warn("KPI cards:", e); }
+        try { updateSparklines(d); }     catch (e) { console.warn("sparklines:", e); }
+        try { updateStackedChart(d); }   catch (e) { console.warn("stacked:", e); }
+        try { updateGauge(d); }          catch (e) { console.warn("gauge:", e); }
+        try { updateMonthlyChart(d); }   catch (e) { console.warn("monthly:", e); }
+        try { updateTypeChart(d); }      catch (e) { console.warn("type:", e); }
+        if (d.updated_at && liveUpdated) {
+          try {
+            const t = new Date(d.updated_at);
+            liveUpdated.textContent = "· " + t.toLocaleTimeString();
+          } catch (e) { console.warn("timestamp:", e); }
+        }
+      }
+
+      async function fetchKpis() {
+        try {
+          const res = await fetch(KPI_ENDPOINT, {
+            headers: { "Accept": "application/json" },
+            credentials: "same-origin",
+          });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+          applyKpiData(data);
+          if (liveStatus) liveStatus.textContent = "Live";
+          if (liveDot) { liveDot.classList.remove("offline", "paused"); }
+        } catch (err) {
+          if (liveStatus) liveStatus.textContent = "Offline";
+          if (liveDot) { liveDot.classList.remove("paused"); liveDot.classList.add("offline"); }
+          console.warn("[FinCore] KPI fetch failed:", err);
+        }
+      }
+
+      /* ============================================================
+         INITIAL RENDER + POLLING
+      ============================================================ */
+      (function () {
+        try {
+          updateStackedChart({
+            months:    INITIAL_MONTHS,
+            segment_a: INITIAL_SEGMENT_A,
+            segment_b: INITIAL_SEGMENT_B,
+            segment_c: INITIAL_SEGMENT_C,
+          });
+          updateGauge({
+            penetration_pct:  INITIAL_PENETRATION,
+            penetration_goal: INITIAL_PENETRATION_GOAL,
+          });
+          updateSparklines({
+            spark_labels:      INITIAL_SPARK_LABELS,
+            mrr_trend:         INITIAL_MRR_TREND,
+            market_trend:      INITIAL_MARKET_TREND,
+            customer_trend:    INITIAL_CUSTOMER_TREND,
+            penetration_trend: INITIAL_PENETRATION_TREND,
+          });
+          updateMonthlyChart({
+            monthly_labels:       INITIAL_MONTHLY_LABELS,
+            monthly_expense_data: INITIAL_MONTHLY_DATA,
+          });
+          updateTypeChart({
+            office_count:   INITIAL_OFFICE_COUNT,
+            personal_count: INITIAL_PERSONAL_COUNT,
+          });
+        } catch (e) {
+          console.warn("[FinCore] initial render:", e);
+        }
+
+        fetchKpis();
+        setInterval(fetchKpis, POLL_INTERVAL_MS);
+
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            if (liveStatus) liveStatus.textContent = "Paused";
+            if (liveDot) liveDot.classList.add("paused");
+          } else {
+            if (liveDot) liveDot.classList.remove("paused");
+            fetchKpis();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

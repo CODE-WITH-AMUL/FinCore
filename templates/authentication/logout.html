@@ -74,7 +74,7 @@
         class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"
       >
         <a
-          href="/"
+          href="{% url 'index' %}"
           class="flex items-center gap-2 text-xl font-bold font-sans text-gray-900"
         >
           <span
@@ -85,11 +85,11 @@
         <div
           class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600"
         >
-          <a href="/" class="hover:text-brand-600 transition-colors">Home</a>
-          <a href="/#platform" class="hover:text-brand-600 transition-colors"
+          <a href="{% url 'index' %}" class="hover:text-brand-600 transition-colors">Home</a>
+          <a href="{% url 'index' %}#platform" class="hover:text-brand-600 transition-colors"
             >Platform</a
           >
-          <a href="/#trust" class="hover:text-brand-600 transition-colors"
+          <a href="{% url 'index' %}#trust" class="hover:text-brand-600 transition-colors"
             >Security</a
           >
         </div>

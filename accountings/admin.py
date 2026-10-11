@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
-# from django.utils.safestring import mark_safe
-from .models import Category, product_type, Product
+
+from .models import Category, ProductType, Product   # FIXED: product_type → ProductType
 
 
 # ============================================================
@@ -46,7 +47,7 @@ class CategoryAdmin(admin.ModelAdmin):
 # ============================================================
 # PRODUCT TYPE ADMIN
 # ============================================================
-@admin.register(product_type)
+@admin.register(ProductType)          # FIXED: product_type → ProductType
 class ProductTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'product_count')
     search_fields = ('name',)
@@ -184,7 +185,6 @@ class ProductAdmin(admin.ModelAdmin):
 
     @admin.action(description='Soft-delete selected products')
     def soft_delete_selected(self, request, queryset):
-        from django.utils import timezone
         updated = queryset.update(deleted_at=timezone.now())
         self.message_user(request, f"{updated} product(s) soft-deleted.")
 
@@ -200,7 +200,6 @@ class ProductAdmin(admin.ModelAdmin):
 
     # ---------- Save behaviour ----------
     def save_model(self, request, obj, form, change):
-        # Ensure SKU/ISP are auto-generated only once (on creation)
         if not change:
             obj.sku = obj.sku or obj._meta.get_field('sku').get_default()
             obj.isp_code = obj.isp_code or obj._meta.get_field('isp_code').get_default()
@@ -208,7 +207,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 # ============================================================
-# ADMIN SITE BRANDING (optional)
+# ADMIN SITE BRANDING
 # ============================================================
 admin.site.site_header = "FinCore Administration"
 admin.site.site_title = "FinCore Admin"

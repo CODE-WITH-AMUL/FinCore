@@ -1,1087 +1,1317 @@
-{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}FinCore — Your business finances, finally in one place{% endblock %}</title>
-  <meta name="description" content="FinCore brings sales, expenses, invoices, cash flow, and financial reporting together so growing businesses can understand their numbers." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>FinCore — Free business finance software for Nepal</title>
+<meta name="description" content="FinCore is free business finance software for Nepal's small service businesses and agencies. Track sales, expenses, invoices, and cash flow in one place. Optional premium tier from Rs3,000/year." />
+<link rel="canonical" href="https://fincore.example/" />
+<meta name="theme-color" content="#fafaf8" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="FinCore — Free business finance software for Nepal" />
+<meta property="og:description" content="Free core finance app for Nepal's small service businesses and agencies. Optional premium tier from Rs3,000/year." />
+<meta property="og:url" content="https://fincore.example/" />
+<meta property="og:site_name" content="FinCore" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="FinCore — Free business finance software for Nepal" />
+<meta name="twitter:description" content="Free core finance app for Nepal's small service businesses and agencies." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fafaf8'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%232563eb'/%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "FinCore",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "Free business finance software for Nepal's small service businesses and agencies, with an optional premium tier.",
+  "url": "https://fincore.example/",
+  "areaServed": "NP"
+}
+</script>
+
+<style>
+:root{
+  --paper:#fafaf8;--paper-deep:#f3f1ea;--paper-line:#e8e5dd;
+  --ink:#14181c;--ink-soft:#5b5f63;--ink-mute:#6b6e72;
+  --line:#dedbd3;--blue:#2563eb;--blue-deep:#1d4ed8;--blue-soft:#eff4fe;
+  --green:#16a34a;--green-soft:#eafaf0;--warm:#c24e1e;
+  --radius:2px;--radius-lg:4px;
+  --shadow-sm:0 1px 2px rgba(20,24,28,.04);
+  --shadow-md:0 12px 32px -16px rgba(20,24,28,.18);
+  --shadow-lg:0 30px 60px -30px rgba(20,24,28,.28);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:"Inter",system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:"Plus Jakarta Sans",sans-serif;font-weight:600;letter-spacing:-.012em}
+.mono{font-family:"IBM Plex Mono",monospace;font-feature-settings:"tnum"}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:var(--radius)}
+.skip-link{position:absolute;top:-100px;left:16px;background:var(--ink);color:var(--paper);padding:10px 16px;font-size:.85rem;border-radius:var(--radius);z-index:10000}
+.skip-link:focus{top:16px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 6vw}
+@media (max-width:720px){.wrap{padding:0 5.5vw}}
+.grid12{display:grid;grid-template-columns:repeat(12,1fr);gap:24px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);display:flex;align-items:center;gap:12px}
+.eyebrow .num{color:var(--blue)}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+
+nav{position:sticky;top:0;left:0;right:0;z-index:200;background:rgba(250,250,248,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transition:background .25s ease,box-shadow .25s ease}
+nav.scrolled{background:rgba(250,250,248,.98);box-shadow:var(--shadow-sm)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:14px;padding-bottom:14px;position:relative}
+.brand{font-family:"Plus Jakarta Sans",sans-serif;font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.brand .dot{width:8px;height:8px;background:var(--blue);display:inline-block}
+nav ul{list-style:none;display:flex;gap:30px;font-size:.86rem;color:var(--ink-soft)}
+nav ul li a{position:relative;padding:6px 0;display:inline-block}
+nav ul li a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--blue);transition:width .25s ease}
+nav ul li a:hover{color:var(--ink)}
+nav ul li a:hover::after{width:100%}
+.nav-actions{display:flex;align-items:center;gap:18px}
+.nav-login{font-size:.86rem;font-weight:500;color:var(--ink-soft);padding:8px 4px;transition:color .2s ease}
+.nav-login:hover{color:var(--ink)}
+.nav-cta{font-size:.82rem;font-weight:600;padding:10px 18px;border:1px solid var(--ink);border-radius:var(--radius);min-height:40px;display:inline-flex;align-items:center;transition:background .25s ease,color .25s ease}
+.nav-cta:hover{background:var(--ink);color:var(--paper)}
+.nav-toggle{display:none;background:transparent;border:1px solid var(--line);border-radius:var(--radius);width:42px;height:42px;padding:0;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.nav-toggle-bar{width:16px;height:1.5px;background:var(--ink);transition:transform .25s ease}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:first-child{transform:translateY(3.25px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:last-child{transform:translateY(-3.25px) rotate(-45deg)}
+@media (max-width:960px){.nav-actions .nav-login{display:none}}
+@media (max-width:860px){
+  .nav-toggle{display:flex}
+  nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);flex-direction:column;gap:0;padding:8px 6vw 16px;box-shadow:var(--shadow-md)}
+  nav ul.open{display:flex}
+  nav ul li{border-bottom:1px solid var(--line)}
+  nav ul li:last-child{border-bottom:none}
+  nav ul li a{padding:14px 0;font-size:.95rem;color:var(--ink);display:block}
+  nav ul li a::after{display:none}
+}
+
+.hero{padding-top:80px;padding-bottom:96px;position:relative;border-bottom:1px solid var(--line);overflow:hidden}
+.hero-copy{grid-column:1 / span 5;position:relative;padding-top:8px}
+.hero-product{grid-column:6 / span 7;position:relative}
+@media (max-width:1020px){.hero-copy,.hero-product{grid-column:1 / -1}.hero-product{margin-top:56px}}
+.hero h1{font-size:clamp(2.1rem,4vw,3.4rem);line-height:1.08;margin-top:26px;letter-spacing:-.02em}
+.hero h1 .accent{color:var(--blue)}
+.hero p.lede{margin-top:22px;max-width:46ch;font-size:1.02rem;color:var(--ink-soft);line-height:1.65}
+.hero .cta-row{margin-top:32px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.trust-line{margin-top:22px;font-size:.82rem;color:var(--ink-mute);display:flex;align-items:center;gap:8px}
+.trust-line::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.btn-primary{background:var(--ink);color:var(--paper);font-size:.86rem;font-weight:600;padding:14px 26px;border-radius:var(--radius);display:inline-flex;align-items:center;gap:8px;min-height:46px;transition:background .2s ease,transform .2s ease}
+.btn-primary:hover{background:var(--blue-deep);transform:translateY(-1px)}
+.btn-outline{font-size:.86rem;font-weight:500;padding:13px 22px;border:1px solid var(--line);border-radius:var(--radius);color:var(--ink-soft);display:inline-flex;align-items:center;gap:8px;min-height:46px;transition:border-color .2s ease,color .2s ease,background .2s ease}
+.btn-outline:hover{border-color:var(--ink);color:var(--ink);background:var(--paper-deep)}
+.btn-outline svg{transition:transform .2s ease}
+.btn-outline:hover svg{transform:translateX(3px)}
+.btn-outline.full,.btn-primary.full{display:flex;justify-content:center;width:100%;margin-top:24px}
+
+.app-frame{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
+.app-topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:var(--paper-deep);border-bottom:1px solid var(--line)}
+.app-dots{display:flex;gap:6px}
+.app-dots span{width:9px;height:9px;border-radius:50%;background:#d6d3cb}
+.app-dots span:nth-child(1){background:#e8a49a}
+.app-dots span:nth-child(2){background:#e8d59a}
+.app-dots span:nth-child(3){background:#a4d4b0}
+.app-url{font-size:.7rem;color:var(--ink-mute);padding:4px 12px;background:var(--paper);border-radius:20px;border:1px solid var(--line)}
+.app-user{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--ink-soft)}
+.app-user-avatar{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:600}
+.app-body{display:grid;grid-template-columns:180px 1fr}
+@media (max-width:720px){.app-body{grid-template-columns:1fr}.app-side{display:none}}
+.app-side{background:var(--paper-deep);border-right:1px solid var(--line);padding:18px 14px;font-size:.78rem;display:flex;flex-direction:column;gap:22px}
+.side-label{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px;padding-left:8px}
+.side-item{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:var(--radius);color:var(--ink-soft)}
+.side-item.active{background:var(--paper);color:var(--ink);font-weight:500;box-shadow:var(--shadow-sm)}
+.side-item svg{color:var(--ink-mute)}
+.side-item.active svg{color:var(--blue)}
+.app-main{padding:22px 24px;display:flex;flex-direction:column;gap:20px}
+@media (max-width:720px){.app-main{padding:18px;gap:16px}}
+.app-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.app-title{font-family:"Plus Jakarta Sans",sans-serif;font-weight:600;font-size:1rem}
+.app-sub{font-size:.72rem;color:var(--ink-mute);margin-top:2px}
+.app-range{display:flex;gap:2px;border:1px solid var(--line);border-radius:var(--radius);padding:2px}
+.range-btn{background:transparent;border:none;padding:5px 10px;font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--ink-soft);cursor:pointer;border-radius:2px;transition:background .2s ease,color .2s ease}
+.range-btn.active{background:var(--ink);color:var(--paper)}
+.range-btn:hover:not(.active){background:var(--paper-deep);color:var(--ink)}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:720px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{padding:14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
+.kpi-label{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute)}
+.kpi-value{font-size:1.15rem;font-weight:500;margin-top:8px;letter-spacing:-.01em}
+.kpi-delta{font-size:.68rem;color:var(--ink-mute);margin-top:6px;display:flex;align-items:center;gap:4px}
+.kpi-delta.up{color:var(--green)}
+.kpi-delta.down{color:var(--warm)}
+.app-chart-row{border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.chart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.chart-title{font-size:.8rem;font-weight:600;color:var(--ink-soft)}
+.chart-legend{display:flex;gap:14px;font-size:.68rem;color:var(--ink-mute)}
+.lg::before{content:"";display:inline-block;width:8px;height:2px;margin-right:5px;vertical-align:middle}
+.lg-rev::before{background:var(--blue)}
+.lg-exp::before{background:#b8b5ac}
+.app-chart{width:100%;height:auto}
+.app-table-wrap{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.table-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--paper-deep)}
+.table-title{font-size:.78rem;font-weight:600}
+.table-link{font-size:.72rem;color:var(--blue)}
+.app-table{width:100%;border-collapse:collapse;font-size:.76rem}
+.app-table th{text-align:left;font-weight:500;color:var(--ink-mute);padding:9px 16px;border-bottom:1px solid var(--line);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em}
+.app-table td{padding:11px 16px;border-bottom:1px solid var(--paper-line);color:var(--ink-soft)}
+.app-table tr:last-child td{border-bottom:none}
+.app-table td.num,.app-table th.num{text-align:right}
+.app-table td.mono{color:var(--ink);font-size:.72rem}
+.app-table td.mono.up{color:var(--green);font-weight:500}
+.app-table td.mono.down{color:var(--warm);font-weight:500}
+.badge{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.62rem;padding:3px 8px;border-radius:20px;letter-spacing:.04em}
+.badge-paid{background:var(--green-soft);color:var(--green)}
+.badge-pending{background:#fff4e5;color:#8a5606}
+.badge-overdue{background:#fdeceb;color:#a02020}
+.badge-cleared{background:var(--blue-soft);color:var(--blue)}
+.hero-caption{margin-top:16px;text-align:right;font-size:.68rem;color:var(--ink-mute)}
+
+section{padding:110px 0;border-bottom:1px solid var(--line)}
+@media (max-width:720px){section{padding:76px 0}}
+.section-head{grid-column:1 / span 5}
+.section-head h2{font-size:clamp(1.7rem,2.7vw,2.3rem);margin-top:16px;line-height:1.18}
+.section-lede{margin-top:18px;color:var(--ink-soft);font-size:.98rem;max-width:46ch;line-height:1.65}
+.section-body{grid-column:7 / span 6}
+@media (max-width:900px){.section-head,.section-body{grid-column:1 / -1}.section-body{margin-top:40px}}
+
+.problem-figure{grid-column:7 / span 6;align-self:start}
+@media (max-width:900px){.problem-figure{grid-column:1 / -1;margin-top:40px}}
+.pf-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.pf-tool{border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;font-size:.82rem;display:flex;flex-direction:column;gap:6px;background:var(--paper)}
+.pf-icon{color:var(--ink-mute);font-size:.9rem}
+.pf-tool-note{font-size:.68rem;color:var(--warm);font-family:"IBM Plex Mono",monospace}
+.pf-arrow{border-top:1px dashed var(--line);padding-top:14px;text-align:center;font-size:.68rem;color:var(--ink-mute)}
+.problem-list{grid-column:1 / span 6;display:flex;flex-direction:column}
+@media (max-width:900px){.problem-list{grid-column:1 / -1}}
+.problem-item{display:grid;grid-template-columns:48px 1fr;gap:20px;padding:22px 0;border-top:1px solid var(--line)}
+.problem-item:last-child{border-bottom:1px solid var(--line)}
+.problem-item .pi-num{font-size:.82rem;color:var(--warm)}
+.problem-item h4{font-size:1rem;margin-bottom:5px}
+.problem-item p{color:var(--ink-soft);font-size:.9rem;max-width:48ch}
+
+.flow-diagram{grid-column:1 / -1;margin-top:60px;display:grid;grid-template-columns:1fr 60px auto 60px 1fr;align-items:center;gap:20px}
+@media (max-width:960px){.flow-diagram{grid-template-columns:1fr;gap:24px}.flow-rail{display:none}}
+.flow-inputs,.flow-outputs{display:flex;flex-direction:column;gap:10px}
+.flow-token{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);font-size:.82rem;color:var(--ink-soft)}
+.ft-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.flow-rail svg{width:100%;height:100%;min-height:320px}
+.rail-line{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:3 4}
+.flow-core{text-align:center;padding:26px 24px;border:1px solid var(--ink);border-radius:var(--radius);background:var(--ink);color:var(--paper);min-width:180px}
+.core-mark{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:1.05rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.core-mark .dot{width:8px;height:8px;background:var(--blue);border-radius:50%}
+.core-sub{font-size:.66rem;color:rgba(250,250,248,.7);margin-top:8px;letter-spacing:.04em}
+.flow-output{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-deep);font-size:.82rem;gap:16px}
+.fo-label{color:var(--ink-soft)}
+.fo-val{font-size:.82rem;font-weight:500;color:var(--ink)}
+.fo-val.up{color:var(--green)}
+
+.feature-list{display:flex;flex-direction:column;gap:96px;margin-top:64px}
+.feature{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.feature.reverse .feature-copy{order:2}
+.feature.reverse .feature-visual{order:1}
+@media (max-width:900px){.feature{grid-template-columns:1fr;gap:32px}.feature.reverse .feature-copy{order:1}.feature.reverse .feature-visual{order:2}}
+.eyebrow-mini{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+.feature h3{font-size:clamp(1.4rem,2.2vw,1.9rem);line-height:1.2;margin-bottom:16px}
+.feature p{color:var(--ink-soft);font-size:.96rem;max-width:44ch;margin-bottom:22px;line-height:1.65}
+.flow-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.76rem;font-family:"IBM Plex Mono",monospace;margin-bottom:24px}
+.flow-chips span[role="listitem"]{padding:5px 11px;border:1px solid var(--line);border-radius:var(--radius);color:var(--ink-soft);background:var(--paper)}
+.fc-arrow{color:var(--blue);padding:0;border:none;background:none}
+.feature-cta{font-size:.86rem;font-weight:600;color:var(--blue);display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid transparent;transition:border-color .2s ease,gap .2s ease}
+.feature-cta:hover{border-bottom-color:var(--blue);gap:10px}
+.feature-visual{display:flex;justify-content:center}
+
+.mock-invoice,.mock-table,.mock-cashflow,.mock-pl{width:100%;max-width:500px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-md)}
+.mi-head{display:flex;justify-content:space-between;align-items:flex-start;padding:22px 24px;border-bottom:1px solid var(--line)}
+.mi-label{font-size:.66rem;letter-spacing:.1em;color:var(--ink-mute)}
+.mi-id{font-size:.92rem;color:var(--ink);margin-top:4px}
+.mi-parties{display:flex;justify-content:space-between;gap:24px;padding:20px 24px;border-bottom:1px solid var(--line)}
+.mi-party-label{font-size:.68rem;color:var(--ink-mute);margin-bottom:4px}
+.mi-party-name{font-size:.9rem;font-weight:600;color:var(--ink)}
+.mi-party-meta{font-size:.76rem;color:var(--ink-soft);margin-top:2px}
+.mi-dates{font-size:.72rem}
+.mi-dates>div{display:flex;gap:12px;justify-content:space-between;padding:3px 0}
+.mi-dates span:first-child{color:var(--ink-mute)}
+.mi-dates span:last-child{color:var(--ink)}
+.mi-items{width:100%;border-collapse:collapse;font-size:.8rem}
+.mi-items th{text-align:left;font-weight:500;color:var(--ink-mute);padding:10px 24px;font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line)}
+.mi-items td{padding:12px 24px;border-bottom:1px solid var(--paper-line);color:var(--ink-soft)}
+.mi-items td.num,.mi-items th.num{text-align:right}
+.mi-items td.mono{color:var(--ink)}
+.mi-total{display:flex;justify-content:space-between;padding:18px 24px;font-weight:600;background:var(--paper-deep);font-size:.9rem}
+.mt-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line)}
+.mt-title{font-weight:600;font-size:.9rem}
+.mt-total{color:var(--ink-soft);font-size:.85rem}
+.mock-table table{width:100%;border-collapse:collapse;font-size:.78rem}
+.mock-table th{text-align:left;padding:10px 22px;font-weight:500;color:var(--ink-mute);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line);background:var(--paper-deep)}
+.mock-table td{padding:12px 22px;border-bottom:1px solid var(--paper-line);color:var(--ink-soft)}
+.mock-table td.mono{color:var(--ink);font-size:.74rem}
+.mock-table td.num,.mock-table th.num{text-align:right}
+.mock-table td.mono.down{color:var(--warm)}
+.mt-foot{display:flex;justify-content:space-between;padding:12px 22px;font-size:.7rem;color:var(--ink-mute);border-top:1px solid var(--line);background:var(--paper-deep)}
+.mt-link{color:var(--blue)}
+.mock-cashflow{padding:22px 24px}
+.mcf-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px}
+.mcf-label{font-size:.72rem;color:var(--ink-mute);letter-spacing:.04em}
+.mcf-value{font-size:1.3rem;margin-top:6px;color:var(--green);font-weight:500}
+.mcf-range{font-size:.7rem;color:var(--ink-mute)}
+.mcf-bars{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;height:140px;margin-bottom:16px}
+.mcf-bar{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:2px;position:relative;height:100%}
+.mcf-bar span.mcf-in,.mcf-bar span.mcf-out{flex:1;border-radius:2px 2px 0 0}
+.mcf-in{background:var(--blue)}
+.mcf-out{background:#d6d3cb}
+.mcf-bar.active .mcf-in{background:var(--blue-deep)}
+.mcf-bar.active .mcf-out{background:#b8b5ac}
+.mcf-month{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:.64rem;color:var(--ink-mute)}
+.mcf-legend{display:flex;gap:20px;font-size:.7rem;color:var(--ink-soft);margin-top:28px;padding-top:14px;border-top:1px solid var(--line)}
+.mcf-legend .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.mcf-legend .dot.in{background:var(--blue)}
+.mcf-legend .dot.out{background:#d6d3cb}
+.mock-pl{padding:22px 24px}
+.pl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:22px}
+.pl-title{font-weight:600;font-size:.95rem}
+.pl-period{font-size:.7rem;color:var(--ink-mute)}
+.pl-group{margin-bottom:16px}
+.pl-group-label{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px}
+.pl-line{display:flex;justify-content:space-between;padding:7px 0;font-size:.82rem;color:var(--ink-soft);border-bottom:1px solid var(--paper-line)}
+.pl-line .mono{color:var(--ink);font-size:.78rem}
+.pl-sub{display:flex;justify-content:space-between;padding:9px 0 3px;font-size:.82rem;font-weight:600;color:var(--ink)}
+.pl-net{display:flex;justify-content:space-between;padding:16px 0 0;margin-top:12px;border-top:1px solid var(--line);font-size:.95rem;font-weight:600}
+.pl-net .mono{color:var(--green)}
+
+.demo-section{background:var(--paper)}
+.demo-shell{grid-column:1 / -1;margin-top:56px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);overflow:hidden;box-shadow:var(--shadow-md)}
+.demo-tabs{display:flex;border-bottom:1px solid var(--line);background:var(--paper-deep);padding:0 8px;overflow-x:auto}
+.demo-tab{background:transparent;border:none;cursor:pointer;padding:14px 20px;font-size:.84rem;font-weight:500;color:var(--ink-soft);position:relative;transition:color .2s ease;min-height:46px;font-family:inherit;white-space:nowrap}
+.demo-tab:hover{color:var(--ink)}
+.demo-tab.active{color:var(--ink)}
+.demo-tab.active::after{content:"";position:absolute;left:20px;right:20px;bottom:-1px;height:2px;background:var(--blue)}
+.demo-panel{padding:28px 28px 22px;animation:panelIn .3s ease}
+@keyframes panelIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media (max-width:560px){.demo-panel{padding:20px 16px 16px}}
+.dp-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+@media (max-width:720px){.dp-metrics{grid-template-columns:repeat(2,1fr)}}
+.dp-metric{padding:16px 18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
+.dpm-label{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute)}
+.dpm-value{font-size:1.15rem;margin-top:8px;font-weight:500;color:var(--ink)}
+.dpm-value.up{color:var(--green)}
+.dpm-delta{font-size:.7rem;color:var(--ink-mute);margin-top:6px}
+.dpm-delta.up{color:var(--green)}
+.dpm-delta.down{color:var(--warm)}
+.dp-chart{border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.dp-chart svg{width:100%;height:180px}
+.dp-line{fill:none;stroke:var(--blue);stroke-width:2;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 1.4s cubic-bezier(.65,0,.35,1) .15s forwards}
+.dp-line.green{stroke:var(--green)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.dp-table{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.dp-table table{width:100%;border-collapse:collapse;font-size:.82rem}
+.dp-table th{text-align:left;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-mute);font-weight:500;padding:11px 18px;border-bottom:1px solid var(--line);background:var(--paper-deep)}
+.dp-table td{padding:12px 18px;border-bottom:1px solid var(--paper-line);color:var(--ink-soft)}
+.dp-table tr:last-child td{border-bottom:none}
+.dp-table td.mono{color:var(--ink);font-size:.78rem}
+.dp-table td.num,.dp-table th.num{text-align:right}
+.demo-foot{padding:12px 28px;font-size:.68rem;color:var(--ink-mute);background:var(--paper-deep);border-top:1px solid var(--line);letter-spacing:.04em}
+
+.solutions-grid{grid-column:1 / -1;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:56px}
+@media (max-width:960px){.solutions-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.solutions-grid{grid-template-columns:1fr}}
+.solution{background:var(--paper);border:none;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;padding:32px 26px;text-align:left;font-family:inherit;display:flex;flex-direction:column;gap:12px;transition:background .2s ease}
+.solution:hover{background:var(--paper-deep)}
+.solution.active{background:var(--blue-soft)}
+.solution.active .sol-num{color:var(--blue)}
+.sol-num{font-size:.78rem;color:var(--ink-mute)}
+.sol-name{font-family:"Plus Jakarta Sans",sans-serif;font-weight:600;font-size:1.05rem}
+.sol-desc{font-size:.86rem;color:var(--ink-soft);line-height:1.55}
+.solution-detail{grid-column:1 / -1;margin-top:40px;display:grid;grid-template-columns:1.3fr 1fr;gap:48px;padding:40px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-deep)}
+@media (max-width:760px){.solution-detail{grid-template-columns:1fr;gap:28px;padding:26px}}
+.sd-title{font-family:"Plus Jakarta Sans",sans-serif;font-weight:600;font-size:1.25rem;margin-bottom:12px}
+.sd-body{font-size:.94rem;color:var(--ink-soft);line-height:1.65;max-width:52ch;margin-bottom:20px}
+.sd-points{list-style:none;display:grid;gap:8px}
+.sd-points li{font-size:.88rem;color:var(--ink-soft);padding-left:20px;position:relative}
+.sd-points li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border:1.5px solid var(--blue);border-radius:50%}
+.sd-card{border:1px solid var(--line);border-radius:var(--radius);padding:24px;background:var(--paper)}
+.sd-card-label{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute)}
+.sd-card-value{font-size:1.6rem;margin:12px 0 18px;font-weight:500;color:var(--ink)}
+.sd-card-bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.sd-card-fill{height:100%;background:var(--blue)}
+.sd-card-meta{font-size:.74rem;color:var(--ink-mute);margin-top:12px;font-family:"IBM Plex Mono",monospace}
+
+.numbers-grid{grid-column:1 / -1;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:56px}
+@media (max-width:960px){.numbers-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.numbers-grid{grid-template-columns:1fr}}
+.num-card{border:1px solid var(--line);border-radius:var(--radius);padding:26px 24px;background:var(--paper);position:relative;overflow:hidden;transition:border-color .2s ease,box-shadow .2s ease}
+.num-card:hover{border-color:var(--ink);box-shadow:var(--shadow-md)}
+.nc-label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute)}
+.nc-value{font-size:1.6rem;margin-top:14px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
+.nc-value.up{color:var(--green)}
+.nc-delta{font-size:.74rem;color:var(--ink-mute);margin-top:10px;display:flex;align-items:center;gap:5px}
+.nc-delta.up{color:var(--green)}
+.nc-delta.down{color:var(--warm)}
+.nc-spark{margin-top:18px;height:30px}
+.nc-spark svg{width:100%;height:100%}
+
+.steps{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px}
+@media (max-width:860px){.steps{grid-template-columns:1fr}}
+.step{padding:32px 28px;border-top:1px solid var(--line);position:relative}
+.step:not(:last-child){border-right:1px solid var(--line)}
+@media (max-width:860px){.step{border-right:none;border-bottom:1px solid var(--line)}.step:last-child{border-bottom:none}}
+.step-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.step-num{font-size:.85rem;font-weight:500;color:var(--blue);padding:6px 10px;border:1px solid var(--blue);border-radius:var(--radius)}
+.step-connector{flex:1;height:1px;background:var(--line);position:relative}
+.step-connector::after{content:"";position:absolute;right:0;top:-2px;width:5px;height:5px;border-radius:50%;background:var(--line)}
+.step:last-child .step-connector{display:none}
+.step h4{font-size:1.15rem;margin-bottom:10px}
+.step p{color:var(--ink-soft);font-size:.92rem;line-height:1.6;max-width:34ch}
+
+.trust-grid{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+@media (max-width:960px){.trust-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.trust-grid{grid-template-columns:1fr}}
+.trust-item{padding:32px 26px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.trust-icon{width:36px;height:36px;border:1px solid var(--line);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:20px;color:var(--blue)}
+.trust-item h4{font-size:1rem;margin-bottom:8px}
+.trust-item p{color:var(--ink-soft);font-size:.88rem;line-height:1.6;max-width:32ch}
+
+.pricing-grid{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:40px;align-items:stretch;max-width:900px}
+@media (max-width:760px){.pricing-grid{grid-template-columns:1fr}}
+.price-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:34px 30px;display:flex;flex-direction:column}
+.price-card.featured{border-color:var(--blue);background:var(--blue-soft)}
+.pc-tier{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+.price-card h4{font-family:"Inter",sans-serif;font-size:.92rem;font-weight:400;color:var(--ink-soft);margin-bottom:22px;line-height:1.5;min-height:2.8em}
+.pc-price{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+.pc-price .mono{font-size:1.9rem;color:var(--ink);font-weight:500}
+.pc-per{font-size:.82rem;color:var(--ink-soft)}
+.pc-note{font-size:.72rem;color:var(--ink-mute);margin-bottom:22px;font-family:"IBM Plex Mono",monospace}
+.pc-features{list-style:none;flex:1}
+.pc-features li{font-size:.88rem;color:var(--ink-soft);padding:9px 0 9px 22px;position:relative;border-bottom:1px solid var(--line)}
+.pc-features li:last-child{border-bottom:none}
+.pc-features li::before{content:"";position:absolute;left:0;top:15px;width:6px;height:6px;border:1.5px solid var(--green);border-radius:50%}
+
+.faq-list{display:flex;flex-direction:column}
+.faq{border-top:1px solid var(--line)}
+.faq:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;list-style:none;padding:20px 0;font-family:"Plus Jakarta Sans",sans-serif;font-weight:500;font-size:.98rem;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:44px}
+.faq summary::-webkit-details-marker{display:none}
+.faq-x{position:relative;width:14px;height:14px;flex-shrink:0}
+.faq-x::before,.faq-x::after{content:"";position:absolute;background:var(--blue);transition:transform .2s ease}
+.faq-x::before{top:6px;left:0;right:0;height:1.5px}
+.faq-x::after{left:6px;top:0;bottom:0;width:1.5px}
+.faq[open] .faq-x::after{transform:scaleY(0)}
+.faq p{color:var(--ink-soft);font-size:.92rem;padding:0 0 20px;max-width:60ch;line-height:1.65}
+
+.cta-section{text-align:center;padding:140px 0 130px;border-bottom:none}
+.cta-section .eyebrow{justify-content:center}
+.cta-section .eyebrow::after{display:none}
+.cta-section h2{font-size:clamp(1.9rem,4vw,2.9rem);max-width:20ch;margin:22px auto 18px;line-height:1.12}
+.cta-section p{color:var(--ink-soft);max-width:46ch;margin:0 auto 40px;font-size:1rem}
+.cta-row-final{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+footer{padding:64px 0 36px;font-size:.82rem;color:var(--ink-soft);border-top:1px solid var(--line)}
+.footer-top{display:grid;grid-template-columns:1.2fr 2fr;gap:60px;padding-bottom:44px;border-bottom:1px solid var(--line)}
+@media (max-width:860px){.footer-top{grid-template-columns:1fr;gap:40px}}
+.footer-brand p{margin-top:16px;max-width:34ch;line-height:1.6}
+.fcols{display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+@media (max-width:560px){.fcols{grid-template-columns:1fr 1fr}}
+footer ul{list-style:none}
+footer ul li{margin-bottom:10px}
+footer ul li a{transition:color .2s ease}
+footer ul li a:hover{color:var(--ink)}
+.fcol-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink);margin-bottom:14px;font-weight:600;font-family:"Plus Jakarta Sans",sans-serif}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;flex-wrap:wrap;gap:16px}
+.socials{display:flex;gap:20px}
+.socials a{transition:color .2s ease}
+.socials a:hover{color:var(--ink)}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.in-view{opacity:1;transform:translateY(0)}
+.numbers-grid .num-card:nth-child(1),
+.solutions-grid .solution:nth-child(1),
+.trust-grid .trust-item:nth-child(1){transition-delay:.05s}
+.numbers-grid .num-card:nth-child(2),
+.solutions-grid .solution:nth-child(2),
+.trust-grid .trust-item:nth-child(2){transition-delay:.12s}
+.numbers-grid .num-card:nth-child(3),
+.solutions-grid .solution:nth-child(3),
+.trust-grid .trust-item:nth-child(3){transition-delay:.19s}
+.numbers-grid .num-card:nth-child(4),
+.solutions-grid .solution:nth-child(4){transition-delay:.26s}
+
+@media (max-width:640px){
+  .app-table-wrap,.dp-table,.mock-table{overflow-x:auto}
+  .app-table,.dp-table table,.mock-table table{min-width:480px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .reveal{opacity:1!important;transform:none!important}
+  .dp-line{stroke-dashoffset:0!important}
+}
+</style>
 </head>
 
-<body class="loading">
-  <div id="preloader" aria-hidden="true">
-    <div class="pl-mark"><span class="dot"></span>FinCore</div>
-    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
-  </div>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
 
-  <a href="#main" class="skip-link">Skip to content</a>
-
-  {# ============ NAV ============ #}
-  <nav aria-label="Primary" id="site-nav">
-    <div class="wrap">
-      <div class="brand">
-        <span class="dot" aria-hidden="true"></span>
-        <a href="{% url 'index' %}" data-nav="index">FinCore</a>
-      </div>
-
-      <ul id="navlinks">
-        <li><a href="#product" data-nav="product">Product</a></li>
-        <li><a href="#features" data-nav="features">Features</a></li>
-        <li><a href="#solutions" data-nav="solutions">Solutions</a></li>
-        <li><a href="#pricing" data-nav="pricing">Pricing</a></li>
-        <li><a href="#faq" data-nav="faq">Resources</a></li>
-      </ul>
-
-      <div class="nav-actions">
-        <a href="{% url 'signin' %}" class="nav-cta">Get Started</a>
-      </div>
-
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navlinks" aria-label="Toggle navigation menu">
-        <span class="nav-toggle-bar" aria-hidden="true"></span>
-        <span class="nav-toggle-bar" aria-hidden="true"></span>
+<nav id="site-nav" aria-label="Primary">
+  <div class="wrap">
+    <a href="#top" class="brand" aria-label="FinCore home"><span class="dot" aria-hidden="true"></span>FinCore</a>
+    <ul id="nav-menu">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#product">Product</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="{% url 'signin' %}" class="nav-login">Log in</a>
+      <a href="{% url 'signup' %}" class="nav-cta">Start free</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
       </button>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <main id="main">
+<main id="main">
+<a id="top"></a>
 
-  {# ============ HERO ============ #}
-  <section class="hero" id="hero">
-    <div class="hero-grid-lines" aria-hidden="true"></div>
-    <div class="wrap grid12">
-      <div class="hero-copy">
-        <div class="eyebrow">
-          <span class="num">01</span> Business financial management
-        </div>
-        <h1>
-          Your business finances,<br />
-          finally in <span class="accent">one place</span>.
-        </h1>
-        <p class="lede">
-          FinCore brings sales, expenses, invoices, cash flow, and financial
-          reporting together — so growing businesses can understand their
-          numbers and make informed decisions.
-        </p>
-        <div class="cta-row">
-          <a href="{% url 'signup' %}" class="btn-primary">Get Started Free</a>
-          <a href="#how" class="btn-outline">
-            See How It Works
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        </div>
-        <p class="trust-line">Built for startups and growing businesses.</p>
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="wrap grid12">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="num">01</span> Business finance for Nepal</div>
+      <h1>Your business finances,<br />finally in <span class="accent">one place</span>.</h1>
+      <p class="lede">
+        FinCore is free business finance software for Nepal's small service
+        businesses and agencies. Track sales, expenses, invoices, and cash
+        flow in one place — and see how your business is really doing.
+      </p>
+      <div class="cta-row">
+        <a href="{% url 'signup' %}" class="btn-primary">Start free</a>
+        <a href="#how" class="btn-outline">
+          See how it works
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       </div>
+      <p class="trust-line">Free core plan. Optional premium from Rs3,000/year.</p>
+    </div>
 
-      {# ---- HERO PRODUCT PREVIEW ---- #}
-      <div class="hero-product" role="img" aria-label="FinCore dashboard preview">
-        <div class="app-frame">
-          <div class="app-topbar">
-            <div class="app-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-            <div class="app-url mono">app.fincore.np / dashboard</div>
-            <div class="app-user">
-              <span class="app-user-name">Sita Sharma</span>
-              <span class="app-user-avatar" aria-hidden="true">SS</span>
-            </div>
+    <div class="hero-product" aria-hidden="true">
+      <div class="app-frame">
+        <div class="app-topbar">
+          <div class="app-dots"><span></span><span></span><span></span></div>
+          <div class="app-url mono">app.fincore / dashboard</div>
+          <div class="app-user">
+            <span class="app-user-name">Your workspace</span>
+            <span class="app-user-avatar">FC</span>
           </div>
+        </div>
 
-          <div class="app-body">
-            <aside class="app-side" aria-hidden="true">
-              <div class="side-group">
-                <div class="side-label">Workspace</div>
-                <a class="side-item active"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8l6-5 6 5v6H2V8z" stroke="currentColor" stroke-width="1.4"/></svg>Overview</a>
-                <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 13V6l5-3 5 3v7M6 13v-4h4v4" stroke="currentColor" stroke-width="1.4"/></svg>Sales</a>
-                <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 5h12v8H2zM2 5l2-2h8l2 2" stroke="currentColor" stroke-width="1.4"/></svg>Expenses</a>
-                <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2h7l3 3v9H3z M10 2v3h3" stroke="currentColor" stroke-width="1.4"/></svg>Invoices</a>
-              </div>
-              <div class="side-group">
-                <div class="side-label">Books</div>
-                <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 12l3-3 3 2 6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Cash flow</a>
-                <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Reports</a>
-              </div>
-            </aside>
+        <div class="app-body">
+          <aside class="app-side">
+            <div class="side-group">
+              <div class="side-label">Workspace</div>
+              <a class="side-item active"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8l6-5 6 5v6H2V8z" stroke="currentColor" stroke-width="1.4"/></svg>Overview</a>
+              <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 13V6l5-3 5 3v7M6 13v-4h4v4" stroke="currentColor" stroke-width="1.4"/></svg>Sales</a>
+              <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 5h12v8H2zM2 5l2-2h8l2 2" stroke="currentColor" stroke-width="1.4"/></svg>Expenses</a>
+              <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2h7l3 3v9H3z M10 2v3h3" stroke="currentColor" stroke-width="1.4"/></svg>Invoices</a>
+            </div>
+            <div class="side-group">
+              <div class="side-label">Books</div>
+              <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 12l3-3 3 2 6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Cash flow</a>
+              <a class="side-item"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Reports</a>
+            </div>
+          </aside>
 
-            <div class="app-main">
-              <div class="app-head">
-                <div>
-                  <div class="app-title">Financial overview</div>
-                  <div class="app-sub">October 2025 · Acme Technologies Pvt. Ltd.</div>
-                </div>
-                <div class="app-range">
-                  <button type="button" class="range-btn">30d</button>
-                  <button type="button" class="range-btn active">90d</button>
-                  <button type="button" class="range-btn">12m</button>
-                </div>
+          <div class="app-main">
+            <div class="app-head">
+              <div>
+                <div class="app-title">Financial overview</div>
+                <div class="app-sub">Sample workspace · illustrative data</div>
               </div>
+              <div class="app-range" aria-hidden="true">
+                <button type="button" class="range-btn" tabindex="-1">30d</button>
+                <button type="button" class="range-btn active" tabindex="-1">90d</button>
+                <button type="button" class="range-btn" tabindex="-1">12m</button>
+              </div>
+            </div>
 
-              <div class="kpi-row">
-                <div class="kpi">
-                  <div class="kpi-label">Revenue</div>
-                  <div class="kpi-value mono" data-counter="850000" data-format="npr">Rs. 8,50,000</div>
-                  <div class="kpi-delta up">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    18.4% vs last quarter
-                  </div>
-                </div>
-                <div class="kpi">
-                  <div class="kpi-label">Expenses</div>
-                  <div class="kpi-value mono" data-counter="520000" data-format="npr">Rs. 5,20,000</div>
-                  <div class="kpi-delta down">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 2v6M2 5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    4.8% vs last quarter
-                  </div>
-                </div>
-                <div class="kpi">
-                  <div class="kpi-label">Net profit</div>
-                  <div class="kpi-value mono" data-counter="330000" data-format="npr">Rs. 3,30,000</div>
-                  <div class="kpi-delta up">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 8V2M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    24.2% vs last quarter
-                  </div>
-                </div>
-                <div class="kpi">
-                  <div class="kpi-label">Cash</div>
-                  <div class="kpi-value mono" data-counter="710000" data-format="npr">Rs. 7,10,000</div>
-                  <div class="kpi-delta">Across 2 accounts</div>
-                </div>
-              </div>
+            <div class="kpi-row">
+              <div class="kpi"><div class="kpi-label">Revenue</div><div class="kpi-value mono">Rs. 0</div><div class="kpi-delta up">Illustrative</div></div>
+              <div class="kpi"><div class="kpi-label">Expenses</div><div class="kpi-value mono">Rs. 0</div><div class="kpi-delta down">Illustrative</div></div>
+              <div class="kpi"><div class="kpi-label">Net profit</div><div class="kpi-value mono">Rs. 0</div><div class="kpi-delta up">Illustrative</div></div>
+              <div class="kpi"><div class="kpi-label">Cash</div><div class="kpi-value mono">Rs. 0</div><div class="kpi-delta">Across all accounts</div></div>
+            </div>
 
-              <div class="app-chart-row">
-                <div class="chart-panel">
-                  <div class="chart-head">
-                    <div class="chart-title">Revenue vs expenses</div>
-                    <div class="chart-legend">
-                      <span class="lg lg-rev">Revenue</span>
-                      <span class="lg lg-exp">Expenses</span>
-                    </div>
-                  </div>
-                  <svg viewBox="0 0 520 160" class="app-chart" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.18"/>
-                        <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
-                      </linearGradient>
-                    </defs>
-                    <g stroke="#e8e5dd" stroke-width="1">
-                      <line x1="0" y1="30" x2="520" y2="30"/>
-                      <line x1="0" y1="70" x2="520" y2="70"/>
-                      <line x1="0" y1="110" x2="520" y2="110"/>
-                      <line x1="0" y1="150" x2="520" y2="150"/>
-                    </g>
-                    <path class="rev-fill" d="M0,120 C60,110 90,95 130,100 C180,106 210,72 260,68 C310,64 340,80 390,52 C440,26 480,40 520,24 L520,160 L0,160 Z"/>
-                    <path class="rev-line" d="M0,120 C60,110 90,95 130,100 C180,106 210,72 260,68 C310,64 340,80 390,52 C440,26 480,40 520,24"/>
-                    <path class="exp-line" d="M0,138 C60,135 90,130 130,132 C180,134 210,120 260,122 C310,124 340,118 390,112 C440,106 480,110 520,104"/>
-                    <g class="chart-x-labels" fill="#8b8e92" font-size="9" font-family="IBM Plex Mono, monospace">
-                      <text x="6" y="158">Jul</text>
-                      <text x="130" y="158">Aug</text>
-                      <text x="260" y="158">Sep</text>
-                      <text x="400" y="158">Oct</text>
-                    </g>
-                  </svg>
-                </div>
+            <div class="app-chart-row">
+              <div class="chart-head">
+                <div class="chart-title">Revenue vs expenses</div>
+                <div class="chart-legend"><span class="lg lg-rev">Revenue</span><span class="lg lg-exp">Expenses</span></div>
               </div>
+              <svg viewBox="0 0 520 160" class="app-chart" aria-hidden="true">
+                <g stroke="#e8e5dd" stroke-width="1">
+                  <line x1="0" y1="30" x2="520" y2="30"/>
+                  <line x1="0" y1="70" x2="520" y2="70"/>
+                  <line x1="0" y1="110" x2="520" y2="110"/>
+                  <line x1="0" y1="150" x2="520" y2="150"/>
+                </g>
+                <path d="M0,120 C60,110 90,95 130,100 C180,106 210,72 260,68 C310,64 340,80 390,52 C440,26 480,40 520,24" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="800" stroke-dashoffset="800">
+                  <animate attributeName="stroke-dashoffset" from="800" to="0" dur="1.6s" begin="0.4s" fill="freeze"/>
+                </path>
+                <path d="M0,138 C60,135 90,130 130,132 C180,134 210,120 260,122 C310,124 340,118 390,112 C440,106 480,110 520,104" fill="none" stroke="#b8b5ac" stroke-width="1.5" stroke-dasharray="800" stroke-dashoffset="800">
+                  <animate attributeName="stroke-dashoffset" from="800" to="0" dur="1.6s" begin="0.6s" fill="freeze"/>
+                </path>
+                <g fill="#8b8e92" font-size="9" font-family="IBM Plex Mono, monospace">
+                  <text x="6" y="158">Month</text>
+                  <text x="130" y="158">Month</text>
+                  <text x="260" y="158">Month</text>
+                  <text x="400" y="158">Month</text>
+                </g>
+              </svg>
+            </div>
 
-              <div class="app-table-wrap">
-                <div class="table-head">
-                  <div class="table-title">Recent activity</div>
-                  <div class="table-link">View all</div>
-                </div>
-                <table class="app-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th><th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="mono">Oct 24</td>
-                      <td>Payment received — INV-00482</td>
-                      <td>Sales</td>
-                      <td class="num mono up">+ Rs. 1,20,000</td>
-                      <td><span class="badge badge-paid">Paid</span></td>
-                    </tr>
-                    <tr>
-                      <td class="mono">Oct 23</td>
-                      <td>Office rent — Kathmandu</td>
-                      <td>Operations</td>
-                      <td class="num mono down">− Rs. 45,000</td>
-                      <td><span class="badge badge-cleared">Cleared</span></td>
-                    </tr>
-                    <tr>
-                      <td class="mono">Oct 22</td>
-                      <td>Figma subscription</td>
-                      <td>Software</td>
-                      <td class="num mono down">− Rs. 2,400</td>
-                      <td><span class="badge badge-cleared">Cleared</span></td>
-                    </tr>
-                    <tr>
-                      <td class="mono">Oct 21</td>
-                      <td>Himalayan Coffee Co. — invoice raised</td>
-                      <td>Sales</td>
-                      <td class="num mono">Rs. 68,000</td>
-                      <td><span class="badge badge-pending">Pending</span></td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="app-table-wrap">
+              <div class="table-head">
+                <div class="table-title">Recent activity</div>
+                <div class="table-link">View all</div>
               </div>
+              <table class="app-table">
+                <thead>
+                  <tr><th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="mono">—</td><td>Payment received</td><td>Sales</td><td class="num mono up">+ Rs. 0</td><td><span class="badge badge-paid">Paid</span></td></tr>
+                  <tr><td class="mono">—</td><td>Office rent</td><td>Operations</td><td class="num mono down">− Rs. 0</td><td><span class="badge badge-cleared">Cleared</span></td></tr>
+                  <tr><td class="mono">—</td><td>Software subscription</td><td>Software</td><td class="num mono down">− Rs. 0</td><td><span class="badge badge-cleared">Cleared</span></td></tr>
+                  <tr><td class="mono">—</td><td>Invoice raised</td><td>Sales</td><td class="num mono">Rs. 0</td><td><span class="badge badge-pending">Pending</span></td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
+      </div>
+      <div class="hero-caption"><span class="mono">Illustrative interface — your data will appear here</span></div>
+    </div>
+  </div>
+</section>
 
-        <div class="hero-caption">
-          <span class="mono">A live view of FinCore · data shown is illustrative</span>
-        </div>
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">02</span> The problem</div>
+      <h2>Growing a business shouldn't mean losing control of its finances.</h2>
+      <p class="section-lede">
+        Most small businesses don't fail because they can't sell. They
+        struggle because the financial picture is scattered across too many
+        tools, too late to act on.
+      </p>
+    </div>
+
+    <div class="problem-figure reveal" aria-hidden="true">
+      <div class="pf-tools">
+        <div class="pf-tool"><span class="pf-icon">▤</span><span>Invoices</span><span class="pf-tool-note">Open items</span></div>
+        <div class="pf-tool"><span class="pf-icon">▥</span><span>Spreadsheet</span><span class="pf-tool-note">Multiple versions</span></div>
+        <div class="pf-tool"><span class="pf-icon">▦</span><span>Bank portal</span><span class="pf-tool-note">Separate logins</span></div>
+        <div class="pf-tool"><span class="pf-icon">▧</span><span>Expense records</span><span class="pf-tool-note">Unreconciled</span></div>
+      </div>
+      <div class="pf-arrow"><span class="mono">scattered records · manual work · slow reporting</span></div>
+    </div>
+
+    <div class="problem-list reveal">
+      <div class="problem-item">
+        <div class="pi-num mono">01</div>
+        <div><h4>Scattered information</h4><p>Sales, expenses, invoices, and payments live in different places. Nothing reconciles to anything else.</p></div>
+      </div>
+      <div class="problem-item">
+        <div class="pi-num mono">02</div>
+        <div><h4>Unclear cash position</h4><p>You know your revenue. Where the cash actually is — and where it's going — is harder to answer.</p></div>
+      </div>
+      <div class="problem-item">
+        <div class="pi-num mono">03</div>
+        <div><h4>Manual work</h4><p>Spreadsheets and disconnected tools create hours of unnecessary administrative work each month.</p></div>
+      </div>
+      <div class="problem-item">
+        <div class="pi-num mono">04</div>
+        <div><h4>Difficult decisions</h4><p>Without a clear financial picture, planning hiring, pricing, and investment becomes guesswork.</p></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  {# ============ 10 · PROBLEM ============ #}
-  <section id="problem">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">02</span> The problem</div>
-        <h2>Growing a business shouldn't mean losing control of its finances.</h2>
-        <p class="section-lede">
-          Most businesses don't fail because they can't sell. They struggle
-          because the financial picture is scattered across too many tools,
-          too late to act on.
-        </p>
+<!-- FLOW -->
+<section id="flow">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">03</span> From activity to clarity</div>
+      <h2>FinCore turns everyday business activity into understanding.</h2>
+    </div>
+
+    <div class="flow-diagram">
+      <div class="flow-inputs">
+        <div class="flow-token"><span class="ft-dot"></span>Sale</div>
+        <div class="flow-token"><span class="ft-dot"></span>Expense</div>
+        <div class="flow-token"><span class="ft-dot"></span>Purchase</div>
+        <div class="flow-token"><span class="ft-dot"></span>Payment</div>
+        <div class="flow-token"><span class="ft-dot"></span>Record</div>
       </div>
 
-      <div class="problem-figure" aria-hidden="true">
-        <div class="pf-tools">
-          <div class="pf-tool">
-            <span class="pf-icon">▤</span>
-            <span>Invoices</span>
-            <span class="pf-tool-note">14 open</span>
-          </div>
-          <div class="pf-tool">
-            <span class="pf-icon">▥</span>
-            <span>Spreadsheet</span>
-            <span class="pf-tool-note">3 versions</span>
-          </div>
-          <div class="pf-tool">
-            <span class="pf-icon">▦</span>
-            <span>Bank portal</span>
-            <span class="pf-tool-note">2 logins</span>
-          </div>
-          <div class="pf-tool">
-            <span class="pf-icon">▧</span>
-            <span>Expense app</span>
-            <span class="pf-tool-note">Unreconciled</span>
-          </div>
-        </div>
-        <div class="pf-arrow" aria-hidden="true">
-          <span class="mono">scattered across 4 tools · 2 people · 6 days/month</span>
-        </div>
+      <div class="flow-rail" aria-hidden="true">
+        <svg viewBox="0 0 60 320" preserveAspectRatio="none">
+          <path class="rail-line" d="M0,20 C30,20 30,160 60,160 M0,90 C30,90 30,160 60,160 M0,160 L60,160 M0,230 C30,230 30,160 60,160 M0,300 C30,300 30,160 60,160"/>
+        </svg>
       </div>
 
-      <div class="problem-list">
-        <div class="problem-item">
-          <div class="pi-num mono">01</div>
-          <div>
-            <h4>Scattered information</h4>
-            <p>Sales, expenses, invoices, and payments live in different places. Nothing reconciles to anything else.</p>
-          </div>
-        </div>
-        <div class="problem-item">
-          <div class="pi-num mono">02</div>
-          <div>
-            <h4>Unclear cash position</h4>
-            <p>You know your revenue. Where the cash actually is — and where it's going — is harder to answer.</p>
-          </div>
-        </div>
-        <div class="problem-item">
-          <div class="pi-num mono">03</div>
-          <div>
-            <h4>Manual work</h4>
-            <p>Spreadsheets and disconnected tools create hours of unnecessary administrative work each month.</p>
-          </div>
-        </div>
-        <div class="problem-item">
-          <div class="pi-num mono">04</div>
-          <div>
-            <h4>Difficult decisions</h4>
-            <p>Without a clear financial picture, planning hiring, pricing, and investment becomes guesswork.</p>
-          </div>
-        </div>
+      <div class="flow-core">
+        <div class="core-mark"><span class="dot" aria-hidden="true"></span><span>FinCore</span></div>
+        <div class="core-sub mono">recorded · categorized · reported</div>
+      </div>
+
+      <div class="flow-rail right" aria-hidden="true">
+        <svg viewBox="0 0 60 320" preserveAspectRatio="none">
+          <path class="rail-line" d="M0,160 C30,160 30,40 60,40 M0,160 C30,160 30,100 60,100 M0,160 C30,160 30,160 60,160 M0,160 C30,160 30,220 60,220 M0,160 C30,160 30,280 60,280"/>
+        </svg>
+      </div>
+
+      <div class="flow-outputs">
+        <div class="flow-output"><span class="fo-label">Sales</span><span class="fo-val mono">Recorded</span></div>
+        <div class="flow-output"><span class="fo-label">Expenses</span><span class="fo-val mono">Categorized</span></div>
+        <div class="flow-output"><span class="fo-label">Profit</span><span class="fo-val mono up">Calculated</span></div>
+        <div class="flow-output"><span class="fo-label">Receivables</span><span class="fo-val mono">Tracked</span></div>
+        <div class="flow-output"><span class="fo-label">Payables</span><span class="fo-val mono">Tracked</span></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  {# ============ 11 · ACTIVITY → CLARITY ============ #}
-  <section id="flow">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">03</span> From activity to clarity</div>
-        <h2>FinCore turns everyday business activity into understanding.</h2>
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">04</span> What FinCore does</div>
+      <h2>Core finance for small service businesses and agencies.</h2>
+      <p class="section-lede">
+        FinCore's free plan covers the everyday finance work a small business
+        needs. An optional premium tier adds advanced capabilities as your
+        business grows.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap feature-list">
+
+    <article class="feature reveal">
+      <div class="feature-copy">
+        <div class="eyebrow-mini">Sales &amp; invoices</div>
+        <h3>Raise an invoice and track it through to payment.</h3>
+        <p>Record customer invoices and payments in one place, so what you've billed and what you've received stay connected.</p>
+        <div class="flow-chips" role="list" aria-label="Sales flow">
+          <span role="listitem">Customer</span>
+          <span class="fc-arrow" aria-hidden="true">→</span>
+          <span role="listitem">Invoice</span>
+          <span class="fc-arrow" aria-hidden="true">→</span>
+          <span role="listitem">Payment</span>
+        </div>
+        <a href="{% url 'signup' %}" class="feature-cta">Start free<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-invoice">
+          <div class="mi-head">
+            <div><div class="mi-label mono">INVOICE</div><div class="mi-id mono">INV-0001</div></div>
+            <span class="badge badge-paid">Paid</span>
+          </div>
+          <div class="mi-parties">
+            <div>
+              <div class="mi-party-label">Billed to</div>
+              <div class="mi-party-name">Customer name</div>
+              <div class="mi-party-meta">Billing address</div>
+            </div>
+            <div class="mi-dates">
+              <div><span>Issued</span><span class="mono">—</span></div>
+              <div><span>Due</span><span class="mono">—</span></div>
+            </div>
+          </div>
+          <table class="mi-items">
+            <thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>Service or product</td><td class="num mono">1</td><td class="num mono">Rs. 0</td></tr>
+              <tr><td>Additional item</td><td class="num mono">1</td><td class="num mono">Rs. 0</td></tr>
+            </tbody>
+          </table>
+          <div class="mi-total"><span>Total</span><span class="mono">Rs. 0</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="feature reverse reveal">
+      <div class="feature-copy">
+        <div class="eyebrow-mini">Expenses &amp; purchases</div>
+        <h3>Record expenses and keep them categorized.</h3>
+        <p>Log expenses and purchases as they happen, assign a category, and see them flow into your reports.</p>
+        <div class="flow-chips" role="list" aria-label="Expense flow">
+          <span role="listitem">Expense</span>
+          <span class="fc-arrow" aria-hidden="true">→</span>
+          <span role="listitem">Category</span>
+          <span class="fc-arrow" aria-hidden="true">→</span>
+          <span role="listitem">Report</span>
+        </div>
+        <a href="{% url 'signup' %}" class="feature-cta">Start free<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-table">
+          <div class="mt-head"><div class="mt-title">Recent expenses</div><div class="mt-total mono">Sample</div></div>
+          <table>
+            <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">—</td><td>Office rent</td><td>Operations</td><td class="num mono down">Rs. 0</td></tr>
+              <tr><td class="mono">—</td><td>Software subscription</td><td>Software</td><td class="num mono down">Rs. 0</td></tr>
+              <tr><td class="mono">—</td><td>Team meal</td><td>Meals</td><td class="num mono down">Rs. 0</td></tr>
+              <tr><td class="mono">—</td><td>Internet &amp; phone</td><td>Utilities</td><td class="num mono down">Rs. 0</td></tr>
+              <tr><td class="mono">—</td><td>Cloud hosting</td><td>Infrastructure</td><td class="num mono down">Rs. 0</td></tr>
+            </tbody>
+          </table>
+          <div class="mt-foot"><span class="mono">Illustrative</span><span class="mt-link">View report →</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="feature reveal">
+      <div class="feature-copy">
+        <div class="eyebrow-mini">Cash flow</div>
+        <h3>See what's coming in, what's going out, and what's left.</h3>
+        <p>A clear view of your cash position so you can plan ahead instead of reacting after the fact.</p>
+        <div class="flow-chips" role="list" aria-label="Cash flow">
+          <span role="listitem">Incoming</span>
+          <span class="fc-arrow" aria-hidden="true">↔</span>
+          <span role="listitem">Outgoing</span>
+          <span class="fc-arrow" aria-hidden="true">→</span>
+          <span role="listitem">Position</span>
+        </div>
+        <a href="{% url 'signup' %}" class="feature-cta">Start free<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-cashflow">
+          <div class="mcf-head">
+            <div><div class="mcf-label">Net cash flow</div><div class="mcf-value mono up">Sample</div></div>
+            <div class="mcf-range mono">Last 6 months</div>
+          </div>
+          <div class="mcf-bars" aria-hidden="true">
+            <div class="mcf-bar"><span class="mcf-in" style="height:62%"></span><span class="mcf-out" style="height:40%"></span><span class="mcf-month mono">May</span></div>
+            <div class="mcf-bar"><span class="mcf-in" style="height:78%"></span><span class="mcf-out" style="height:52%"></span><span class="mcf-month mono">Jun</span></div>
+            <div class="mcf-bar"><span class="mcf-in" style="height:55%"></span><span class="mcf-out" style="height:48%"></span><span class="mcf-month mono">Jul</span></div>
+            <div class="mcf-bar"><span class="mcf-in" style="height:88%"></span><span class="mcf-out" style="height:60%"></span><span class="mcf-month mono">Aug</span></div>
+            <div class="mcf-bar"><span class="mcf-in" style="height:72%"></span><span class="mcf-out" style="height:45%"></span><span class="mcf-month mono">Sep</span></div>
+            <div class="mcf-bar active"><span class="mcf-in" style="height:96%"></span><span class="mcf-out" style="height:58%"></span><span class="mcf-month mono">Oct</span></div>
+          </div>
+          <div class="mcf-legend">
+            <span><i class="dot in" aria-hidden="true"></i>Incoming</span>
+            <span><i class="dot out" aria-hidden="true"></i>Outgoing</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="feature reverse reveal">
+      <div class="feature-copy">
+        <div class="eyebrow-mini">Financial reports</div>
+        <h3>Reports generated from your own records.</h3>
+        <p>Profit &amp; Loss, Balance Sheet, and Cash Flow — built from the entries you make in FinCore, so your reports always match your records.</p>
+        <div class="flow-chips" role="list" aria-label="Report types">
+          <span role="listitem">P&amp;L</span>
+          <span aria-hidden="true">·</span>
+          <span role="listitem">Balance Sheet</span>
+          <span aria-hidden="true">·</span>
+          <span role="listitem">Cash Flow</span>
+        </div>
+        <a href="{% url 'signup' %}" class="feature-cta">Start free<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-pl">
+          <div class="pl-head"><div class="pl-title">Profit &amp; Loss</div><div class="pl-period mono">Selected period</div></div>
+          <div class="pl-group">
+            <div class="pl-group-label">Revenue</div>
+            <div class="pl-line"><span>Product sales</span><span class="mono">Rs. 0</span></div>
+            <div class="pl-line"><span>Services</span><span class="mono">Rs. 0</span></div>
+            <div class="pl-line"><span>Other income</span><span class="mono">Rs. 0</span></div>
+            <div class="pl-sub"><span>Total revenue</span><span class="mono">Rs. 0</span></div>
+          </div>
+          <div class="pl-group">
+            <div class="pl-group-label">Expenses</div>
+            <div class="pl-line"><span>Payroll</span><span class="mono">Rs. 0</span></div>
+            <div class="pl-line"><span>Operations</span><span class="mono">Rs. 0</span></div>
+            <div class="pl-line"><span>Software &amp; tools</span><span class="mono">Rs. 0</span></div>
+            <div class="pl-line"><span>Marketing</span><span class="mono">Rs. 0</span></div>
+            <div class="pl-sub"><span>Total expenses</span><span class="mono">Rs. 0</span></div>
+          </div>
+          <div class="pl-net"><span>Net profit</span><span class="mono up">Rs. 0</span></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="product" class="demo-section">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">05</span> Product tour</div>
+      <h2>A quick look inside FinCore.</h2>
+      <p class="section-lede">Switch between the four areas your business touches most. Numbers shown are illustrative.</p>
+    </div>
+
+    <div class="demo-shell">
+      <div class="demo-tabs" role="tablist" aria-label="Product areas">
+        <button class="demo-tab active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">Overview</button>
+        <button class="demo-tab" role="tab" aria-selected="false" aria-controls="panel-sales" id="tab-sales" data-tab="sales">Sales</button>
+        <button class="demo-tab" role="tab" aria-selected="false" aria-controls="panel-expenses" id="tab-expenses" data-tab="expenses">Expenses</button>
+        <button class="demo-tab" role="tab" aria-selected="false" aria-controls="panel-cash" id="tab-cash" data-tab="cash">Cash flow</button>
       </div>
 
-      <div class="flow-diagram">
-        <div class="flow-inputs">
-          <div class="flow-token" data-flow="0"><span class="ft-dot"></span>Sale · INV-00482</div>
-          <div class="flow-token" data-flow="1"><span class="ft-dot"></span>Expense · Office rent</div>
-          <div class="flow-token" data-flow="2"><span class="ft-dot"></span>Purchase · Equipment</div>
-          <div class="flow-token" data-flow="3"><span class="ft-dot"></span>Payment · Customer</div>
-          <div class="flow-token" data-flow="4"><span class="ft-dot"></span>Investment · Fixed deposit</div>
+      <div class="demo-panel" data-panel="overview" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+        <div class="dp-metrics">
+          <div class="dp-metric"><div class="dpm-label">Revenue</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta up">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Expenses</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta down">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Net profit</div><div class="dpm-value mono up">Rs. 0</div><div class="dpm-delta up">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Cash</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta">All accounts</div></div>
         </div>
-
-        <div class="flow-rail" aria-hidden="true">
-          <svg viewBox="0 0 60 320" preserveAspectRatio="none">
-            <path class="rail-line" d="M0,20 C30,20 30,160 60,160 M0,90 C30,90 30,160 60,160 M0,160 L60,160 M0,230 C30,230 30,160 60,160 M0,300 C30,300 30,160 60,160"/>
+        <div class="dp-chart" aria-hidden="true">
+          <svg viewBox="0 0 800 200" preserveAspectRatio="none">
+            <g stroke="#e8e5dd" stroke-width="1">
+              <line x1="0" y1="40" x2="800" y2="40"/>
+              <line x1="0" y1="90" x2="800" y2="90"/>
+              <line x1="0" y1="140" x2="800" y2="140"/>
+            </g>
+            <path class="dp-line" d="M0,150 C80,140 120,110 180,118 C240,126 280,80 340,72 C400,64 440,90 500,60 C560,30 620,50 700,28 C740,18 780,26 800,20"/>
           </svg>
         </div>
+      </div>
 
-        <div class="flow-core">
-          <div class="core-mark">
-            <span class="dot" aria-hidden="true"></span>
-            <span>FinCore</span>
-          </div>
-          <div class="core-sub mono">reconciled · categorized · posted</div>
+      <div class="demo-panel" data-panel="sales" id="panel-sales" role="tabpanel" aria-labelledby="tab-sales" hidden>
+        <div class="dp-metrics">
+          <div class="dp-metric"><div class="dpm-label">Sales this month</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta up">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Invoices raised</div><div class="dpm-value mono">0</div><div class="dpm-delta">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Avg. invoice</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta up">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Outstanding</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta">Sample</div></div>
         </div>
+        <div class="dp-table">
+          <table>
+            <thead><tr><th>Invoice</th><th>Customer</th><th>Issued</th><th class="num">Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">INV-0001</td><td>Customer</td><td class="mono">—</td><td class="num mono">Rs. 0</td><td><span class="badge badge-paid">Paid</span></td></tr>
+              <tr><td class="mono">INV-0002</td><td>Customer</td><td class="mono">—</td><td class="num mono">Rs. 0</td><td><span class="badge badge-pending">Pending</span></td></tr>
+              <tr><td class="mono">INV-0003</td><td>Customer</td><td class="mono">—</td><td class="num mono">Rs. 0</td><td><span class="badge badge-overdue">Overdue</span></td></tr>
+              <tr><td class="mono">INV-0004</td><td>Customer</td><td class="mono">—</td><td class="num mono">Rs. 0</td><td><span class="badge badge-paid">Paid</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <div class="flow-rail right" aria-hidden="true">
-          <svg viewBox="0 0 60 320" preserveAspectRatio="none">
-            <path class="rail-line" d="M0,160 C30,160 30,40 60,40 M0,160 C30,160 30,100 60,100 M0,160 C30,160 30,160 60,160 M0,160 C30,160 30,220 60,220 M0,160 C30,160 30,280 60,280"/>
+      <div class="demo-panel" data-panel="expenses" id="panel-expenses" role="tabpanel" aria-labelledby="tab-expenses" hidden>
+        <div class="dp-metrics">
+          <div class="dp-metric"><div class="dpm-label">Expenses this month</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta down">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Top category</div><div class="dpm-value mono">Operations</div><div class="dpm-delta">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Subscriptions</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Unreconciled</div><div class="dpm-value mono">0</div><div class="dpm-delta">Sample</div></div>
+        </div>
+        <div class="dp-table">
+          <table>
+            <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">—</td><td>Office rent</td><td>Operations</td><td class="num mono down">Rs. 0</td></tr>
+              <tr><td class="mono">—</td><td>Software subscription</td><td>Software</td><td class="num mono down">Rs. 0</td></tr>
+              <tr><td class="mono">—</td><td>Team meal</td><td>Meals</td><td class="num mono down">Rs. 0</td></tr>
+              <tr><td class="mono">—</td><td>Cloud hosting</td><td>Infrastructure</td><td class="num mono down">Rs. 0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="demo-panel" data-panel="cash" id="panel-cash" role="tabpanel" aria-labelledby="tab-cash" hidden>
+        <div class="dp-metrics">
+          <div class="dp-metric"><div class="dpm-label">Opening balance</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Incoming</div><div class="dpm-value mono up">Rs. 0</div><div class="dpm-delta up">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Outgoing</div><div class="dpm-value mono down">Rs. 0</div><div class="dpm-delta down">Sample</div></div>
+          <div class="dp-metric"><div class="dpm-label">Closing balance</div><div class="dpm-value mono">Rs. 0</div><div class="dpm-delta">Sample</div></div>
+        </div>
+        <div class="dp-chart" aria-hidden="true">
+          <svg viewBox="0 0 800 200" preserveAspectRatio="none">
+            <g stroke="#e8e5dd" stroke-width="1">
+              <line x1="0" y1="50" x2="800" y2="50"/>
+              <line x1="0" y1="100" x2="800" y2="100"/>
+              <line x1="0" y1="150" x2="800" y2="150"/>
+            </g>
+            <path class="dp-line green" d="M0,140 C80,120 140,130 200,110 C260,90 320,110 400,80 C480,50 560,70 640,50 C700,36 760,44 800,32"/>
           </svg>
         </div>
-
-        <div class="flow-outputs">
-          <div class="flow-output"><span class="fo-label">Revenue</span><span class="fo-val mono">Rs. 8,50,000</span></div>
-          <div class="flow-output"><span class="fo-label">Expenses</span><span class="fo-val mono">Rs. 5,20,000</span></div>
-          <div class="flow-output"><span class="fo-label">Profit</span><span class="fo-val mono up">Rs. 3,30,000</span></div>
-          <div class="flow-output"><span class="fo-label">Receivables</span><span class="fo-val mono">Rs. 1,20,000</span></div>
-          <div class="flow-output"><span class="fo-label">Payables</span><span class="fo-val mono">Rs. 64,000</span></div>
-        </div>
       </div>
+
+      <div class="demo-foot mono">Illustrative data · sample workspace</div>
     </div>
-  </section>
+  </div>
+</section>
 
-  {# ============ 12 · FEATURE SHOWCASE ============ #}
-  <section id="features">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">04</span> What FinCore does</div>
-        <h2>Everything your business needs, in one connected system.</h2>
-      </div>
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">06</span> Who it's for</div>
+      <h2>Built for small service businesses and agencies in Nepal.</h2>
     </div>
 
-    <div class="wrap feature-list">
-
-      {# --- Sales --- #}
-      <article class="feature">
-        <div class="feature-copy">
-          <div class="eyebrow-mini">Sales &amp; invoices</div>
-          <h3>From customer to payment, without re-entering anything.</h3>
-          <p>
-            Raise an invoice, track its status, record the payment when it
-            lands — and see it flow straight into revenue. No double entry,
-            no reconciliation spreadsheet.
-          </p>
-          <div class="flow-chips" role="list" aria-label="Sales flow">
-            <span role="listitem">Customer</span>
-            <span class="fc-arrow" aria-hidden="true">→</span>
-            <span role="listitem">Sale</span>
-            <span class="fc-arrow" aria-hidden="true">→</span>
-            <span role="listitem">Invoice</span>
-            <span class="fc-arrow" aria-hidden="true">→</span>
-            <span role="listitem">Payment</span>
-          </div>
-          <a href="#cta" class="feature-cta">
-            Explore sales tracking
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-        <div class="feature-visual">
-          <div class="mock-invoice">
-            <div class="mi-head">
-              <div>
-                <div class="mi-label mono">INVOICE</div>
-                <div class="mi-id mono">INV-00482</div>
-              </div>
-              <span class="badge badge-paid">Paid</span>
-            </div>
-            <div class="mi-parties">
-              <div>
-                <div class="mi-party-label">Billed to</div>
-                <div class="mi-party-name">Himalayan Coffee Co.</div>
-                <div class="mi-party-meta">Lazimpat, Kathmandu</div>
-              </div>
-              <div class="mi-dates">
-                <div><span>Issued</span><span class="mono">Oct 14, 2025</span></div>
-                <div><span>Due</span><span class="mono">Oct 28, 2025</span></div>
-              </div>
-            </div>
-            <table class="mi-items">
-              <thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Amount</th></tr></thead>
-              <tbody>
-                <tr><td>Website development — Phase 2</td><td class="num mono">1</td><td class="num mono">Rs. 90,000</td></tr>
-                <tr><td>Hosting setup (annual)</td><td class="num mono">1</td><td class="num mono">Rs. 30,000</td></tr>
-              </tbody>
-            </table>
-            <div class="mi-total">
-              <span>Total</span>
-              <span class="mono">Rs. 1,20,000</span>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      {# --- Expenses --- #}
-      <article class="feature reverse">
-        <div class="feature-copy">
-          <div class="eyebrow-mini">Expenses</div>
-          <h3>Every expense, categorized and accounted for.</h3>
-          <p>
-            Record expenses as they happen, assign a category, mark them paid
-            — and they show up in the right place in your reports.
-          </p>
-          <div class="flow-chips" role="list" aria-label="Expense flow">
-            <span role="listitem">Expense</span>
-            <span class="fc-arrow" aria-hidden="true">→</span>
-            <span role="listitem">Category</span>
-            <span class="fc-arrow" aria-hidden="true">→</span>
-            <span role="listitem">Payment</span>
-            <span class="fc-arrow" aria-hidden="true">→</span>
-            <span role="listitem">Report</span>
-          </div>
-          <a href="#cta" class="feature-cta">
-            Explore expense tracking
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-        <div class="feature-visual">
-          <div class="mock-table">
-            <div class="mt-head">
-              <div class="mt-title">October expenses</div>
-              <div class="mt-total mono">Rs. 5,20,000</div>
-            </div>
-            <table>
-              <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th></tr></thead>
-              <tbody>
-                <tr><td class="mono">Oct 23</td><td>Office rent — Kathmandu</td><td>Operations</td><td class="num mono down">Rs. 45,000</td></tr>
-                <tr><td class="mono">Oct 22</td><td>Figma subscription</td><td>Software</td><td class="num mono down">Rs. 2,400</td></tr>
-                <tr><td class="mono">Oct 18</td><td>Team lunch — quarterly</td><td>Meals</td><td class="num mono down">Rs. 8,600</td></tr>
-                <tr><td class="mono">Oct 15</td><td>Internet &amp; phone</td><td>Utilities</td><td class="num mono down">Rs. 4,200</td></tr>
-                <tr><td class="mono">Oct 12</td><td>AWS — production</td><td>Infrastructure</td><td class="num mono down">Rs. 18,400</td></tr>
-              </tbody>
-            </table>
-            <div class="mt-foot">
-              <span class="mono">Showing 5 of 38 · October 2025</span>
-              <span class="mt-link">View report →</span>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      {# --- Cash flow --- #}
-      <article class="feature">
-        <div class="feature-copy">
-          <div class="eyebrow-mini">Cash flow</div>
-          <h3>Know what's coming in, what's going out, and what's left.</h3>
-          <p>
-            A live cash position across every account — with a forward view of
-            receivables and payables, so you're never caught off guard.
-          </p>
-          <div class="flow-chips" role="list" aria-label="Cash flow">
-            <span role="listitem">Incoming</span>
-            <span class="fc-arrow" aria-hidden="true">↔</span>
-            <span role="listitem">Outgoing</span>
-            <span class="fc-arrow" aria-hidden="true">→</span>
-            <span role="listitem">Position</span>
-          </div>
-          <a href="#cta" class="feature-cta">
-            Explore cash flow
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-        <div class="feature-visual">
-          <div class="mock-cashflow">
-            <div class="mcf-head">
-              <div>
-                <div class="mcf-label">Net cash flow</div>
-                <div class="mcf-value mono up">+ Rs. 3,30,000</div>
-              </div>
-              <div class="mcf-range mono">Last 6 months</div>
-            </div>
-            <div class="mcf-bars" aria-hidden="true">
-              <div class="mcf-bar"><span class="mcf-in" style="height: 62%"></span><span class="mcf-out" style="height: 40%"></span><span class="mcf-month mono">May</span></div>
-              <div class="mcf-bar"><span class="mcf-in" style="height: 78%"></span><span class="mcf-out" style="height: 52%"></span><span class="mcf-month mono">Jun</span></div>
-              <div class="mcf-bar"><span class="mcf-in" style="height: 55%"></span><span class="mcf-out" style="height: 48%"></span><span class="mcf-month mono">Jul</span></div>
-              <div class="mcf-bar"><span class="mcf-in" style="height: 88%"></span><span class="mcf-out" style="height: 60%"></span><span class="mcf-month mono">Aug</span></div>
-              <div class="mcf-bar"><span class="mcf-in" style="height: 72%"></span><span class="mcf-out" style="height: 45%"></span><span class="mcf-month mono">Sep</span></div>
-              <div class="mcf-bar active"><span class="mcf-in" style="height: 96%"></span><span class="mcf-out" style="height: 58%"></span><span class="mcf-month mono">Oct</span></div>
-            </div>
-            <div class="mcf-legend">
-              <span><i class="dot in" aria-hidden="true"></i>Incoming</span>
-              <span><i class="dot out" aria-hidden="true"></i>Outgoing</span>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      {# --- Reports --- #}
-      <article class="feature reverse">
-        <div class="feature-copy">
-          <div class="eyebrow-mini">Financial reports</div>
-          <h3>Transactions in. Reports out.</h3>
-          <p>
-            Profit &amp; Loss, Balance Sheet, and Cash Flow — generated from
-            your actual activity, always current, always reconcilable back to
-            a single entry.
-          </p>
-          <div class="flow-chips" role="list" aria-label="Report types">
-            <span role="listitem">P&amp;L</span>
-            <span aria-hidden="true">·</span>
-            <span role="listitem">Balance Sheet</span>
-            <span aria-hidden="true">·</span>
-            <span role="listitem">Cash Flow</span>
-          </div>
-          <a href="#cta" class="feature-cta">
-            Explore reports
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-        <div class="feature-visual">
-          <div class="mock-pl">
-            <div class="pl-head">
-              <div class="pl-title">Profit &amp; Loss</div>
-              <div class="pl-period mono">Jul 1 – Oct 31, 2025</div>
-            </div>
-            <div class="pl-group">
-              <div class="pl-group-label">Revenue</div>
-              <div class="pl-line"><span>Product sales</span><span class="mono">Rs. 6,40,000</span></div>
-              <div class="pl-line"><span>Services</span><span class="mono">Rs. 1,80,000</span></div>
-              <div class="pl-line"><span>Other income</span><span class="mono">Rs. 30,000</span></div>
-              <div class="pl-sub"><span>Total revenue</span><span class="mono">Rs. 8,50,000</span></div>
-            </div>
-            <div class="pl-group">
-              <div class="pl-group-label">Expenses</div>
-              <div class="pl-line"><span>Payroll</span><span class="mono">Rs. 2,80,000</span></div>
-              <div class="pl-line"><span>Operations</span><span class="mono">Rs. 1,20,000</span></div>
-              <div class="pl-line"><span>Software &amp; tools</span><span class="mono">Rs. 62,000</span></div>
-              <div class="pl-line"><span>Marketing</span><span class="mono">Rs. 58,000</span></div>
-              <div class="pl-sub"><span>Total expenses</span><span class="mono">Rs. 5,20,000</span></div>
-            </div>
-            <div class="pl-net">
-              <span>Net profit</span>
-              <span class="mono up">Rs. 3,30,000</span>
-            </div>
-          </div>
-        </div>
-      </article>
-
+    <div class="solutions-grid">
+      <button class="solution active" type="button" data-solution="agencies" aria-pressed="true">
+        <span class="sol-num mono">01</span><span class="sol-name">Agencies</span>
+        <span class="sol-desc">Client work, invoices, payments, and project costs in one place.</span>
+      </button>
+      <button class="solution" type="button" data-solution="consultants" aria-pressed="false">
+        <span class="sol-num mono">02</span><span class="sol-name">Consultants</span>
+        <span class="sol-desc">Track clients, bill for your time, and see what you've actually earned.</span>
+      </button>
+      <button class="solution" type="button" data-solution="services" aria-pressed="false">
+        <span class="sol-num mono">03</span><span class="sol-name">Service businesses</span>
+        <span class="sol-desc">Sales, purchases, expenses, and reports for day-to-day operations.</span>
+      </button>
+      <button class="solution" type="button" data-solution="growing" aria-pressed="false">
+        <span class="sol-num mono">04</span><span class="sol-name">Growing teams</span>
+        <span class="sol-desc">Add users and advanced features as your business scales.</span>
+      </button>
     </div>
-  </section>
 
-  {# ============ 13 · INTERACTIVE DEMO ============ #}
-  <section id="product" class="demo-section">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">05</span> Product tour</div>
-        <h2>A quick look inside FinCore.</h2>
-        <p class="section-lede">
-          Switch between the four areas your business touches most. Numbers
-          shown are from a sample workspace.
+    <div class="solution-detail" aria-live="polite">
+      <div class="sd-left">
+        <div class="sd-title" data-sd-title>Agencies</div>
+        <p class="sd-body" data-sd-body>
+          Keep client work, invoices, and payments connected. See what has
+          been billed, what has been paid, and what is still outstanding —
+          without maintaining a separate spreadsheet.
         </p>
+        <ul class="sd-points" data-sd-points>
+          <li>Client and project records</li>
+          <li>Invoice and payment tracking</li>
+          <li>Outstanding balance visibility</li>
+          <li>Cost and expense tracking</li>
+        </ul>
       </div>
-
-      <div class="demo-shell">
-        <div class="demo-tabs" role="tablist" aria-label="Product areas">
-          <button class="demo-tab active" role="tab" aria-selected="true" data-tab="overview">Overview</button>
-          <button class="demo-tab" role="tab" aria-selected="false" data-tab="sales">Sales</button>
-          <button class="demo-tab" role="tab" aria-selected="false" data-tab="expenses">Expenses</button>
-          <button class="demo-tab" role="tab" aria-selected="false" data-tab="cash">Cash flow</button>
+      <div class="sd-right">
+        <div class="sd-card">
+          <div class="sd-card-label mono">Plan</div>
+          <div class="sd-card-value mono">Free core</div>
+          <div class="sd-card-bar"><div class="sd-card-fill" style="width: 100%"></div></div>
+          <div class="sd-card-meta">Optional premium from Rs3,000/year</div>
         </div>
-
-        <div class="demo-panel" data-panel="overview">
-          <div class="dp-metrics">
-            <div class="dp-metric"><div class="dpm-label">Revenue</div><div class="dpm-value mono">Rs. 8,50,000</div><div class="dpm-delta up">+ 18.4%</div></div>
-            <div class="dp-metric"><div class="dpm-label">Expenses</div><div class="dpm-value mono">Rs. 5,20,000</div><div class="dpm-delta down">− 4.8%</div></div>
-            <div class="dp-metric"><div class="dpm-label">Net profit</div><div class="dpm-value mono up">Rs. 3,30,000</div><div class="dpm-delta up">+ 24.2%</div></div>
-            <div class="dp-metric"><div class="dpm-label">Cash</div><div class="dpm-value mono">Rs. 7,10,000</div><div class="dpm-delta">2 accounts</div></div>
-          </div>
-          <div class="dp-chart" aria-hidden="true">
-            <svg viewBox="0 0 800 200" preserveAspectRatio="none">
-              <g stroke="#e8e5dd" stroke-width="1">
-                <line x1="0" y1="40" x2="800" y2="40"/>
-                <line x1="0" y1="90" x2="800" y2="90"/>
-                <line x1="0" y1="140" x2="800" y2="140"/>
-              </g>
-              <path class="dp-line" d="M0,150 C80,140 120,110 180,118 C240,126 280,80 340,72 C400,64 440,90 500,60 C560,30 620,50 700,28 C740,18 780,26 800,20"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="demo-panel" data-panel="sales" hidden>
-          <div class="dp-metrics">
-            <div class="dp-metric"><div class="dpm-label">Sales this month</div><div class="dpm-value mono">Rs. 2,84,000</div><div class="dpm-delta up">+ 12.1%</div></div>
-            <div class="dp-metric"><div class="dpm-label">Invoices raised</div><div class="dpm-value mono">24</div><div class="dpm-delta">18 paid</div></div>
-            <div class="dp-metric"><div class="dpm-label">Avg. invoice</div><div class="dpm-value mono">Rs. 42,400</div><div class="dpm-delta up">+ 6.3%</div></div>
-            <div class="dp-metric"><div class="dpm-label">Outstanding</div><div class="dpm-value mono">Rs. 1,20,000</div><div class="dpm-delta">12 open</div></div>
-          </div>
-          <div class="dp-table">
-            <table>
-              <thead><tr><th>Invoice</th><th>Customer</th><th>Issued</th><th class="num">Amount</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td class="mono">INV-00482</td><td>Himalayan Coffee Co.</td><td class="mono">Oct 14</td><td class="num mono">Rs. 1,20,000</td><td><span class="badge badge-paid">Paid</span></td></tr>
-                <tr><td class="mono">INV-00481</td><td>Acme Technologies</td><td class="mono">Oct 12</td><td class="num mono">Rs. 68,000</td><td><span class="badge badge-pending">Pending</span></td></tr>
-                <tr><td class="mono">INV-00479</td><td>Everest Retail Group</td><td class="mono">Oct 08</td><td class="num mono">Rs. 42,000</td><td><span class="badge badge-overdue">Overdue</span></td></tr>
-                <tr><td class="mono">INV-00478</td><td>Lalitpur Design Studio</td><td class="mono">Oct 05</td><td class="num mono">Rs. 36,500</td><td><span class="badge badge-paid">Paid</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="demo-panel" data-panel="expenses" hidden>
-          <div class="dp-metrics">
-            <div class="dp-metric"><div class="dpm-label">Expenses this month</div><div class="dpm-value mono">Rs. 1,42,000</div><div class="dpm-delta down">− 2.1%</div></div>
-            <div class="dp-metric"><div class="dpm-label">Top category</div><div class="dpm-value mono">Operations</div><div class="dpm-delta">Rs. 45,000</div></div>
-            <div class="dp-metric"><div class="dpm-label">Subscriptions</div><div class="dpm-value mono">Rs. 22,400</div><div class="dpm-delta">11 active</div></div>
-            <div class="dp-metric"><div class="dpm-label">Unreconciled</div><div class="dpm-value mono">3</div><div class="dpm-delta">Needs review</div></div>
-          </div>
-          <div class="dp-table">
-            <table>
-              <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th></tr></thead>
-              <tbody>
-                <tr><td class="mono">Oct 23</td><td>Office rent — Kathmandu</td><td>Operations</td><td class="num mono down">Rs. 45,000</td></tr>
-                <tr><td class="mono">Oct 22</td><td>Figma subscription</td><td>Software</td><td class="num mono down">Rs. 2,400</td></tr>
-                <tr><td class="mono">Oct 18</td><td>Team lunch — quarterly</td><td>Meals</td><td class="num mono down">Rs. 8,600</td></tr>
-                <tr><td class="mono">Oct 12</td><td>AWS — production</td><td>Infrastructure</td><td class="num mono down">Rs. 18,400</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="demo-panel" data-panel="cash" hidden>
-          <div class="dp-metrics">
-            <div class="dp-metric"><div class="dpm-label">Opening balance</div><div class="dpm-value mono">Rs. 5,80,000</div><div class="dpm-delta">Oct 1</div></div>
-            <div class="dp-metric"><div class="dpm-label">Incoming</div><div class="dpm-value mono up">Rs. 4,60,000</div><div class="dpm-delta up">14 deposits</div></div>
-            <div class="dp-metric"><div class="dpm-label">Outgoing</div><div class="dpm-value mono down">Rs. 3,30,000</div><div class="dpm-delta down">38 payments</div></div>
-            <div class="dp-metric"><div class="dpm-label">Closing balance</div><div class="dpm-value mono">Rs. 7,10,000</div><div class="dpm-delta">Oct 31</div></div>
-          </div>
-          <div class="dp-chart" aria-hidden="true">
-            <svg viewBox="0 0 800 200" preserveAspectRatio="none">
-              <g stroke="#e8e5dd" stroke-width="1">
-                <line x1="0" y1="50" x2="800" y2="50"/>
-                <line x1="0" y1="100" x2="800" y2="100"/>
-                <line x1="0" y1="150" x2="800" y2="150"/>
-              </g>
-              <path class="dp-line green" d="M0,140 C80,120 140,130 200,110 C260,90 320,110 400,80 C480,50 560,70 640,50 C700,36 760,44 800,32"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="demo-foot mono">Illustrative data · sample workspace</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  {# ============ 14 · SOLUTIONS ============ #}
-  <section id="solutions">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">06</span> Who it's for</div>
-        <h2>Built for the way modern businesses work.</h2>
+<!-- HOW -->
+<section id="how">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">07</span> How it works</div>
+      <h2>Set up. Track. Understand.</h2>
+      <p class="section-lede">Three steps to replace the spreadsheet with a real financial system.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-head"><span class="step-num mono">01</span><span class="step-connector" aria-hidden="true"></span></div>
+        <h4>Set up</h4>
+        <p>Add your business, customers, products, and accounts. Import existing data if you have it.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-head"><span class="step-num mono">02</span><span class="step-connector" aria-hidden="true"></span></div>
+        <h4>Track</h4>
+        <p>Record sales, expenses, purchases, invoices, and payments as they happen.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-head"><span class="step-num mono">03</span><span class="step-connector" aria-hidden="true"></span></div>
+        <h4>Understand</h4>
+        <p>See your financial position through reports built from your own records.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST — reframed: no unverified security claims -->
+<section id="trust">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">08</span> Why FinCore</div>
+      <h2>A finance tool built for how Nepali businesses actually work.</h2>
+      <p class="section-lede">
+        FinCore is designed around Nepal's small service businesses and
+        agencies — not adapted from a foreign enterprise product.
+      </p>
+    </div>
+
+    <div class="trust-grid">
+      <div class="trust-item reveal">
+        <div class="trust-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2l7 3v5c0 4.5-3 7.5-7 8.5C6 17.5 3 14.5 3 10V5l7-3z" stroke="currentColor" stroke-width="1.4"/></svg></div>
+        <h4>Free core, forever</h4>
+        <p>The core finance features small businesses need — invoicing, expenses, records, reports — are free. No trial expiry.</p>
+      </div>
+      <div class="trust-item reveal">
+        <div class="trust-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <h4>Optional premium</h4>
+        <p>Advanced capabilities are available on a paid tier from Rs3,000/year, for businesses that have outgrown the core.</p>
+      </div>
+      <div class="trust-item reveal">
+        <div class="trust-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 10h14M10 3v14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <h4>Made for Nepal</h4>
+        <p>Priced in rupees, designed for local business context, and built to work for small teams without a finance department.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING — corrected to match the memo -->
+<section id="pricing">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">09</span> Pricing</div>
+      <h2>Start free. Upgrade only if you need more.</h2>
+      <p class="section-lede">
+        FinCore's core features are free. A single optional premium tier
+        unlocks advanced capabilities.
+      </p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="pc-tier mono">Free</div>
+        <h4>Core finance features, free forever.</h4>
+        <div class="pc-price"><span class="mono">Rs. 0</span><span class="pc-per">/ forever</span></div>
+        <div class="pc-note">No credit card required</div>
+        <ul class="pc-features">
+          <li>Sales and expense records</li>
+          <li>Invoices</li>
+          <li>Purchases</li>
+          <li>Basic financial reports</li>
+          <li>Single user</li>
+        </ul>
+        <a href="{% url 'signup' %}" class="btn-outline full">Start free</a>
       </div>
 
-      <div class="solutions-grid">
-        <button class="solution active" type="button" data-solution="startups" aria-pressed="true">
-          <span class="sol-num mono">01</span>
-          <span class="sol-name">Startups</span>
-          <span class="sol-desc">Track funding, expenses, revenue, and cash.</span>
-        </button>
-        <button class="solution" type="button" data-solution="smb" aria-pressed="false">
-          <span class="sol-num mono">02</span>
-          <span class="sol-name">Small businesses</span>
-          <span class="sol-desc">Manage sales, purchases, customers, and accounting.</span>
-        </button>
-        <button class="solution" type="button" data-solution="agency" aria-pressed="false">
-          <span class="sol-num mono">03</span>
-          <span class="sol-name">Agencies &amp; freelancers</span>
-          <span class="sol-desc">Track clients, invoices, payments, and project costs.</span>
-        </button>
-        <button class="solution" type="button" data-solution="growing" aria-pressed="false">
-          <span class="sol-num mono">04</span>
-          <span class="sol-name">Growing companies</span>
-          <span class="sol-desc">Centralize financial operations as the business scales.</span>
-        </button>
+      <div class="price-card featured reveal">
+        <div class="pc-tier mono">Premium</div>
+        <h4>Advanced features for growing businesses.</h4>
+        <div class="pc-price"><span class="mono">From Rs. 3,000</span><span class="pc-per">/ year</span></div>
+        <div class="pc-note">Final pricing and included features to be confirmed</div>
+        <ul class="pc-features">
+          <li>Everything in Free</li>
+          <li>Advanced capabilities as they are released</li>
+          <li>Priority support</li>
+          <li>Pricing scales with the features you need</li>
+        </ul>
+        <a href="{% url 'signup' %}" class="btn-primary full">Get started</a>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div class="solution-detail" aria-live="polite">
-        <div class="sd-left">
-          <div class="sd-title" data-sd-title>Startups</div>
-          <p class="sd-body" data-sd-body>
-            Pre-seed to Series A, FinCore keeps your burn, runway, and revenue
-            visible in one place. Track investor funding, categorize spend, and
-            see how long your current cash lasts — without a finance hire.
-          </p>
-          <ul class="sd-points" data-sd-points>
-            <li>Funding and grant tracking</li>
-            <li>Burn rate and runway visibility</li>
-            <li>Expense categorization by team</li>
-            <li>Revenue and MRR overview</li>
+<!-- FAQ — every answer maps to something defensible -->
+<section id="faq">
+  <div class="wrap grid12">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span class="num">10</span> FAQ</div>
+      <h2>Questions, answered.</h2>
+    </div>
+    <div class="section-body">
+      <div class="faq-list">
+        <details class="faq"><summary>What is FinCore?<span class="faq-x" aria-hidden="true"></span></summary><p>FinCore is business finance software for Nepal's small service businesses and agencies. It brings sales, expenses, invoices, and reports into one place so you can see how your business is doing.</p></details>
+        <details class="faq"><summary>Is FinCore really free?<span class="faq-x" aria-hidden="true"></span></summary><p>Yes. The core finance features are free and do not expire. There is an optional premium tier from Rs3,000/year for businesses that need more advanced capabilities.</p></details>
+        <details class="faq"><summary>Who is FinCore for?<span class="faq-x" aria-hidden="true"></span></summary><p>Small service businesses and agencies in Nepal — including consultants, creative studios, and growing teams that want clear financial records without a dedicated accounting department.</p></details>
+        <details class="faq"><summary>Can I track sales and expenses?<span class="faq-x" aria-hidden="true"></span></summary><p>Yes. Record sales and expenses as they happen, assign categories, and see them reflected in your reports.</p></details>
+        <details class="faq"><summary>Can I create invoices?<span class="faq-x" aria-hidden="true"></span></summary><p>Yes. Generate invoices, track their status, and record payments against them.</p></details>
+        <details class="faq"><summary>Can I track unpaid invoices?<span class="faq-x" aria-hidden="true"></span></summary><p>Yes. Outstanding and overdue invoices are visible in your dashboard so nothing slips through.</p></details>
+        <details class="faq"><summary>Can I generate financial reports?<span class="faq-x" aria-hidden="true"></span></summary><p>Yes. Profit &amp; Loss, Balance Sheet, and Cash Flow reports are generated from the records you enter in FinCore.</p></details>
+        <details class="faq"><summary>What does the premium tier include?<span class="faq-x" aria-hidden="true"></span></summary><p>The premium tier is being developed. It will unlock advanced capabilities beyond the free core, priced from Rs3,000/year. Final feature list and pricing will be published before launch.</p></details>
+        <details class="faq"><summary>Do I need a credit card to start?<span class="faq-x" aria-hidden="true"></span></summary><p>No. You can start using FinCore's free plan without entering payment details.</p></details>
+        <details class="faq"><summary>Where is my data stored?<span class="faq-x" aria-hidden="true"></span></summary><p>Details about hosting and data handling will be published on the security page. Contact us if you need specifics before signing up.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="wrap">
+    <div class="eyebrow">Get started</div>
+    <h2>Take control of your business finances.</h2>
+    <p>Track your business. Understand your numbers. Make better-informed decisions — starting free.</p>
+    <div class="cta-row-final">
+      <a href="{% url 'signup' %}" class="btn-primary">Start free</a>
+      <a href="#product" class="btn-outline">Explore FinCore</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand"><span class="dot" aria-hidden="true"></span>FinCore</div>
+        <p>Business finance software for Nepal's small service businesses and agencies. Free core, optional premium.</p>
+      </div>
+      <div class="fcols">
+        <div>
+          <div class="fcol-title">Product</div>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#product">Product tour</a></li>
           </ul>
         </div>
-        <div class="sd-right">
-          <div class="sd-card">
-            <div class="sd-card-label mono">Runway · sample</div>
-            <div class="sd-card-value mono">11.4 months</div>
-            <div class="sd-card-bar"><div class="sd-card-fill" style="width: 78%"></div></div>
-            <div class="sd-card-meta">Cash Rs. 71,00,000 · monthly burn Rs. 6,22,000</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============ 15 · KNOW YOUR NUMBERS ============ #}
-  <section id="numbers">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">07</span> Know your numbers</div>
-        <h2>Financial data, made understandable.</h2>
-        <p class="section-lede">
-          Four numbers that answer most of the questions a business owner
-          actually asks. Updated continuously, not once a quarter.
-        </p>
-      </div>
-
-      <div class="numbers-grid">
-        <div class="num-card">
-          <div class="nc-label">Revenue</div>
-          <div class="nc-value mono" data-counter="850000" data-format="npr">Rs. 8,50,000</div>
-          <div class="nc-delta up">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 10V2M2 6l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            18.4% vs last quarter
-          </div>
-          <div class="nc-spark" aria-hidden="true">
-            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-              <path d="M0,24 L12,22 L24,25 L36,18 L48,20 L60,12 L72,14 L84,8 L100,6" fill="none" stroke="#2563eb" stroke-width="1.5"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="num-card">
-          <div class="nc-label">Expenses</div>
-          <div class="nc-value mono" data-counter="520000" data-format="npr">Rs. 5,20,000</div>
-          <div class="nc-delta down">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2v8M2 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            4.8% vs last quarter
-          </div>
-          <div class="nc-spark" aria-hidden="true">
-            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-              <path d="M0,10 L12,14 L24,12 L36,16 L48,18 L60,20 L72,18 L84,22 L100,24" fill="none" stroke="#cf5a2a" stroke-width="1.5"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="num-card">
-          <div class="nc-label">Net profit</div>
-          <div class="nc-value mono up" data-counter="330000" data-format="npr">Rs. 3,30,000</div>
-          <div class="nc-delta up">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 10V2M2 6l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            24.2% vs last quarter
-          </div>
-          <div class="nc-spark" aria-hidden="true">
-            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-              <path d="M0,20 L12,18 L24,22 L36,14 L48,16 L60,10 L72,12 L84,6 L100,4" fill="none" stroke="#16a34a" stroke-width="1.5"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="num-card">
-          <div class="nc-label">Outstanding</div>
-          <div class="nc-value mono" data-counter="120000" data-format="npr">Rs. 1,20,000</div>
-          <div class="nc-delta">12 invoices</div>
-          <div class="nc-spark" aria-hidden="true">
-            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-              <path d="M0,12 L12,10 L24,14 L36,16 L48,14 L60,18 L72,16 L84,20 L100,22" fill="none" stroke="#5b5f63" stroke-width="1.5"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============ 16 · HOW IT WORKS ============ #}
-  <section id="how">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">08</span> How it works</div>
-        <h2>Set up. Track. Understand.</h2>
-        <p class="section-lede">
-          Three steps to replace the spreadsheet with a real financial system.
-        </p>
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-head">
-            <span class="step-num mono">01</span>
-            <span class="step-connector" aria-hidden="true"></span>
-          </div>
-          <h4>Set up</h4>
-          <p>Add your business, customers, products, and accounts. Import your existing data if you have it.</p>
-        </div>
-        <div class="step">
-          <div class="step-head">
-            <span class="step-num mono">02</span>
-            <span class="step-connector" aria-hidden="true"></span>
-          </div>
-          <h4>Track</h4>
-          <p>Record sales, expenses, purchases, invoices, and payments as they happen — or connect your bank feeds.</p>
-        </div>
-        <div class="step">
-          <div class="step-head">
-            <span class="step-num mono">03</span>
-            <span class="step-connector" aria-hidden="true"></span>
-          </div>
-          <h4>Understand</h4>
-          <p>See your financial position through reports and business insights — always current, always reconcilable.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============ 17 · TRUST ============ #}
-  <section id="trust">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">09</span> Trust &amp; security</div>
-        <h2>Built for data you can't afford to lose.</h2>
-        <p class="section-lede">
-          FinCore handles financial records, so security and transparency are
-          part of the product — not an afterthought.
-        </p>
-      </div>
-
-      <div class="trust-grid">
-        <div class="trust-item">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2l7 3v5c0 4.5-3 7.5-7 8.5C6 17.5 3 14.5 3 10V5l7-3z" stroke="currentColor" stroke-width="1.4"/></svg>
-          </div>
-          <h4>Data protection</h4>
-          <p>Encrypted in transit and at rest. Backed up continuously. Access logged per user.</p>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="8" width="14" height="9" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M7 8V6a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.4"/></svg>
-          </div>
-          <h4>Role-based access</h4>
-          <p>Decide exactly who can view, edit, or approve each part of the books.</p>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 3h9l4 4v10H4V3z M13 3v4h4" stroke="currentColor" stroke-width="1.4"/></svg>
-          </div>
-          <h4>Full audit trail</h4>
-          <p>Every entry is timestamped and attributable. Nothing changes silently.</p>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-          </div>
-          <h4>Transparent pricing</h4>
-          <p>No setup fees, no hidden per-seat charges. Plans and limits are listed on the pricing page.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============ 18 · PRICING ============ #}
-  <section id="pricing">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">10</span> Pricing</div>
-        <h2>Start free. Upgrade when you grow.</h2>
-        <p class="section-lede">
-          Simple plans built around how much your business actually needs.
-          Change or cancel anytime.
-        </p>
-      </div>
-
-      <div class="billing-toggle" role="group" aria-label="Billing period">
-        <button type="button" class="bt-opt active" data-billing="monthly" aria-pressed="true">Monthly</button>
-        <button type="button" class="bt-opt" data-billing="yearly" aria-pressed="false">Yearly <span class="bt-badge mono">− 2 months</span></button>
-      </div>
-
-      <div class="pricing-grid">
-        <div class="price-card">
-          <div class="pc-tier mono">Free</div>
-          <h4>For individuals and early-stage businesses.</h4>
-          <div class="pc-price">
-            <span class="mono" data-price-monthly="Rs. 0" data-price-yearly="Rs. 0">Rs. 0</span>
-            <span class="pc-per">/ month</span>
-          </div>
-          <ul class="pc-features">
-            <li>Track sales and expenses</li>
-            <li>Create and send invoices</li>
-            <li>Manage customers and products</li>
-            <li>Basic financial reports</li>
-            <li>1 user</li>
+        <div>
+          <div class="fcol-title">Company</div>
+          <ul>
+            <li><a href="#trust">Why FinCore</a></li>
+            <li><a href="#faq">FAQ</a></li>
           </ul>
-          <a href="{% url 'signup' %}" class="btn-outline full">Get Started Free</a>
         </div>
-
-        <div class="price-card featured">
-          <div class="pc-tier mono">Pro</div>
-          <h4>For growing businesses that need the full picture.</h4>
-          <div class="pc-price">
-            <span class="mono" data-price-monthly="Rs. 2,500" data-price-yearly="Rs. 25,000">Rs. 2,500</span>
-            <span class="pc-per">/ month</span>
-          </div>
-          <ul class="pc-features">
-            <li>Everything in Free</li>
-            <li>Cash flow tracking</li>
-            <li>Profit &amp; Loss, Balance Sheet</li>
-            <li>Purchases and suppliers</li>
-            <li>Investment tracking</li>
-            <li>Up to 5 users</li>
+        <div>
+          <div class="fcol-title">Account</div>
+          <ul>
+            <li><a href="/login/">Log in</a></li>
+            <li><a href="/signup/">Sign up</a></li>
           </ul>
-          <a href="{% url 'signup' %}" class="btn-primary full">Start 14-day trial</a>
         </div>
-
-        <div class="price-card">
-          <div class="pc-tier mono">Business</div>
-          <h4>For companies with more advanced requirements.</h4>
-          <div class="pc-price">
-            <span class="mono" data-price-monthly="Rs. 8,000" data-price-yearly="Rs. 80,000">Rs. 8,000</span>
-            <span class="pc-per">/ month</span>
-          </div>
-          <ul class="pc-features">
-            <li>Everything in Pro</li>
-            <li>Unlimited users and roles</li>
-            <li>Advanced financial reports</li>
-            <li>Audit log and export</li>
-            <li>Priority support</li>
+        <div>
+          <div class="fcol-title">Legal</div>
+          <ul>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
           </ul>
-          <a href="{% url 'signup' %}" class="btn-outline full">Contact sales</a>
         </div>
       </div>
     </div>
-  </section>
-
-  {# ============ 19 · FAQ ============ #}
-  <section id="faq">
-    <div class="wrap grid12">
-      <div class="section-head">
-        <div class="eyebrow"><span class="num">11</span> FAQ</div>
-        <h2>Questions, answered.</h2>
-      </div>
-      <div class="section-body">
-        <div class="faq-list">
-          <details class="faq"><summary>What is FinCore?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>FinCore is a business financial management platform. It brings sales, expenses, invoices, payments, cash flow, and reporting into one system so growing businesses can understand their numbers.</p>
-          </details>
-          <details class="faq"><summary>Who is FinCore for?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Startups, small businesses, agencies, freelancers, and growing companies that want clear financial visibility without a complicated accounting stack.</p>
-          </details>
-          <details class="faq"><summary>Can I track sales and expenses?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes. Record sales and expenses as they happen, categorize them, and see them reflected in reports immediately.</p>
-          </details>
-          <details class="faq"><summary>Can I create invoices?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes. Generate and send invoices from FinCore, track their status, and record payments against them.</p>
-          </details>
-          <details class="faq"><summary>Can I track unpaid invoices?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes. Outstanding and overdue invoices are visible in the dashboard, with aging shown so nothing slips.</p>
-          </details>
-          <details class="faq"><summary>Can I manage products?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes. Add products and services to your catalog and attach them to sales and invoices.</p>
-          </details>
-          <details class="faq"><summary>Can I generate financial reports?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes. Profit &amp; Loss, Balance Sheet, Cash Flow, and business performance reports are generated from your actual activity.</p>
-          </details>
-          <details class="faq"><summary>Can I track cash flow?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes. See incoming and outgoing money side by side, with a live view of your cash position across accounts.</p>
-          </details>
-          <details class="faq"><summary>Is FinCore suitable for startups?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes — FinCore is designed with startups in mind, from tracking funding and burn to understanding revenue and margins as you grow.</p>
-          </details>
-          <details class="faq"><summary>Is there a free plan?<span class="faq-x" aria-hidden="true"></span></summary>
-            <p>Yes. The Free plan covers individuals and early-stage businesses. You can upgrade to Pro or Business at any time.</p>
-          </details>
-        </div>
+    <div class="footer-bottom">
+      <div>© 2026 FinCore. All figures shown are illustrative.</div>
+      <div class="socials">
+        <a href="#" aria-label="Twitter">Twitter</a>
+        <a href="#" aria-label="LinkedIn">LinkedIn</a>
       </div>
     </div>
-  </section>
+  </div>
+</footer>
 
-  {# ============ 20 · FINAL CTA ============ #}
-  <section class="cta-section" id="cta">
-    <div class="wrap">
-      <div class="eyebrow">Get started</div>
-      <h2>Take control of your business finances.</h2>
-      <p>Track your business. Understand your numbers. Make better-informed decisions.</p>
-      <div class="cta-row-final">
-        <a href="{% url 'signup' %}" class="btn-primary">Get Started Free</a>
-        <a href="#product" class="btn-outline">Explore FinCore</a>
-      </div>
-    </div>
-  </section>
+<script>
+(function () {
+  'use strict';
 
-  </main>
+  var nav = document.getElementById('site-nav');
+  var onScroll = function () {
+    if (window.scrollY > 8) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
-  {# ============ 21 · FOOTER ============ #}
-  <footer>
-    <div class="wrap">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <div class="brand"><span class="dot" aria-hidden="true"></span>FinCore</div>
-          <p>Business financial management for startups and growing companies. Know your numbers. Understand your business. Grow with confidence.</p>
-        </div>
+  var toggle = document.getElementById('nav-toggle');
+  var menu = document.getElementById('nav-menu');
+  if (toggle && menu) {
+    toggle.addEventListener('click', function () {
+      var open = menu.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    menu.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') {
+        menu.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+      }
+    });
+  }
 
-        <div class="fcols">
-          <div>
-            <div class="fcol-title">Product</div>
-            <ul>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#pricing">Pricing</a></li>
-              <li><a href="#">Changelog</a></li>
-              <li><a href="#">Roadmap</a></li>
-            </ul>
-          </div>
-          <div>
-            <div class="fcol-title">Company</div>
-            <ul>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Careers</a></li>
-            </ul>
-          </div>
-          <div>
-            <div class="fcol-title">Resources</div>
-            <ul>
-              <li><a href="#">Documentation</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Help center</a></li>
-            </ul>
-          </div>
-          <div>
-            <div class="fcol-title">Legal</div>
-            <ul>
-              <li><a href="#">Privacy</a></li>
-              <li><a href="#">Terms</a></li>
-              <li><a href="#">Security</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('in-view');
+          io.unobserve(en.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('in-view'); });
+  }
 
-      <div class="footer-bottom">
-        <div>© 2026 FinCore. All financial data shown is illustrative.</div>
-        <div class="socials">
-          <a href="#" aria-label="Twitter">Twitter</a>
-          <a href="#" aria-label="LinkedIn">LinkedIn</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  var tabs = document.querySelectorAll('.demo-tab');
+  var panels = document.querySelectorAll('.demo-panel');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var target = tab.getAttribute('data-tab');
+      tabs.forEach(function (t) {
+        var sel = t === tab;
+        t.classList.toggle('active', sel);
+        t.setAttribute('aria-selected', sel ? 'true' : 'false');
+      });
+      panels.forEach(function (p) {
+        p.hidden = p.getAttribute('data-panel') !== target;
+      });
+    });
+  });
 
-<script src="{% static 'js/script.js' %}"></script>
+  var solutions = document.querySelectorAll('.solution');
+  var sdTitle = document.querySelector('[data-sd-title]');
+  var sdBody = document.querySelector('[data-sd-body]');
+  var sdPoints = document.querySelector('[data-sd-points]');
+  var SOLUTIONS = {
+    agencies: {
+      title: 'Agencies',
+      body: 'Keep client work, invoices, and payments connected. See what has been billed, what has been paid, and what is still outstanding — without maintaining a separate spreadsheet.',
+      points: ['Client and project records', 'Invoice and payment tracking', 'Outstanding balance visibility', 'Cost and expense tracking']
+    },
+    consultants: {
+      title: 'Consultants',
+      body: 'Bill clients for your time and see what you have actually earned. Keep invoices, payments, and expenses in one place so tax time is not a scramble.',
+      points: ['Client billing', 'Invoice and payment records', 'Expense tracking', 'Reports from your own records']
+    },
+    services: {
+      title: 'Service businesses',
+      body: 'Manage day-to-day sales, purchases, and expenses in one system, with invoices and payments tracked against your records and reports ready when you need them.',
+      points: ['Sales and purchase records', 'Invoice and payment tracking', 'Customer and supplier management', 'Reports from your own activity']
+    },
+    growing: {
+      title: 'Growing teams',
+      body: 'As the business scales, FinCore keeps your records in one connected system so finance stays manageable without adding headcount immediately.',
+      points: ['Unified financial records', 'Reports for planning', 'Optional premium features', 'Priced in rupees']
+    }
+  };
+  solutions.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var data = SOLUTIONS[btn.getAttribute('data-solution')];
+      if (!data) return;
+      solutions.forEach(function (b) {
+        var sel = b === btn;
+        b.classList.toggle('active', sel);
+        b.setAttribute('aria-pressed', sel ? 'true' : 'false');
+      });
+      sdTitle.textContent = data.title;
+      sdBody.textContent = data.body;
+      sdPoints.innerHTML = data.points.map(function (p) {
+        return '<li>' + p + '</li>';
+      }).join('');
+    });
+  });
+
+})();
+</script>
 </body>
 </html>

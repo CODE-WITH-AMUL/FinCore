@@ -313,7 +313,7 @@ def _build_expansion_kpi_payload():
     }
 
 
-# @login_required
+@login_required
 def expansion_kpis(request):
     """JSON endpoint polled every 15s by the front end."""
     try:

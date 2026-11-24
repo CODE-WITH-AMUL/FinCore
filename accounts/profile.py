@@ -40,7 +40,7 @@ def userprofile(request):
         # optional extras the template expects:
         "user_role": getattr(user_profile, "role", None) or "Administrator",
         "account_status": "Active" if request.user.is_active else "Inactive",
-        "email_verified": request.user.email.endswith("@") is False and bool(request.user.email),
+        "email_verified": request.user.is_active,
         "member_since": request.user.date_joined.strftime("%b %d, %Y") if request.user.date_joined else "—",
         "last_login_display": request.user.last_login.strftime("%b %d, %Y · %H:%M") if request.user.last_login else "—",
         "two_factor_enabled": False,

@@ -23,20 +23,7 @@
         <div class="pl-bar"><div class="pl-bar-fill"></div></div>
     </div>
 
-    <!-- Navbar -->
-    <nav>
-      <div class="wrap">
-        <div class="brand"><span class="dot"></span>     <a href="{% url 'index' %}" data-nav="index"> FinCore</a></div>
-        <ul id="navlinks">
-          <li><a href="#problem" data-nav="problem">Problem</a></li>
-          <li><a href="#platform" data-nav="platform">Platform</a></li>
-          <li>
-            <a href="#capabilities" data-nav="capabilities">Capabilities</a>
-          </li>
-          <li><a href="#insights" data-nav="insights">Insights</a></li>
-          <li><a href="#trust" data-nav="trust">Security</a></li>
-      </div>
-    </nav>
+    <div id="navbar-placeholder"></div>
 
     <!-- Main Content -->
     <main class="auth-section">
@@ -134,6 +121,7 @@
         </div>
     </footer>
 
+    <script src="{% static 'js/navbar-loader.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

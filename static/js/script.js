@@ -252,6 +252,8 @@
     var toggle = document.querySelector('.nav-toggle');
     var links = document.getElementById('navlinks');
     if (!toggle || !links) return;
+    if (toggle.dataset.navInitialized === 'true') return;
+    toggle.dataset.navInitialized = 'true';
 
     function setOpen(open) {
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -285,6 +287,7 @@
   /* ----------------------------------------------------------
      7. Scroll-spy
      ---------------------------------------------------------- */
+  var scrollSpyAttached = false;
   function initScrollSpy() {
     var navLinks = document.querySelectorAll('[data-nav]');
     if (!navLinks.length) return;
@@ -310,18 +313,26 @@
       });
     }
 
-    var ticking = false;
-    window.addEventListener('scroll', function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        update();
-        ticking = false;
-      });
-    }, { passive: true });
+    if (!scrollSpyAttached) {
+      scrollSpyAttached = true;
+      var ticking = false;
+      window.addEventListener('scroll', function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          update();
+          ticking = false;
+        });
+      }, { passive: true });
+    }
 
     update();
   }
+
+  window.addEventListener('navbar:loaded', function () {
+    try { initMobileNav(); } catch (e) { /* ignore */ }
+    try { initScrollSpy(); } catch (e) { /* ignore */ }
+  });
 
   /* ----------------------------------------------------------
      8. Flow animation

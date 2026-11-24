@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 
 @login_required
-def company_profile(request, id=None):
+def company_profile(request):
     # Fetch or create the singleton company record
     company_info = CompanyInformation.objects.first()
 

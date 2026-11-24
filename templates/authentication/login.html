@@ -120,23 +120,7 @@
     </style>
 </head>
 <body>
-    <!-- Simplified Navbar for Auth Pages -->
-    <!-- Navbar -->
-    <nav>
-      <div class="wrap">
-        <div class="brand"><span class="dot"></span>     <a href="{% url 'index' %}" data-nav="index"> FinCore</a></div>
-        <ul id="navlinks">
-          <li><a href="#problem" data-nav="problem">Problem</a></li>
-          <li><a href="#platform" data-nav="platform">Platform</a></li>
-          <li>
-            <a href="#capabilities" data-nav="capabilities">Capabilities</a>
-          </li>
-          <li><a href="#insights" data-nav="insights">Insights</a></li>
-          <li><a href="#trust" data-nav="trust">Security</a></li>
-        </ul>
-        <a href="{% url 'signin' %}" class="nav-cta">Get Started</a>
-      </div>
-    </nav>
+    <div id="navbar-placeholder"></div>
 
     <main class="auth-main">
         <div class="auth-content">
@@ -162,7 +146,7 @@
                             <input type="checkbox" name="remember" />
                             Remember me
                         </label>
-                        <a href="#">Forgot password?</a>
+                        <a href="{% url 'forget_password' %}">Forgot password?</a>
                     </div>
 
                     <button type="submit" class="btn-primary btn-full">Sign In</button>
@@ -183,5 +167,7 @@
         <div>© 2026 FinCore. All rights reserved.</div>
       </div>
     </footer>
+    <script src="{% static 'js/navbar-loader.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

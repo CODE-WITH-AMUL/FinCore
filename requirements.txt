@@ -37,3 +37,4 @@ typing_extensions==4.16.0
 tzdata==2026.3
 uv==0.12.7
 watchdog==6.0.0
+django-jazzmin==3.0.5
